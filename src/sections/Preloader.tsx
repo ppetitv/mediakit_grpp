@@ -41,12 +41,10 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
       <div className="pre-black absolute inset-0 bg-ink flex items-center justify-center">
         <div className="pre-center overflow-hidden text-center">
           <p className="font-mono2 text-[10px] tracking-[0.35em] text-smoke uppercase mb-4">Grupo RPP — Media Kit</p>
-          <h1 className="font-display text-[18vw] md:text-[10vw] leading-none text-bone">
-            GRPP<span className="text-red">.</span>
-          </h1>
+          <img src="/images/grpp.svg" alt="GRPP" className="mx-auto h-20 md:h-28 w-auto" />
           <p className="font-mono2 text-[10px] tracking-[0.35em] text-smoke uppercase mt-4">©2026 — Conectando marcas</p>
         </div>
-        <div className="pre-meta absolute bottom-8 left-6 md:left-10 font-mono2 text-xs text-smoke">CARGANDO SEÑAL</div>
+        <div className="pre-meta absolute bottom-8 left-6 md:left-10 font-mono2 text-xs text-smoke">CARGANDO EXPERIENCIA 360</div>
         <div className="pre-meta absolute bottom-6 right-6 md:right-10 font-display text-6xl md:text-8xl text-bone tabular-nums">
           {display}
           <span className="text-red text-3xl md:text-5xl align-top">%</span>

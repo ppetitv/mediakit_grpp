@@ -23,7 +23,7 @@ export default function Manifesto() {
         },
       });
 
-      // image clip reveal + parallax
+      // media clip reveal + parallax
       gsap.fromTo(
         q(".mani-img-wrap"),
         { clipPath: "inset(12% 8% 12% 8%)", scale: 1.06 },
@@ -85,13 +85,20 @@ export default function Manifesto() {
       </p>
 
       <div className="mt-16 md:mt-24 grid md:grid-cols-12 gap-8 items-end">
-        <div className="md:col-span-8 mani-img-wrap relative overflow-hidden rounded-2xl h-[46vh] md:h-[72vh]">
-          <img src="/images/newsroom.png" alt="Sala de redacción GRPP" className="mani-img absolute inset-0 w-full h-[120%] object-cover" />
+        <div className="md:col-span-8 mani-img-wrap relative overflow-hidden rounded-2xl aspect-video">
+          <video
+            src="/images/reel.mp4"
+            className="mani-img absolute inset-0 w-full h-full object-cover rounded-2xl"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
+            aria-label="Reel de GRPP"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
-          <div className="absolute bottom-5 left-5 md:bottom-8 md:left-8 flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-red animate-pulse" />
-            <span className="font-mono2 text-[10px] tracking-[0.25em] uppercase text-bone/80">En vivo — Central de noticias</span>
-          </div>
         </div>
         <div className="md:col-span-4 flex flex-col gap-6">
           <p className="mani-side text-bone/55 text-base leading-relaxed">

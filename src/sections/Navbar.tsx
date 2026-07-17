@@ -58,8 +58,8 @@ export default function Navbar() {
         ref={navRef}
         className="fixed top-0 left-0 right-0 z-[150] px-5 md:px-10 py-4 flex items-center justify-between transition-[background-color,backdrop-filter,border-color] duration-500 [&.nav-scrolled]:bg-ink/70 [&.nav-scrolled]:backdrop-blur-xl [&.nav-scrolled]:border-b [&.nav-scrolled]:border-white/10"
       >
-        <button onClick={() => go("hero")} data-cursor="hover" className="font-display text-2xl tracking-wide text-bone leading-none">
-          GRPP<span className="text-red">®</span>
+        <button onClick={() => go("hero")} data-cursor="hover" className="flex items-center" aria-label="Ir al inicio">
+          <img src="/images/grpp.svg" alt="GRPP" className="h-8 md:h-9 w-auto" />
         </button>
 
         <nav className="hidden md:flex items-center gap-8">

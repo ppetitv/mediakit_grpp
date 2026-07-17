@@ -15,7 +15,7 @@ import Contact from "@/sections/Contact";
 import Footer from "@/sections/Footer";
 import VelocityMarquee from "@/components/VelocityMarquee";
 
-const CHANNELS = ["TV", "Radio", "Prensa", "Digital", "Podcast", "Streaming", "Redes"];
+const CHANNELS = ["Radio", "TV", "Digital","Vía Pública", "Influencers"];
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
@@ -38,7 +38,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="grain bg-ink min-h-screen">
+    <div className="bg-ink min-h-screen">
       <Preloader onDone={() => setLoaded(true)} />
       <Cursor />
       <Navbar />

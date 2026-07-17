@@ -2,6 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Graphik";
+  src:
+    url("/fonts/Graphik-Regular.woff2") format("woff2"),
+    url("/fonts/Graphik-Regular.woff") format("woff"),
+    url("/fonts/Graphik-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Graphik";
+  src:
+    url("/fonts/Graphik-Medium.woff2") format("woff2"),
+    url("/fonts/Graphik-Medium.woff") format("woff"),
+    url("/fonts/Graphik-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Graphik";
+  src:
+    url("/fonts/Graphik-Semibold.woff2") format("woff2"),
+    url("/fonts/Graphik-Semibold.woff") format("woff"),
+    url("/fonts/Graphik-Semibold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Graphik";
+  src:
+    url("/fonts/Graphik-Bold.woff2") format("woff2"),
+    url("/fonts/Graphik-Bold.woff") format("woff"),
+    url("/fonts/Graphik-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gothic Compressed";
+  src: url("/fonts/Acme Gothic Compressed Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gothic Compressed";
+  src: url("/fonts/Acme Gothic Compressed Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gothic Compressed";
+  src: url("/fonts/Acme Gothic Compressed Semi Bold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gothic Compressed";
+  src: url("/fonts/Acme Gothic Compressed Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gothic Compressed";
+  src: url("/fonts/Acme Gothic Compressed Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --red: #e8141e;
   --red-deep: #b30d14;
@@ -11,6 +95,8 @@
   --bone-2: #e9e6df;
   --smoke: #8a8a8f;
   --line: rgba(243, 241, 236, 0.14);
+  --font-sans: "Graphik", system-ui, sans-serif;
+  --font-display: "Gothic Compressed", "Arial Narrow", sans-serif;
 }
 
 html {
@@ -34,8 +120,11 @@ html.lenis body {
 body {
   background: var(--ink);
   color: var(--bone);
-  font-family: "Archivo", system-ui, sans-serif;
+  font-family: var(--font-sans);
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
 
@@ -56,31 +145,13 @@ body {
 }
 
 .font-display {
-  font-family: "Anton", sans-serif;
-  font-weight: 400;
-  letter-spacing: 0.01em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.015em;
+  font-synthesis: none;
 }
 .font-mono2 {
-  font-family: "Space Mono", monospace;
-}
-
-/* ---------- film grain ---------- */
-.grain::after {
-  content: "";
-  position: fixed;
-  inset: -100%;
-  z-index: 200;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.05;
-  animation: grain-shift 0.9s steps(4) infinite;
-}
-@keyframes grain-shift {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(-2%, 1.4%); }
-  50% { transform: translate(1.6%, -1%); }
-  75% { transform: translate(-1%, -1.8%); }
-  100% { transform: translate(0, 0); }
+  font-family: var(--font-sans);
 }
 
 /* ---------- custom cursor ---------- */
@@ -111,7 +182,7 @@ body {
     background-color 0.3s, border-color 0.3s;
 }
 .cursor-ring .cursor-label {
-  font-family: "Space Mono", monospace;
+  font-family: var(--font-sans);
   font-size: 10px;
   letter-spacing: 0.12em;
   color: #fff;
@@ -230,7 +301,7 @@ body {
   transform: scaleX(1);
 }
 .field label {
-  font-family: "Space Mono", monospace;
+  font-family: var(--font-sans);
   font-size: 10px;
   letter-spacing: 0.16em;
   text-transform: uppercase;

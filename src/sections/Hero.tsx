@@ -127,7 +127,7 @@ export default function Hero({ started }: { started: boolean }) {
 
       <div className="hero-inner relative z-10 flex-1 flex flex-col justify-center px-5 md:px-10 pt-28 pb-40">
         <p className="hero-fade font-mono2 text-[10px] md:text-xs tracking-[0.35em] uppercase text-bone/60 mb-6 md:mb-10">
-          Media Kit 2026 <span className="text-red mx-2">●</span> La señal que mueve al país
+          Media Kit 2026 <span className="text-red mx-2">●</span> Formatos del ecosistema digital de GRPP
         </p>
 
         <h1 className="font-display uppercase leading-[0.92] text-bone text-[15vw] md:text-[10.5vw]">
@@ -181,7 +181,7 @@ export default function Hero({ started }: { started: boolean }) {
           <defs>
             <path id="circlePath" d="M 50,50 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
           </defs>
-          <text className="fill-bone/70" style={{ fontSize: "9.2px", fontFamily: "Space Mono, monospace", letterSpacing: "0.22em" }}>
+          <text className="fill-bone/70" style={{ fontSize: "9.2px", fontFamily: "Graphik, system-ui, sans-serif", letterSpacing: "0.22em" }}>
             <textPath href="#circlePath">MEDIA KIT 2026 • GRPP • MEDIA KIT 2026 •</textPath>
           </text>
         </svg>
@@ -192,9 +192,7 @@ export default function Hero({ started }: { started: boolean }) {
 
       {/* bottom meta */}
       <div className="hero-fade relative z-10 px-5 md:px-10 pb-8 flex items-center justify-between font-mono2 text-[10px] tracking-[0.25em] uppercase text-bone/40">
-        <span>Scroll para sintonizar ↓</span>
-        <span className="hidden md:block">Lima — Perú / 24·7</span>
-        <span className="text-red">+21.8M alcanzadas / mes</span>
+        <span className="hidden md:block">Scroll para explorar ↓</span>
       </div>
     </section>
   );

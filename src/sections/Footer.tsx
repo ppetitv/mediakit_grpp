@@ -35,7 +35,7 @@ export default function Footer() {
       <div className="px-5 md:px-10 pt-16 md:pt-24 pb-8">
         <div className="grid md:grid-cols-12 gap-10 pb-16">
           <div className="md:col-span-5">
-            <p className="font-display text-3xl text-bone mb-4">GRPP<span className="text-red">®</span></p>
+            <img src="/images/grpp.svg" alt="GRPP" className="h-10 w-auto mb-4" />
             <p className="text-bone/45 text-sm leading-relaxed max-w-xs">
               La multiplataforma informativa más influyente del país. Conectamos marcas con millones de personas cada día.
             </p>
@@ -85,7 +85,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-giant select-none pointer-events-none" aria-hidden>
-          <p className="font-display uppercase text-center leading-[0.8] text-[24vw] text-bone/[0.06]">GRPP</p>
+          <img src="/images/grpp.svg" alt="" className="mx-auto w-[72vw] max-w-[880px] h-auto opacity-[0.06]" />
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10 font-mono2 text-[10px] tracking-[0.2em] uppercase text-bone/35">

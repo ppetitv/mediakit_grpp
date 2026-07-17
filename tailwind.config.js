@@ -4,6 +4,10 @@ module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Graphik", "system-ui", "sans-serif"],
+        display: ["Gothic Compressed", "Arial Narrow", "sans-serif"],
+      },
       colors: {
         red: { DEFAULT: "#e8141e", deep: "#b30d14" },
         ink: { DEFAULT: "#0b0b0c", 2: "#131315" },

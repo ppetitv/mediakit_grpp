@@ -5,7 +5,7 @@ const STATS = [
   { value: 21.8, decimals: 1, prefix: "+", suffix: "M", label: "Personas alcanzadas al mes" },
   { value: 10, decimals: 0, prefix: "+", suffix: "", label: "Marcas líderes de audiencia" },
   { value: 62, decimals: 0, prefix: "", suffix: "", label: "Años de trayectoria" },
-  { value: 1, decimals: 0, prefix: "#", suffix: "", label: "Grupo de medios del país" },
+  { value: 1, decimals: 0, prefix: "#", suffix: "", label: "En credibilidad en el país" },
 ];
 
 export default function Stats() {
