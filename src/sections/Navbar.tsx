@@ -4,7 +4,7 @@ import { scrollToId } from "@/lib/scroll";
 import Magnetic from "@/components/Magnetic";
 
 const LINKS = [
-  { label: "Señal", id: "hero" },
+  { label: "Home", id: "hero" },
   { label: "Audiencia", id: "audiencia" },
   { label: "Formatos", id: "formatos" },
   { label: "Marcas", id: "marcas" },
@@ -82,7 +82,7 @@ export default function Navbar() {
               data-cursor="hover"
               className="bg-red text-white font-mono2 text-[11px] tracking-[0.18em] uppercase px-6 py-3 rounded-full hover:bg-bone hover:text-ink transition-colors duration-300"
             >
-              Impulsar marca
+              Contacto
             </button>
           </Magnetic>
           <button
