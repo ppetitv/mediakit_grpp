@@ -46,46 +46,6 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: "Gothic Compressed";
-  src: url("/fonts/Acme Gothic Compressed Light.otf") format("opentype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Gothic Compressed";
-  src: url("/fonts/Acme Gothic Compressed Regular.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Gothic Compressed";
-  src: url("/fonts/Acme Gothic Compressed Semi Bold.otf") format("opentype");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Gothic Compressed";
-  src: url("/fonts/Acme Gothic Compressed Bold.otf") format("opentype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Gothic Compressed";
-  src: url("/fonts/Acme Gothic Compressed Black.otf") format("opentype");
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
   --red: #e8141e;
   --red-deep: #b30d14;
@@ -96,7 +56,7 @@
   --smoke: #8a8a8f;
   --line: rgba(243, 241, 236, 0.14);
   --font-sans: "Graphik", system-ui, sans-serif;
-  --font-display: "Gothic Compressed", "Arial Narrow", sans-serif;
+  --font-display: "acme-gothic-compressed", "Arial Narrow", sans-serif;
 }
 
 html {

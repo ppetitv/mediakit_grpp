@@ -8,6 +8,20 @@ const STATS = [
   { value: 1, decimals: 0, prefix: "#", suffix: "", label: "En credibilidad en el país" },
 ];
 
+const BRAND_LOGOS = [
+  { name: "RPP", src: "/images/rpp_logo.svg", size: "w-16 md:w-24", offset: "md:translate-y-1" },
+  { name: "La Zona", src: "/images/lazona_logo.svg", size: "w-28 md:w-36", offset: "md:-translate-y-1" },
+  { name: "Ooh La", src: "/images/oohla_logo.svg", size: "w-28 md:w-40", offset: "md:translate-y-2" },
+  { name: "AudioPlayer", src: "/images/audioplayer_logo.svg", size: "w-36 md:w-52", offset: "md:-translate-y-1" },
+  { name: "Oxígeno", src: "/images/oxigeno_logo.svg", size: "w-28 md:w-40", offset: "md:translate-y-1" },
+  { name: "Felicidad", src: "/images/felicidad_logo.svg", size: "w-28 md:w-36", offset: "md:-translate-y-2" },
+  { name: "Studio92", src: "/images/studio92_logo.svg", size: "w-28 md:w-40", offset: "md:translate-y-2" },
+  { name: "Stars", src: "/images/stars_logo.svg", size: "w-28 md:w-40", offset: "md:-translate-y-1" },
+  { name: "Corazón", src: "/images/corazon_logo.svg", size: "w-24 md:w-36", offset: "md:translate-y-1" },
+  { name: "MegaMix", src: "/images/megamix_logo.svg", size: "w-20 md:w-28", offset: "md:-translate-y-2" },
+  { name: "Disney", src: "/images/disney_logo.svg", size: "w-24 md:w-32", offset: "md:translate-y-1" },
+];
+
 export default function Stats() {
   const rootRef = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -52,6 +66,19 @@ export default function Stats() {
           scrollTrigger: { trigger: rootRef.current, start: "top 65%" },
         }
       );
+
+      gsap.fromTo(
+        q(".brand-logo"),
+        { y: 24, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.06,
+          scrollTrigger: { trigger: q(".brand-logos"), start: "top 85%" },
+        }
+      );
     }, rootRef);
     return () => ctx.revert();
   }, []);
@@ -86,6 +113,30 @@ export default function Stats() {
             <p className="mt-4 font-mono2 text-[10px] md:text-xs tracking-[0.2em] uppercase text-ink/55">{s.label}</p>
           </div>
         ))}
+      </div>
+
+      <div className="brand-logos mt-24 border-t border-ink/15 pt-8 md:mt-32 md:pt-10">
+        <div className="mb-8 flex items-baseline justify-between gap-6 md:mb-10">
+          <p className="font-mono2 text-[10px] uppercase tracking-[0.2em] text-ink/50 md:text-xs">
+            Un ecosistema de contenidos para cada audiencia.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 items-center gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-6 md:gap-x-6 md:gap-y-10">
+          {BRAND_LOGOS.map((brand) => (
+            <div
+              key={brand.name}
+              className={`brand-logo group flex min-h-16 items-center justify-center ${brand.offset}`}
+              data-cursor="hover"
+            >
+              <img
+                src={brand.src}
+                alt={brand.name}
+                className={`block object-contain grayscale opacity-55 transition-[filter,opacity,transform] duration-500 group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-100 ${brand.size}`}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

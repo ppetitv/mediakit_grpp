@@ -6,7 +6,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ["Graphik", "system-ui", "sans-serif"],
-        display: ["Gothic Compressed", "Arial Narrow", "sans-serif"],
+        display: ["acme-gothic-compressed", "Arial Narrow", "sans-serif"],
       },
       colors: {
         red: { DEFAULT: "#e8141e", deep: "#b30d14" },

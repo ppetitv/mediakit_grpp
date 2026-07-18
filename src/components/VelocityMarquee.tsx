@@ -11,12 +11,29 @@ interface Props {
 /** Infinite marquee whose speed & direction react to scroll velocity */
 export default function VelocityMarquee({ children, className, baseSpeed = 90, reverse = false }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
+  const loopRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const track = trackRef.current!;
+    const track = trackRef.current;
+    const loop = loopRef.current;
+    if (!track || !loop) return;
+
     let x = 0;
     let dir = reverse ? 1 : -1;
     let boost = 0;
+    let cycleWidth = 0;
+
+    const wrapX = (value: number) => {
+      if (cycleWidth <= 0) return 0;
+      const wrapped = value % cycleWidth;
+      return wrapped > 0 ? wrapped - cycleWidth : wrapped;
+    };
+
+    const measure = () => {
+      cycleWidth = loop.offsetWidth;
+      x = wrapX(x);
+      gsap.set(track, { x });
+    };
 
     const st = ScrollTrigger.create({
       start: 0,
@@ -29,29 +46,45 @@ export default function VelocityMarquee({ children, className, baseSpeed = 90, r
     });
 
     const tick = (_: number, delta: number) => {
-      const half = track.scrollWidth / 2;
-      if (half <= 0) return;
+      if (cycleWidth <= 0) return;
       boost *= 0.94;
       x += dir * (baseSpeed * (1 + boost) * delta) / 1000;
-      if (x <= -half) x += half;
-      if (x >= 0) x -= half;
+      x = wrapX(x);
       gsap.set(track, { x });
     };
+
+    measure();
     gsap.ticker.add(tick);
+
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(loop);
 
     return () => {
       gsap.ticker.remove(tick);
       st.kill();
+      resizeObserver.disconnect();
     };
   }, [baseSpeed, reverse]);
+
+  const renderLoop = (duplicate = false) => (
+    <div
+      ref={duplicate ? undefined : loopRef}
+      aria-hidden={duplicate || undefined}
+      className="flex shrink-0 items-center"
+    >
+      {Array.from({ length: 4 }, (_, index) => (
+        <div key={index} className="flex shrink-0 items-center">
+          {children}
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className={`overflow-hidden ${className || ""}`}>
       <div ref={trackRef} className="marquee-track">
-        <div className="flex shrink-0 items-center">{children}</div>
-        <div className="flex shrink-0 items-center" aria-hidden>
-          {children}
-        </div>
+        {renderLoop()}
+        {renderLoop(true)}
       </div>
     </div>
   );
