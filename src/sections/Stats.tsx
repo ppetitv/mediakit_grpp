@@ -10,7 +10,6 @@ const STATS = [
 
 export default function Stats() {
   const rootRef = useRef<HTMLElement>(null);
-dime 
   useEffect(() => {
     const q = gsap.utils.selector(rootRef);
     const ctx = gsap.context(() => {
