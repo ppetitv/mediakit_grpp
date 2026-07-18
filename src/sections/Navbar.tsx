@@ -82,7 +82,7 @@ export default function Navbar() {
               data-cursor="hover"
               className="bg-red text-white font-mono2 text-[11px] tracking-[0.18em] uppercase px-6 py-3 rounded-full hover:bg-bone hover:text-ink transition-colors duration-300"
             >
-              Contacto
+              Hablemos
             </button>
           </Magnetic>
           <button

@@ -198,7 +198,7 @@ export default function Hero({ started }: { started: boolean }) {
 
       <div className="hero-inner relative z-10 flex-1 flex flex-col justify-center px-5 md:px-10 pt-28 pb-40">
         <p className="hero-fade max-w-full whitespace-normal font-mono2 text-[9px] leading-relaxed md:text-xs tracking-[0.18em] md:tracking-[0.35em] uppercase text-bone/60 mb-6 md:mb-10">
-          Media Kit 2026 <span className="text-red mx-1 md:mx-2">●</span> GRUPO RPP
+          Media Kit 2026 <span className="text-bone mx-1 md:mx-2">|</span> GRUPO RPP
         </p>
 
         <h1 className="font-display uppercase leading-[0.92] text-bone text-[15vw] md:text-[10.5vw]">
@@ -259,7 +259,12 @@ export default function Hero({ started }: { started: boolean }) {
           </text>
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-3 h-3 rounded-full bg-red animate-pulse" />
+          <img
+            src="/images/acento.svg"
+            alt=""
+            aria-hidden="true"
+            className="h-8 md:h-10 w-auto animate-pulse"
+          />
         </div>
       </div>
 
