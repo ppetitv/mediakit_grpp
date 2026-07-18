@@ -45,11 +45,34 @@ export default function Hero({ started }: { started: boolean }) {
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     let w = 0;
     let h = 0;
     let raf = 0;
+    let lastTime = 0;
+    let isVisible = false;
+    let reduceMotion = motionQuery.matches;
     const mouse = { x: 0.5, energy: 0 };
     let t = 0;
+    let gap = 18;
+    let profiles: Array<{ amplitude: number; phase: number; speed: number; width: number }> = [];
+    let redrawStatic = () => {};
+
+    const noise = (index: number, seed: number) => {
+      const value = Math.sin((index + 1) * seed) * 43758.5453;
+      return value - Math.floor(value);
+    };
+
+    const buildProfiles = () => {
+      gap = w < 768 ? 16 : 18;
+      const count = Math.ceil(w / gap);
+      profiles = Array.from({ length: count }, (_, index) => ({
+        amplitude: 0.65 + noise(index, 12.9898) * 0.35,
+        phase: noise(index, 78.233) * Math.PI * 2,
+        speed: 0.7 + noise(index, 39.425) * 0.45,
+        width: 2.5 + noise(index, 53.127) * 1.75,
+      }));
+    };
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -58,44 +81,88 @@ export default function Hero({ started }: { started: boolean }) {
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      buildProfiles();
+      if (reduceMotion) redrawStatic();
     };
     resize();
     window.addEventListener("resize", resize);
 
     const onMove = (e: MouseEvent) => {
+      if (reduceMotion) return;
       mouse.x = e.clientX / window.innerWidth;
-      mouse.energy = Math.min(mouse.energy + 0.35, 1.6);
+      mouse.energy = Math.min(mouse.energy + 0.16, 0.8);
     };
     window.addEventListener("mousemove", onMove);
 
-    const draw = () => {
-      t += 0.02;
-      mouse.energy *= 0.965;
-      ctx.clearRect(0, 0, w, h);
-      const bars = Math.floor(w / 14);
-      const base = h;
-      for (let i = 0; i < bars; i++) {
-        const p = i / bars;
-        const dist = Math.abs(p - mouse.x);
-        const boost = Math.max(0, 1 - dist * 5) * (0.6 + mouse.energy);
-        const wave =
-          Math.abs(Math.sin(t * 1.4 + i * 0.32)) * 0.5 +
-          Math.abs(Math.sin(t * 0.7 + i * 0.11)) * 0.35 +
-          0.12;
-        const bh = (wave * 0.28 + boost * 0.5) * h;
-        const x = i * 14 + 4;
-        const g = ctx.createLinearGradient(0, base - bh, 0, base);
-        g.addColorStop(0, "rgba(232,20,30,0.9)");
-        g.addColorStop(1, "rgba(232,20,30,0.02)");
-        ctx.fillStyle = g;
-        ctx.fillRect(x, base - bh, 5, bh);
+    const drawFrame = (now: number, animate: boolean) => {
+      const delta = lastTime ? Math.min((now - lastTime) / 1000, 0.05) : 0;
+      lastTime = now;
+      if (animate) {
+        t += delta * 0.58;
+        mouse.energy *= Math.pow(0.955, delta * 60);
       }
-      raf = requestAnimationFrame(draw);
+
+      ctx.clearRect(0, 0, w, h);
+      const base = h;
+      profiles.forEach((profile, i) => {
+        const p = profiles.length > 1 ? i / (profiles.length - 1) : 0.5;
+        const dist = Math.abs(p - mouse.x);
+        const proximity = Math.max(0, 1 - dist * 8);
+        const boost = animate ? proximity * (0.05 + mouse.energy * 0.32) : 0;
+        const primary = 0.5 + Math.sin(t * profile.speed + profile.phase) * 0.5;
+        const secondary = 0.5 + Math.sin(t * 0.52 + i * 0.19) * 0.5;
+        const wave = (0.07 + primary * 0.12 + secondary * 0.05) * profile.amplitude;
+        const bh = Math.min((wave + boost) * h, h * 0.62);
+        const x = i * gap + gap * 0.5;
+        const g = ctx.createLinearGradient(0, base - bh, 0, base);
+        g.addColorStop(0, `rgba(232,20,30,${0.38 + proximity * mouse.energy * 0.22})`);
+        g.addColorStop(1, "rgba(232,20,30,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(x, base - bh, profile.width, bh);
+      });
     };
-    raf = requestAnimationFrame(draw);
+    redrawStatic = () => drawFrame(performance.now(), false);
+
+    const draw = (now: number) => {
+      drawFrame(now, true);
+      raf = isVisible && !reduceMotion ? requestAnimationFrame(draw) : 0;
+    };
+
+    const start = () => {
+      if (reduceMotion) {
+        t = 0.8;
+        drawFrame(performance.now(), false);
+      } else if (isVisible && !raf) {
+        lastTime = performance.now();
+        raf = requestAnimationFrame(draw);
+      }
+    };
+
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible) {
+        start();
+      } else if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    });
+    observer.observe(rootRef.current!);
+
+    const onMotionChange = (event: MediaQueryListEvent) => {
+      reduceMotion = event.matches;
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+      start();
+    };
+    motionQuery.addEventListener("change", onMotionChange);
 
     return () => {
       cancelAnimationFrame(raf);
+      observer.disconnect();
+      motionQuery.removeEventListener("change", onMotionChange);
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
     };
@@ -123,7 +190,11 @@ export default function Hero({ started }: { started: boolean }) {
         <img src="/images/signal.png" alt="" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-ink via-ink/40 to-ink" />
       </div>
-      <canvas ref={canvasRef} className="absolute bottom-0 left-0 w-full h-[34vh] pointer-events-none" />
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 w-full h-[20vh] md:h-[24vh] opacity-80 pointer-events-none"
+      />
 
       <div className="hero-inner relative z-10 flex-1 flex flex-col justify-center px-5 md:px-10 pt-28 pb-40">
         <p className="hero-fade max-w-full whitespace-normal font-mono2 text-[9px] leading-relaxed md:text-xs tracking-[0.18em] md:tracking-[0.35em] uppercase text-bone/60 mb-6 md:mb-10">

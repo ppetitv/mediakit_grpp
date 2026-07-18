@@ -84,8 +84,15 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="footer-giant select-none pointer-events-none" aria-hidden>
-          <img src="/images/grpp.svg" alt="" className="mx-auto w-[72vw] max-w-[880px] h-auto opacity-[0.06]" />
+        <div
+          className="footer-giant relative -mx-5 md:-mx-10 h-[clamp(9rem,26vw,22rem)] overflow-hidden select-none pointer-events-none"
+          aria-hidden="true"
+        >
+          <img
+            src="/images/grpp.svg"
+            alt=""
+            className="absolute left-1/2 top-0 w-[104vw] max-w-none h-auto -translate-x-1/2 translate-y-[8%] opacity-[0.04] will-change-transform"
+          />
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10 font-mono2 text-[10px] tracking-[0.2em] uppercase text-bone/35">
