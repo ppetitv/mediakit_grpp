@@ -3,7 +3,7 @@ import { gsap } from "@/lib/anim";
 import { scrollToId } from "@/lib/scroll";
 import Magnetic from "@/components/Magnetic";
 
-const ROTATING = ["CADA DÍA", "EN VIVO", "SIN PAUSA", "PRIMERO"];
+const ROTATING = ["CONECTADAS", "INFORMADAS", "PRESENTES", "EN ACCIÓN"];
 
 export default function Hero({ started }: { started: boolean }) {
   const rootRef = useRef<HTMLElement>(null);
@@ -126,18 +126,18 @@ export default function Hero({ started }: { started: boolean }) {
       <canvas ref={canvasRef} className="absolute bottom-0 left-0 w-full h-[34vh] pointer-events-none" />
 
       <div className="hero-inner relative z-10 flex-1 flex flex-col justify-center px-5 md:px-10 pt-28 pb-40">
-        <p className="hero-fade font-mono2 text-[10px] md:text-xs tracking-[0.35em] uppercase text-bone/60 mb-6 md:mb-10">
-          Media Kit 2026 <span className="text-red mx-2">●</span> Formatos del ecosistema digital de GRPP
+        <p className="hero-fade max-w-full whitespace-normal font-mono2 text-[9px] leading-relaxed md:text-xs tracking-[0.18em] md:tracking-[0.35em] uppercase text-bone/60 mb-6 md:mb-10">
+          Media Kit 2026 <span className="text-red mx-1 md:mx-2">●</span> GRUPO RPP
         </p>
 
         <h1 className="font-display uppercase leading-[0.92] text-bone text-[15vw] md:text-[10.5vw]">
           <span className="reveal-line"><span>Conectamos</span></span>
-          <span className="reveal-line"><span>marcas <span className="text-red">con</span></span></span>
-          <span className="reveal-line"><span><span className="text-stroke">millones</span> de</span></span>
+          <span className="reveal-line"><span>marcas <span className="text-bone">con</span></span></span>
+          <span className="reveal-line"><span><span className="text-image-mask">millones</span> de</span></span>
           <span className="reveal-line"><span>
             personas{" "}
             <span ref={rotRef} className="relative inline-block overflow-hidden align-bottom text-red h-[0.98em]">
-              <span className="invisible whitespace-nowrap">SIN PAUSA</span>
+              <span className="invisible whitespace-nowrap">INFORMADAS</span>
               {ROTATING.map((w, i) => (
                 <span key={i} className="rot-word block absolute left-0 top-0 whitespace-nowrap">
                   {w}
@@ -149,7 +149,7 @@ export default function Hero({ started }: { started: boolean }) {
 
         <div className="mt-8 md:mt-12 flex flex-col md:flex-row md:items-end gap-8 md:gap-16">
           <p className="hero-fade max-w-md text-bone/60 text-base md:text-lg leading-relaxed">
-            La multiplataforma informativa más influyente del país. Tu marca, en la conversación que todos escuchan, ven y leen.
+            Tu marca entra en la conversación que informa, entretiene y mueve al Perú.
           </p>
           <div className="hero-fade flex items-center gap-4">
             <Magnetic>
@@ -168,7 +168,7 @@ export default function Hero({ started }: { started: boolean }) {
                 data-cursor="hover"
                 className="u-link font-mono2 text-[11px] tracking-[0.18em] uppercase text-bone/80 px-2 py-4"
               >
-                Ver audiencia →
+                Conocer el alcance →
               </button>
             </Magnetic>
           </div>
@@ -176,13 +176,15 @@ export default function Hero({ started }: { started: boolean }) {
       </div>
 
       {/* rotating badge */}
-      <div className="hero-badge absolute hidden md:block right-8 md:right-14 top-24 md:top-32 z-10 w-24 h-24 md:w-32 md:h-32">
+      <div className="hero-badge absolute hidden md:block right-8 md:right-14 top-24 md:top-32 z-10 w-24 h-24 md:w-36 md:h-36">
         <svg viewBox="0 0 100 100" className="w-full h-full animate-[spin_14s_linear_infinite]">
           <defs>
             <path id="circlePath" d="M 50,50 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
           </defs>
           <text className="fill-bone/70" style={{ fontSize: "9.2px", fontFamily: "Graphik, system-ui, sans-serif", letterSpacing: "0.22em" }}>
-            <textPath href="#circlePath">MEDIA KIT 2026 • GRPP • MEDIA KIT 2026 •</textPath>
+            <textPath href="#circlePath" textLength="238" lengthAdjust="spacingAndGlyphs">
+              MEDIA KIT 2026 • GRPP • MEDIA KIT 2026 •
+            </textPath>
           </text>
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">

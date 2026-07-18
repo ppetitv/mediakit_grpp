@@ -6,8 +6,7 @@
   font-family: "Graphik";
   src:
     url("/fonts/Graphik-Regular.woff2") format("woff2"),
-    url("/fonts/Graphik-Regular.woff") format("woff"),
-    url("/fonts/Graphik-Regular.ttf") format("truetype");
+    url("/fonts/Graphik-Regular.woff") format("woff");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -17,8 +16,7 @@
   font-family: "Graphik";
   src:
     url("/fonts/Graphik-Medium.woff2") format("woff2"),
-    url("/fonts/Graphik-Medium.woff") format("woff"),
-    url("/fonts/Graphik-Medium.ttf") format("truetype");
+    url("/fonts/Graphik-Medium.woff") format("woff");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -28,8 +26,7 @@
   font-family: "Graphik";
   src:
     url("/fonts/Graphik-Semibold.woff2") format("woff2"),
-    url("/fonts/Graphik-Semibold.woff") format("woff"),
-    url("/fonts/Graphik-Semibold.ttf") format("truetype");
+    url("/fonts/Graphik-Semibold.woff") format("woff");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -39,8 +36,7 @@
   font-family: "Graphik";
   src:
     url("/fonts/Graphik-Bold.woff2") format("woff2"),
-    url("/fonts/Graphik-Bold.woff") format("woff"),
-    url("/fonts/Graphik-Bold.ttf") format("truetype");
+    url("/fonts/Graphik-Bold.woff") format("woff");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -203,6 +199,31 @@ body {
 .text-stroke-red {
   -webkit-text-stroke: 1px rgba(232, 20, 30, 0.7);
   color: transparent;
+}
+
+.text-image-mask {
+  display: inline-block;
+  color: transparent;
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.42)),
+    url("/images/Crowdy2.webp");
+  background-position: center, 45% 42%;
+  background-size: cover, 112% 112%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+  animation: text-image-drift 14s ease-in-out infinite alternate;
+}
+
+@keyframes text-image-drift {
+  from { background-position: center, 42% 38%; }
+  to { background-position: center, 58% 48%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-image-mask {
+    animation: none;
+  }
 }
 
 /* ---------- link hover underline ---------- */
