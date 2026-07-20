@@ -10,8 +10,6 @@ import Footer from "@/sections/Footer";
 import Magnetic from "@/components/Magnetic";
 import FormatExplorer from "@/components/formats/FormatExplorer";
 
-const PRODUCT_AREAS = ["Display", "Branded Content", "Streaming"];
-
 export default function FormatosPage() {
   useEffect(() => {
     markExperienceLoaded();
@@ -47,18 +45,7 @@ export default function FormatosPage() {
       <Cursor />
       <Navbar />
 
-      <main>
-        <section className="border-b border-white/10 bg-ink px-5 pb-7 pt-24 text-bone md:px-10 md:pb-8 md:pt-28">
-          <div className="mx-auto grid max-w-[1400px] gap-5 md:grid-cols-12 md:items-center">
-            <p className="font-mono2 text-[9px] uppercase tracking-[0.24em] text-bone/35 md:col-span-3">Ecosistema de formatos</p>
-            <div className="flex flex-wrap gap-x-7 gap-y-3 md:col-span-9 md:justify-end md:gap-x-12">
-              {PRODUCT_AREAS.map((area, index) => (
-                <span key={area} className={`font-display text-2xl uppercase md:text-4xl ${index === 0 ? "text-red" : "text-bone/[0.28]"}`}>{area}</span>
-              ))}
-            </div>
-          </div>
-        </section>
-
+      <main className="bg-ink pt-20 md:pt-24">
         <FormatExplorer />
 
         <section className="relative overflow-hidden bg-red px-5 py-24 text-white md:px-10 md:py-36">

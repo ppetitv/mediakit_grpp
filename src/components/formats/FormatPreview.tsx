@@ -22,6 +22,7 @@ interface FormatPreviewProps {
   visual: FormatVisual;
   title: string;
   interactive?: boolean;
+  imageSrc?: string;
 }
 
 const ArticleLines = () => (
@@ -68,7 +69,7 @@ function AdCreative({ visual }: { visual: FormatVisual }) {
   }
 }
 
-export default function FormatPreview({ visual, title, interactive = true }: FormatPreviewProps) {
+export default function FormatPreview({ visual, title, interactive = true, imageSrc }: FormatPreviewProps) {
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -113,19 +114,21 @@ export default function FormatPreview({ visual, title, interactive = true }: For
           <span className="h-1.5 w-1.5 rounded-full bg-ink/15" />
           <span className="ml-auto h-1.5 w-1/4 rounded-full bg-ink/10" />
         </div>
-        <div className="absolute inset-x-[7%] bottom-[8%] top-[20%]">
-          <div className="mb-[7%] h-[10%] w-2/5 rounded-sm bg-ink/85" />
-          <div className="w-[58%]"><ArticleLines /></div>
-          <div className="absolute bottom-0 left-0 w-[62%]"><ArticleLines /></div>
-          <div className="absolute bottom-0 right-0 h-[34%] w-[28%] bg-ink/[0.08]" />
-          <div data-preview-layer className="absolute inset-0"><AdCreative visual={visual} /></div>
-        </div>
+        {imageSrc ? (
+          <div className="absolute inset-x-[5%] bottom-[5%] top-[17%] overflow-hidden rounded-md bg-white">
+            <img data-preview-layer src={imageSrc} alt={`Ejemplo del formato ${title}`} className="h-full w-full object-contain" />
+          </div>
+        ) : (
+          <div className="absolute inset-x-[7%] bottom-[8%] top-[20%]">
+            <div className="mb-[7%] h-[10%] w-2/5 rounded-sm bg-ink/85" />
+            <div className="w-[58%]"><ArticleLines /></div>
+            <div className="absolute bottom-0 left-0 w-[62%]"><ArticleLines /></div>
+            <div className="absolute bottom-0 right-0 h-[34%] w-[28%] bg-ink/[0.08]" />
+            <div data-preview-layer className="absolute inset-0"><AdCreative visual={visual} /></div>
+          </div>
+        )}
       </div>
 
-      <div data-preview-layer className="absolute bottom-5 left-5 flex items-center gap-2 rounded-full bg-ink px-3 py-2 text-bone md:bottom-7 md:left-7">
-        <span className="h-1.5 w-1.5 rounded-full bg-red" />
-        <span className="font-mono2 text-[8px] uppercase tracking-[0.18em]">Vista de formato</span>
-      </div>
       <span data-preview-layer className="absolute right-5 top-5 font-display text-4xl uppercase text-ink/15 md:right-7 md:top-7 md:text-6xl">GRPP</span>
     </div>
   );

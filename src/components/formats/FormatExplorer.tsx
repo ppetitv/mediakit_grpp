@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { getLenis } from "@/lib/scroll";
 import FormatPreview, { type FormatVisual } from "@/components/formats/FormatPreview";
 
 type Device = "Todos" | "Mobile" | "Desktop";
+type Availability = "Solo mobile" | "Solo desktop";
+type Catalog = "rich-media" | "standard";
+type EcosystemArea = "display" | "branded-content" | "streaming";
 
 interface FormatItem {
   id: string;
@@ -14,27 +17,58 @@ interface FormatItem {
   device: Exclude<Device, "Todos"> | "Multiplataforma";
   visual: FormatVisual;
   description: string;
+  availability?: Availability;
+  imageSrc?: string;
 }
 
-const FORMATS: FormatItem[] = [
+const RICH_MEDIA_FORMATS: FormatItem[] = [
   { id: "01", slug: "interstitial", title: "Interstitial", device: "Multiplataforma", visual: "interstitial", description: "Una pieza de alto impacto que ocupa el foco de la navegación en un momento definido del recorrido." },
-  { id: "02", slug: "interscroller", title: "Interscroller", device: "Mobile", visual: "interscroller", description: "El anuncio se revela con el desplazamiento y convierte el scroll en parte natural de la experiencia." },
-  { id: "03", slug: "skin", title: "Skin", device: "Desktop", visual: "skin", description: "La marca enmarca el contenido editorial con presencia sostenida y una lectura clara." },
-  { id: "04", slug: "skin-arco", title: "Skin Arco", device: "Desktop", visual: "skin-arch", description: "Una toma envolvente de cabecera y laterales que amplía la superficie visual de campaña." },
+  { id: "02", slug: "interscroller", title: "Interscroller", device: "Mobile", visual: "interscroller", description: "El anuncio se revela con el desplazamiento y convierte el scroll en parte natural de la experiencia.", availability: "Solo mobile" },
+  { id: "03", slug: "skin", title: "Skin", device: "Desktop", visual: "skin", description: "La marca enmarca el contenido editorial con presencia sostenida y una lectura clara.", availability: "Solo desktop" },
+  { id: "04", slug: "skin-arco", title: "Skin Arco", device: "Desktop", visual: "skin-arch", description: "Una toma envolvente de cabecera y laterales que amplía la superficie visual de campaña.", availability: "Solo desktop" },
   { id: "05", slug: "widget", title: "Widget", device: "Multiplataforma", visual: "widget", description: "Un módulo compacto y contextual que mantiene la campaña cerca del contenido relevante." },
   { id: "06", slug: "zocalo", title: "Zócalo", device: "Multiplataforma", visual: "lower-third", description: "Una franja horizontal visible y directa, pensada para mensajes breves y llamados a la acción." },
   { id: "07", slug: "historias", title: "Historias", device: "Multiplataforma", visual: "stories", description: "Una narrativa vertical y secuencial diseñada para consumirse con rapidez y participación." },
   { id: "08", slug: "sondeo", title: "Sondeo", device: "Multiplataforma", visual: "poll", description: "Una pregunta integrada al contenido que invita a la audiencia a responder y tomar posición." },
   { id: "09", slug: "scratch", title: "Scratch", device: "Multiplataforma", visual: "scratch", description: "Una mecánica de descubrimiento que transforma una pieza estática en una interacción táctil." },
   { id: "10", slug: "antes-y-despues", title: "Antes y después", device: "Multiplataforma", visual: "before-after", description: "Un comparador visual que permite explorar dos estados de una misma historia o producto." },
-  { id: "11", slug: "banner-360", title: "Banner 360°", device: "Mobile", visual: "panorama", description: "Una experiencia móvil que responde al gesto para recorrer el contenido en todas sus perspectivas." },
+  { id: "11", slug: "banner-360", title: "Banner 360°", device: "Mobile", visual: "panorama", description: "Una experiencia móvil que responde al gesto para recorrer el contenido en todas sus perspectivas.", availability: "Solo mobile" },
   { id: "12", slug: "hot-spot", title: "Hot Spot", device: "Multiplataforma", visual: "hotspot", description: "Puntos activos dentro de la creatividad revelan información sin interrumpir la navegación." },
   { id: "13", slug: "contador", title: "Contador", device: "Multiplataforma", visual: "countdown", description: "Una cuenta regresiva convierte una fecha, estreno o lanzamiento en un momento esperado." },
   { id: "14", slug: "social-ad", title: "Social AD", device: "Multiplataforma", visual: "social", description: "La lógica visual de redes sociales se integra al entorno editorial de GRPP." },
   { id: "15", slug: "video-top-full", title: "Video Top Full", device: "Desktop", visual: "video", description: "Video de gran formato en la zona superior para presentar una campaña desde el primer vistazo." },
 ];
 
-const FILTERS: Device[] = ["Todos", "Mobile", "Desktop"];
+const STANDARD_FORMATS: FormatItem[] = [
+  { id: "01", slug: "top", title: "Top", device: "Multiplataforma", visual: "video", imageSrc: "/images/formats/standard/top.png", description: "Una franja horizontal ubicada en la zona superior que asegura presencia desde el primer contacto con el contenido." },
+  { id: "02", slug: "caja", title: "Caja", device: "Multiplataforma", visual: "widget", imageSrc: "/images/formats/standard/caja.png", description: "Una pieza rectangular versátil que acompaña la lectura y mantiene la marca visible dentro del recorrido editorial." },
+  { id: "03", slug: "middle", title: "Middle", device: "Multiplataforma", visual: "lower-third", imageSrc: "/images/formats/standard/middle.png", description: "Un formato horizontal integrado a mitad de página, pensado para alcanzar a una audiencia ya involucrada con el contenido." },
+  { id: "04", slug: "doble-caja", title: "Doble Caja", device: "Desktop", visual: "skin", imageSrc: "/images/formats/standard/doble-caja.png", description: "Dos espacios coordinados que amplían la presencia de campaña y permiten construir una comunicación visual complementaria.", availability: "Solo desktop" },
+  { id: "05", slug: "destaque", title: "Destaque", device: "Multiplataforma", visual: "hotspot", imageSrc: "/images/formats/standard/destaque.png", description: "Una posición de alta visibilidad que separa la campaña del flujo habitual y refuerza la recordación de marca." },
+  { id: "06", slug: "intertexto", title: "Intertexto", device: "Multiplataforma", visual: "before-after", imageSrc: "/images/formats/standard/intertexto.png", description: "Una pieza insertada entre bloques editoriales que aparece de forma natural durante la lectura del artículo." },
+];
+
+const CATALOGS: Record<Catalog, { label: string; heading: [string, string]; description: string; formats: FormatItem[] }> = {
+  "rich-media": {
+    label: "Rich Media",
+    heading: ["Experiencias que", "responden"],
+    description: "Conoce cómo tu idea puede aparecer, moverse y responder dentro del ecosistema digital de GRPP.",
+    formats: RICH_MEDIA_FORMATS,
+  },
+  standard: {
+    label: "Estándar",
+    heading: ["Presencia en", "cada lectura"],
+    description: "Piezas clásicas de display con excelente alcance y frecuencia. Ideales para mantener presencia continua y reforzar recordación de marca.",
+    formats: STANDARD_FORMATS,
+  },
+};
+
+const CATALOG_ORDER: Catalog[] = ["rich-media", "standard"];
+const ECOSYSTEM_AREAS: { id: EcosystemArea; label: string }[] = [
+  { id: "display", label: "Display" },
+  { id: "branded-content", label: "Branded Content" },
+  { id: "streaming", label: "Streaming" },
+];
 const GALLERY_RHYTHM = [
   "md:col-span-7",
   "md:col-span-5 md:mt-28",
@@ -53,6 +87,24 @@ const GALLERY_RHYTHM = [
   "md:col-span-9 md:col-start-3 md:mt-10",
 ];
 
+function PlatformBadge({ availability }: { availability: Availability }) {
+  const isMobile = availability === "Solo mobile";
+
+  return (
+    <span className={`inline-flex shrink-0 items-center gap-2 rounded-full px-3 py-2 font-mono2 text-[7px] uppercase tracking-[0.13em] text-ink ${isMobile ? "bg-[#ffe500]" : "bg-[#83e6bd]"}`}>
+      {isMobile ? (
+        <span aria-hidden="true" className="h-3 w-2 rounded-[2px] border border-current" />
+      ) : (
+        <span aria-hidden="true" className="flex flex-col items-center">
+          <span className="h-2 w-3.5 rounded-[1px] border border-current" />
+          <span className="h-px w-2 bg-current" />
+        </span>
+      )}
+      {availability}
+    </span>
+  );
+}
+
 function getSourceTransform(rect: DOMRect | null) {
   if (!rect) return { x: window.innerWidth * 0.08, y: window.innerHeight * 0.46, scaleX: 0.84, scaleY: 0.08 };
   return {
@@ -65,36 +117,127 @@ function getSourceTransform(rect: DOMRect | null) {
 
 export default function FormatExplorer() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { formatSlug } = useParams();
   const rootRef = useRef<HTMLElement>(null);
+  const indexRef = useRef<HTMLDivElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const sourceRectRef = useRef<DOMRect | null>(null);
   const detailTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const hasOpenedRef = useRef(false);
   const closingRef = useRef(false);
-  const [filter, setFilter] = useState<Device>("Todos");
-  const visibleFormats = filter === "Todos" ? FORMATS : FORMATS.filter((format) => format.device === filter || format.device === "Multiplataforma");
-  const selected = FORMATS.find((format) => format.slug === formatSlug) ?? null;
+  const routeCatalog: Catalog = location.pathname.startsWith("/formatos/standard") ? "standard" : "rich-media";
+  const selectedCatalogData = CATALOGS[routeCatalog];
+  const selected = selectedCatalogData.formats.find((format) => format.slug === formatSlug) ?? null;
+  const catalogBasePath = routeCatalog === "standard" ? "/formatos/standard" : "/formatos";
+  const [activeSection, setActiveSection] = useState<Catalog>(routeCatalog);
+  const [activeArea, setActiveArea] = useState<EcosystemArea>("display");
 
   useEffect(() => {
     document.title = selected
-      ? `${selected.title} | Formatos GRPP`
-      : "Formatos digitales | GRPP Media Kit 2026";
-  }, [selected]);
+      ? `${selected.title} | ${selectedCatalogData.label} | Formatos GRPP`
+      : "Catálogo de formatos digitales | GRPP";
+  }, [selected, selectedCatalogData.label]);
 
-  const applyFilter = (nextFilter: Device) => {
-    setFilter(nextFilter);
-    requestAnimationFrame(() => ScrollTrigger.refresh());
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray<HTMLElement>("[data-catalog-section]").forEach((section) => {
+        const intro = section.querySelector("[data-catalog-intro]");
+        const signal = section.querySelector("[data-catalog-signal]");
+        const headingLines = section.querySelectorAll("[data-catalog-heading-line]");
+        const copy = section.querySelectorAll("[data-catalog-copy]");
+
+        if (intro && !reduceMotion) {
+          const timeline = gsap.timeline({
+            scrollTrigger: { trigger: intro, start: "top 82%", once: true },
+            defaults: { ease: "power4.out" },
+          });
+          timeline
+            .fromTo(signal, { scaleX: 0, transformOrigin: "left" }, { scaleX: 1, duration: 0.65 })
+            .fromTo(headingLines, { yPercent: 115 }, { yPercent: 0, duration: 0.85, stagger: 0.08 }, "-=0.38")
+            .fromTo(copy, { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6, stagger: 0.06 }, "-=0.48");
+        }
+
+        const sectionId = section.dataset.catalogSection as Catalog;
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top 42%",
+          end: "bottom 42%",
+          onEnter: () => setActiveSection(sectionId),
+          onEnterBack: () => setActiveSection(sectionId),
+        });
+      });
+
+      gsap.utils.toArray<HTMLElement>("[data-ecosystem-area]").forEach((section) => {
+        const areaId = section.dataset.ecosystemArea as EcosystemArea;
+        const reveals = section.querySelectorAll("[data-area-reveal]");
+        if (reveals.length && !reduceMotion) {
+          gsap.fromTo(reveals, { y: 36, autoAlpha: 0 }, {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.85,
+            stagger: 0.08,
+            ease: "power4.out",
+            scrollTrigger: { trigger: section, start: "top 78%", once: true },
+          });
+        }
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top 55%",
+          end: "bottom 55%",
+          invalidateOnRefresh: true,
+          onToggle: (self) => {
+            if (self.isActive) setActiveArea(areaId);
+          },
+        });
+      });
+    }, root);
+    return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const pendingImages = Array.from(root.querySelectorAll("img")).filter((image) => !image.complete);
+    const refresh = () => ScrollTrigger.refresh();
+    pendingImages.forEach((image) => image.addEventListener("load", refresh, { once: true }));
+    requestAnimationFrame(refresh);
+    return () => pendingImages.forEach((image) => image.removeEventListener("load", refresh));
+  }, []);
+
+  const scrollToCatalog = (catalog: Catalog) => {
+    const target = document.getElementById(`catalog-${catalog}`);
+    if (!target) return;
+    setActiveArea("display");
+    setActiveSection(catalog);
+    const offset = window.innerWidth < 768 ? -(indexRef.current?.offsetHeight ?? 0) - 12 : -24;
+    const lenis = getLenis();
+    if (lenis) lenis.scrollTo(target, { offset, duration: 1.25 });
+    else target.scrollIntoView({ behavior: "smooth" });
   };
 
-  const openDetail = (format: FormatItem, event: MouseEvent<HTMLAnchorElement>) => {
+  const scrollToArea = (area: EcosystemArea) => {
+    const target = document.getElementById(`area-${area}`);
+    if (!target) return;
+    setActiveArea(area);
+    const offset = window.innerWidth < 768 ? -(indexRef.current?.offsetHeight ?? 0) - 12 : -24;
+    const lenis = getLenis();
+    if (lenis) lenis.scrollTo(target, { offset, duration: 1.35 });
+    else target.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const openDetail = (format: FormatItem, catalog: Catalog, event: MouseEvent<HTMLAnchorElement>) => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     const preview = event.currentTarget.querySelector<HTMLElement>("[data-gallery-preview]");
     sourceRectRef.current = (preview ?? event.currentTarget).getBoundingClientRect();
     gsap.fromTo(event.currentTarget, { scale: 1 }, { scale: 0.985, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.inOut" });
-    navigate(`/formatos/${format.slug}`);
+    const basePath = catalog === "standard" ? "/formatos/standard" : "/formatos";
+    navigate(`${basePath}/${format.slug}`);
   };
 
   useEffect(() => {
@@ -113,7 +256,19 @@ export default function FormatExplorer() {
       });
     }, root);
     return () => ctx.revert();
-  }, [filter]);
+  }, []);
+
+  useEffect(() => {
+    if (formatSlug || routeCatalog !== "standard") return;
+    requestAnimationFrame(() => {
+      const target = document.getElementById("catalog-standard");
+      if (!target) return;
+      const offset = -(indexRef.current?.offsetHeight ?? 0) - 12;
+      const lenis = getLenis();
+      if (lenis) lenis.scrollTo(target, { offset, duration: 1.25 });
+      else target.scrollIntoView({ behavior: "smooth" });
+    });
+  }, [formatSlug, routeCatalog]);
 
   const setDetailNode = useCallback((node: HTMLDivElement | null) => {
     detailRef.current = node;
@@ -169,7 +324,7 @@ export default function FormatExplorer() {
     const detail = detailRef.current;
     const overlay = overlayRef.current;
     if (!detail || !overlay || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      navigate("/formatos", { replace: true });
+      navigate(catalogBasePath, { replace: true });
       getLenis()?.start();
       sourceRectRef.current = null;
       afterClose?.();
@@ -179,7 +334,7 @@ export default function FormatExplorer() {
     closingRef.current = true;
     gsap.timeline({
       onComplete: () => {
-        navigate("/formatos", { replace: true });
+        navigate(catalogBasePath, { replace: true });
         getLenis()?.start();
         closingRef.current = false;
         sourceRectRef.current = null;
@@ -192,10 +347,11 @@ export default function FormatExplorer() {
 
   const stepDetail = (direction: -1 | 1) => {
     if (!selected) return;
-    const index = visibleFormats.findIndex((format) => format.id === selected.id);
-    const nextIndex = (index + direction + visibleFormats.length) % visibleFormats.length;
-    const nextFormat = visibleFormats[nextIndex];
-    if (nextFormat) navigate(`/formatos/${nextFormat.slug}`, { replace: true });
+    const formats = selectedCatalogData.formats;
+    const index = formats.findIndex((format) => format.id === selected.id);
+    const nextIndex = (index + direction + formats.length) % formats.length;
+    const nextFormat = formats[nextIndex];
+    if (nextFormat) navigate(`${catalogBasePath}/${nextFormat.slug}`, { replace: true });
   };
 
   const consultFormat = () => {
@@ -209,52 +365,147 @@ export default function FormatExplorer() {
   return (
     <section ref={rootRef} id="catalogo-formatos" className="relative bg-bone text-ink">
       <div
-        className="sticky z-20 border-b border-ink/15 bg-bone/90 px-5 py-4 backdrop-blur-xl transition-[top] duration-500 md:px-10 md:py-5"
+        ref={indexRef}
+        className="sticky z-20 border-b border-ink/15 bg-bone/95 px-5 py-3 backdrop-blur-xl transition-[top] duration-500 md:hidden"
         style={{ top: "var(--nav-offset, 0px)" }}
       >
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <p className="font-mono2 text-[9px] uppercase tracking-[0.28em] text-ink/50 md:text-[10px]">Catálogo / Display / Rich Media</p>
-          <div className="flex w-fit gap-1 rounded-full border border-ink/15 p-1" role="group" aria-label="Filtrar formatos por dispositivo">
-            {FILTERS.map((item) => (
-              <button key={item} onClick={() => applyFilter(item)} aria-pressed={filter === item} data-cursor="hover" className={`rounded-full px-4 py-2 font-mono2 text-[9px] uppercase tracking-[0.16em] transition-colors duration-300 ${filter === item ? "bg-ink text-bone" : "text-ink/55 hover:text-ink"}`}>
-                {item}
-              </button>
-            ))}
-          </div>
+        <div className="relative">
+          <label className="relative block">
+            <span className="sr-only">Área del ecosistema</span>
+            <select value={activeArea} onChange={(event) => scrollToArea(event.target.value as EcosystemArea)} className="h-12 w-full appearance-none rounded-lg border border-ink/25 bg-white px-4 pr-11 text-sm font-semibold text-ink outline-none transition-colors focus:border-red">
+              {ECOSYSTEM_AREAS.map((area) => <option key={area.id} value={area.id}>{area.label}</option>)}
+            </select>
+            <span aria-hidden="true" className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-base text-ink/55">⌄</span>
+          </label>
+          {activeArea === "display" && (
+            <nav className="mt-2 flex overflow-x-auto border-b border-ink/15 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Secciones de Display">
+              {CATALOG_ORDER.map((catalog) => {
+                const active = activeSection === catalog;
+                return (
+                  <button key={catalog} onClick={() => scrollToCatalog(catalog)} aria-current={active ? "location" : undefined} className={`min-h-11 shrink-0 border-b-2 px-4 text-sm font-semibold transition-colors ${active ? "border-red text-red" : "border-transparent text-ink/45"}`}>
+                    {CATALOGS[catalog].label}
+                  </button>
+                );
+              })}
+            </nav>
+          )}
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1400px] px-5 pb-24 pt-16 md:px-10 md:pb-40 md:pt-24">
-        <div className="mb-16 grid gap-8 md:mb-20 md:grid-cols-12 md:items-end">
-          <h2 className="font-display text-[16vw] uppercase leading-[0.82] tracking-[0.01em] md:col-span-8 md:text-[7.2vw]">Explora cada<br /><span className="text-red">posibilidad</span></h2>
-          <div className="md:col-span-4 md:pb-2">
-            <p className="max-w-sm text-sm leading-relaxed text-ink/[0.58] md:text-base">Conoce cómo tu idea puede aparecer, moverse y responder dentro del ecosistema digital de GRPP.</p>
-            <p className="mt-5 font-mono2 text-[9px] uppercase tracking-[0.2em] text-ink/35">{String(visibleFormats.length).padStart(2, "0")} formatos disponibles</p>
+      <div className="mx-auto max-w-[1600px] md:grid md:grid-cols-[250px_minmax(0,1fr)]">
+        <aside className="relative hidden border-r border-ink/12 bg-bone md:block">
+          <div className="sticky px-7 py-10" style={{ top: "calc(var(--nav-offset, 0px) + 1.5rem)" }}>
+            <p className="font-mono2 text-[9px] uppercase tracking-[0.22em] text-ink/35">Índice del catálogo</p>
+            <nav className="mt-7" aria-label="Ecosistema de formatos">
+              {ECOSYSTEM_AREAS.map((area) => {
+                const active = activeArea === area.id;
+                return (
+                  <div key={area.id} className="border-t border-ink/12 py-4 first:border-t-0 first:pt-0">
+                    <button onClick={() => scrollToArea(area.id)} data-cursor="hover" aria-current={active ? "location" : undefined} className={`w-full rounded-md border-l-[3px] px-4 py-3 text-left text-lg font-semibold leading-tight transition-colors duration-300 ${active ? "border-red bg-red text-white" : "border-transparent text-ink/45 hover:bg-ink/[0.04] hover:text-ink"}`}>
+                      {area.label}
+                    </button>
+                    {area.id === "display" && (
+                      <div className="ml-[3px] mt-3 space-y-1 border-l border-ink/12 pl-4">
+                        {CATALOG_ORDER.map((catalog) => {
+                          const sectionActive = activeArea === "display" && activeSection === catalog;
+                          return (
+                            <button key={catalog} onClick={() => scrollToCatalog(catalog)} data-cursor="hover" aria-current={sectionActive ? "location" : undefined} className={`block w-full rounded-md px-3 py-2 text-left text-sm font-semibold transition-colors ${sectionActive ? "bg-red/[0.08] text-red" : "text-ink/45 hover:bg-ink/[0.04] hover:text-ink"}`}>
+                              {CATALOGS[catalog].label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </nav>
           </div>
-        </div>
+        </aside>
 
-        <div className="grid grid-cols-1 gap-x-7 gap-y-16 md:grid-cols-12 md:gap-x-10 md:gap-y-24">
-          {visibleFormats.map((format, index) => (
-            <article key={format.id} data-gallery-item className={GALLERY_RHYTHM[index % GALLERY_RHYTHM.length]}>
-              <a href={`/formatos/${format.slug}`} onClick={(event) => openDetail(format, event)} data-cursor="ABRIR" className="group block w-full text-left active:scale-[0.99]" aria-label={`Abrir detalle de ${format.title}`}>
-                <div data-gallery-preview className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
-                  <FormatPreview visual={format.visual} title={format.title} />
-                  <div className="pointer-events-none absolute inset-0 bg-ink/0 transition-colors duration-500 group-hover:bg-ink/[0.06]" />
-                  <span className="absolute bottom-5 right-5 flex h-12 w-12 translate-y-3 items-center justify-center rounded-full bg-red text-xl text-white opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 md:bottom-7 md:right-7 md:h-14 md:w-14">↗</span>
-                </div>
-                <div className="mt-5 grid grid-cols-[auto_1fr] gap-4 md:mt-7 md:gap-6">
-                  <span className="pt-1 font-mono2 text-[9px] tracking-[0.16em] text-red">{format.id}</span>
-                  <div className="border-t border-ink/15 pt-4 md:pt-5">
-                    <div className="flex items-start justify-between gap-4">
-                      <h3 className="font-display text-4xl uppercase leading-none transition-colors duration-300 group-hover:text-red md:text-5xl lg:text-6xl">{format.title}</h3>
-                      <span className="shrink-0 rounded-full border border-ink/15 px-2.5 py-1.5 font-mono2 text-[7px] uppercase tracking-[0.13em] text-ink/45">{format.device}</span>
+        <div data-catalog-content className="min-w-0">
+          <div id="area-display" data-ecosystem-area="display">
+          {CATALOG_ORDER.map((catalog, catalogIndex) => {
+          const catalogData = CATALOGS[catalog];
+          const catalogBasePath = catalog === "standard" ? "/formatos/standard" : "/formatos";
+          return (
+            <section key={catalog} id={`catalog-${catalog}`} data-catalog-section={catalog} className={catalogIndex === 0 ? "bg-bone" : "border-t border-ink/12 bg-[#e9e7e1]"}>
+              <div className="mx-auto max-w-[1400px] px-5 pb-24 pt-20 md:px-10 md:pb-40 md:pt-32">
+                <div data-catalog-intro>
+                  <div data-catalog-signal className="mb-7 h-[3px] w-16 bg-red md:mb-10 md:w-24" />
+                  <div className="mb-16 grid gap-8 md:mb-24 md:grid-cols-12 md:items-end">
+                    <h2 className="font-display text-[16vw] uppercase leading-[0.82] tracking-[0.01em] md:col-span-8 md:text-[7.2vw]">
+                      <span className="block overflow-hidden"><span data-catalog-heading-line className="block">{catalogData.heading[0]}</span></span>
+                      <span className="block overflow-hidden text-red"><span data-catalog-heading-line className="block">{catalogData.heading[1]}</span></span>
+                    </h2>
+                    <div className="md:col-span-4 md:pb-2">
+                      <p data-catalog-copy className="font-mono2 text-[8px] uppercase tracking-[0.22em] text-ink/35">Display / {catalogData.label}</p>
+                      <p data-catalog-copy className="mt-5 max-w-sm text-sm leading-relaxed text-ink/[0.58] md:text-base">{catalogData.description}</p>
+                      <p data-catalog-copy className="mt-5 font-mono2 text-[9px] uppercase tracking-[0.2em] text-ink/35">{String(catalogData.formats.length).padStart(2, "0")} formatos disponibles</p>
                     </div>
-                    <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink/50 md:mt-4">{format.description}</p>
                   </div>
                 </div>
-              </a>
-            </article>
-          ))}
+
+                <div className="grid grid-cols-1 gap-x-7 gap-y-16 md:grid-cols-12 md:gap-x-10 md:gap-y-24">
+                  {catalogData.formats.map((format, index) => (
+                    <article key={`${catalog}-${format.id}`} data-gallery-item className={GALLERY_RHYTHM[index % GALLERY_RHYTHM.length]}>
+                      <a href={`${catalogBasePath}/${format.slug}`} onClick={(event) => openDetail(format, catalog, event)} data-cursor="ABRIR" className="group block w-full text-left active:scale-[0.99]" aria-label={`Abrir detalle de ${format.title}`}>
+                        <div data-gallery-preview className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
+                          <FormatPreview visual={format.visual} title={format.title} imageSrc={format.imageSrc} />
+                          <div className="pointer-events-none absolute inset-0 bg-ink/0 transition-colors duration-500 group-hover:bg-ink/[0.06]" />
+                          <span className="absolute bottom-5 right-5 flex h-12 w-12 translate-y-3 items-center justify-center rounded-full bg-red text-xl text-white opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 md:bottom-7 md:right-7 md:h-14 md:w-14">↗</span>
+                        </div>
+                        <div className="mt-5 grid grid-cols-[auto_1fr] gap-4 md:mt-7 md:gap-6">
+                          <span className="pt-1 font-mono2 text-[9px] tracking-[0.16em] text-red">{format.id}</span>
+                          <div className="border-t border-ink/15 pt-4 md:pt-5">
+                            <div className="flex items-start justify-between gap-4">
+                              <h3 className="font-display text-4xl uppercase leading-none transition-colors duration-300 group-hover:text-red md:text-5xl lg:text-6xl">{format.title}</h3>
+                              {format.availability && <PlatformBadge availability={format.availability} />}
+                            </div>
+                            <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink/50 md:mt-4">{format.description}</p>
+                          </div>
+                        </div>
+                      </a>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        })}
+          </div>
+
+          <section id="area-branded-content" data-ecosystem-area="branded-content" className="bg-ink px-5 py-24 text-bone md:px-10 md:py-36">
+            <div className="mx-auto max-w-[1120px]">
+              <p data-area-reveal className="font-mono2 text-[9px] uppercase tracking-[0.24em] text-bone/40">Ecosistema / Branded Content</p>
+              <div className="mt-8 grid gap-10 md:grid-cols-12 md:items-end">
+                <h2 data-area-reveal className="font-display text-[15vw] uppercase leading-[0.84] md:col-span-8 md:text-[6.4vw]">Historias que<br /><span className="text-red">conectan</span></h2>
+                <p data-area-reveal className="max-w-sm text-sm leading-relaxed text-bone/55 md:col-span-4 md:text-base">Contenido especial y branded content pensados para conectar a las marcas con cada audiencia del ecosistema GRPP.</p>
+              </div>
+              <div data-area-reveal className="mt-16 grid border-y border-white/15 sm:grid-cols-3 md:mt-24">
+                {["Web", "Redes Sociales", "Mailing"].map((item) => (
+                  <div key={item} className="flex min-h-28 items-center border-b border-white/15 px-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0 md:min-h-36 md:px-7">
+                    <span className="text-lg font-semibold md:text-xl">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section id="area-streaming" data-ecosystem-area="streaming" className="bg-[#dedcd6] px-5 py-24 text-ink md:px-10 md:py-36">
+            <div className="mx-auto max-w-[1120px]">
+              <p data-area-reveal className="font-mono2 text-[9px] uppercase tracking-[0.24em] text-ink/35">Ecosistema / Streaming</p>
+              <div className="mt-8 grid gap-10 md:grid-cols-12 md:items-end">
+                <h2 data-area-reveal className="font-display text-[15vw] uppercase leading-[0.84] md:col-span-8 md:text-[6.4vw]">Contenido que<br /><span className="text-red">se escucha</span></h2>
+                <p data-area-reveal className="max-w-sm text-sm leading-relaxed text-ink/55 md:col-span-4 md:text-base">Soluciones de audio y escucha digital que acompañan a la audiencia dentro y fuera de la pantalla.</p>
+              </div>
+              <div data-area-reveal className="mt-16 grid border-y border-ink/15 sm:grid-cols-3 md:mt-24">
+                <div className="flex min-h-28 items-center border-b border-ink/15 px-5 sm:border-b-0 sm:border-r md:min-h-36 md:px-7"><img src="/images/stars_logo.svg" alt="Stars" className="h-10 w-auto max-w-[130px]" /></div>
+                <div className="flex min-h-28 items-center border-b border-ink/15 px-5 sm:border-b-0 sm:border-r md:min-h-36 md:px-7"><img src="/images/audioplayer_logo.svg" alt="Audioplayer" className="h-10 w-auto max-w-[150px]" /></div>
+                <div className="flex min-h-28 items-center px-5 md:min-h-36 md:px-7"><span className="text-lg font-semibold md:text-xl">Streaming</span></div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
 
@@ -265,17 +516,17 @@ export default function FormatExplorer() {
             <Dialog.Content ref={setDetailNode} onEscapeKeyDown={(event) => { event.preventDefault(); closeDetail(); }} className="fixed inset-0 z-[240] overflow-y-auto bg-ink text-bone outline-none" style={{ visibility: "hidden", willChange: "transform" }} aria-describedby="format-detail-description">
               <div className="mx-auto flex min-h-[100dvh] max-w-[1600px] flex-col px-5 pb-8 pt-6 md:px-10 md:pb-10 md:pt-8">
                 <div className="flex items-center justify-between border-b border-white/12 pb-5">
-                  <p data-detail-reveal className="font-mono2 text-[9px] uppercase tracking-[0.25em] text-bone/40">Formato {selected.id} / {String(visibleFormats.length).padStart(2, "0")}</p>
+                  <p data-detail-reveal className="font-mono2 text-[9px] uppercase tracking-[0.25em] text-bone/40">Formato {selected.id} / {String(selectedCatalogData.formats.length).padStart(2, "0")}</p>
                   <button onClick={() => closeDetail()} data-cursor="hover" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-xl text-bone transition-colors hover:bg-bone hover:text-ink" aria-label="Cerrar detalle">×</button>
                 </div>
 
                 <div className="grid flex-1 items-center gap-10 py-10 md:grid-cols-12 md:gap-12 md:py-12">
                   <div data-detail-reveal className="md:col-span-8">
-                    <FormatPreview key={selected.id} visual={selected.visual} title={selected.title} />
+                    <FormatPreview key={`${routeCatalog}-${selected.id}`} visual={selected.visual} title={selected.title} imageSrc={selected.imageSrc} />
                   </div>
                   <div className="md:col-span-4">
-                    <span data-detail-reveal className="inline-flex rounded-full border border-white/15 px-3 py-2 font-mono2 text-[8px] uppercase tracking-[0.16em] text-bone/50">{selected.device}</span>
-                    <Dialog.Title data-detail-reveal className="mt-6 font-display text-[18vw] uppercase leading-[0.82] text-bone md:text-[6vw]">{selected.title}</Dialog.Title>
+                    {selected.availability && <div data-detail-reveal><PlatformBadge availability={selected.availability} /></div>}
+                    <Dialog.Title data-detail-reveal className={`${selected.availability ? "mt-6" : "mt-0"} font-display text-[18vw] uppercase leading-[0.82] text-bone md:text-[6vw]`}>{selected.title}</Dialog.Title>
                     <Dialog.Description id="format-detail-description" data-detail-reveal className="mt-7 max-w-md text-sm leading-relaxed text-bone/55 md:text-base">{selected.description}</Dialog.Description>
                     <button onClick={consultFormat} data-detail-reveal data-cursor="hover" className="mt-9 rounded-full bg-red px-6 py-4 font-mono2 text-[9px] uppercase tracking-[0.18em] text-white transition-colors hover:bg-bone hover:text-ink">Consultar este formato →</button>
                   </div>

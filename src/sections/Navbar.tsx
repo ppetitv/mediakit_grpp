@@ -17,6 +17,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const { transitionTo } = usePageTransition();
+  const formatsActive = location.pathname.startsWith("/formatos");
 
   useEffect(() => {
     const nav = navRef.current!;
@@ -109,9 +110,9 @@ export default function Navbar() {
             <button
               key={l.id}
               onClick={() => go(l.id)}
-              aria-current={l.id === "formatos" && location.pathname === "/formatos" ? "page" : undefined}
+              aria-current={l.id === "formatos" && formatsActive ? "page" : undefined}
               data-cursor="hover"
-              className={`u-link font-mono2 text-[11px] tracking-[0.2em] uppercase transition-colors ${l.id === "formatos" && location.pathname === "/formatos" ? "text-red" : "text-bone/70 hover:text-bone"}`}
+              className={`u-link font-mono2 text-[11px] tracking-[0.2em] uppercase transition-colors ${l.id === "formatos" && formatsActive ? "text-red" : "text-bone/70 hover:text-bone"}`}
             >
               {l.label}
             </button>
@@ -142,9 +143,9 @@ export default function Navbar() {
 
       <div id="mobile-menu" className="fixed inset-0 z-[140] bg-red hidden flex-col justify-center px-8" style={{ clipPath: "inset(0 0 100% 0)" }}>
         {LINKS.concat({ label: "Contacto", id: "contacto" }).map((l, i) => (
-          <button key={l.id} onClick={() => go(l.id)} aria-current={l.id === "formatos" && location.pathname === "/formatos" ? "page" : undefined} className="m-link text-left py-2">
+          <button key={l.id} onClick={() => go(l.id)} aria-current={l.id === "formatos" && formatsActive ? "page" : undefined} className="m-link text-left py-2">
             <span className="font-mono2 text-xs text-white/60 mr-4">0{i + 1}</span>
-            <span className={`font-display text-5xl uppercase ${l.id === "formatos" && location.pathname === "/formatos" ? "text-ink" : "text-white"}`}>{l.label}</span>
+            <span className={`font-display text-5xl uppercase ${l.id === "formatos" && formatsActive ? "text-ink" : "text-white"}`}>{l.label}</span>
           </button>
         ))}
         <p className="m-link absolute bottom-8 left-8 font-mono2 text-[10px] tracking-[0.3em] text-white/60 uppercase">GRPP® — Media Kit 2026</p>

@@ -8,6 +8,7 @@ export default function App() {
     <PageTransition>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/formatos/standard/:formatSlug?" element={<FormatosPage />} />
         <Route path="/formatos/:formatSlug?" element={<FormatosPage />} />
       </Routes>
     </PageTransition>
