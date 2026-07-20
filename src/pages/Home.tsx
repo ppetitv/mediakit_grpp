@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { setLenis, getLenis, scrollToId } from "@/lib/scroll";
+import { hasLoadedExperience, markExperienceLoaded } from "@/lib/experience";
 
 import Preloader from "@/sections/Preloader";
 import Cursor from "@/sections/Cursor";
@@ -19,7 +20,8 @@ import VelocityMarquee from "@/components/VelocityMarquee";
 const CHANNELS = ["Radio", "TV", "Digital","Vía Pública", "Influencers"];
 
 export default function Home() {
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(hasLoadedExperience);
+  const loadedOnMountRef = useRef(loaded);
   const location = useLocation();
 
   /* Lenis smooth scroll wired into GSAP ticker */
@@ -31,7 +33,7 @@ export default function Home() {
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
 
-    lenis.stop(); // locked while preloader runs
+    if (!loadedOnMountRef.current) lenis.stop();
     return () => {
       gsap.ticker.remove(raf);
       lenis.destroy();
@@ -39,9 +41,14 @@ export default function Home() {
     };
   }, []);
 
+  const completePreloader = () => {
+    markExperienceLoaded();
+    setLoaded(true);
+  };
+
   return (
     <div className="bg-ink min-h-screen">
-      <Preloader onDone={() => setLoaded(true)} />
+      {!loaded && <Preloader onDone={completePreloader} />}
       <Cursor />
       <Navbar />
 

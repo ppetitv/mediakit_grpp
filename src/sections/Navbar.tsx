@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { scrollToId } from "@/lib/scroll";
+import { usePageTransition } from "@/lib/page-transition";
 import Magnetic from "@/components/Magnetic";
 
 const LINKS = [
@@ -15,11 +16,33 @@ export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
+  const { transitionTo } = usePageTransition();
 
   useEffect(() => {
     const nav = navRef.current!;
     let lastY = 0;
+    let navHeight = nav.offsetHeight;
+    let navHidden = false;
+    const root = document.documentElement;
+
+    const updateOffset = () => {
+      root.style.setProperty("--nav-offset", navHidden ? "0px" : `${navHeight}px`);
+    };
+
+    const setNavHidden = (hidden: boolean) => {
+      if (hidden === navHidden) return;
+      navHidden = hidden;
+      updateOffset();
+      gsap.to(nav, { yPercent: hidden ? -110 : 0, duration: 0.5, ease: "power3.out", overwrite: true });
+    };
+
+    const measureNav = () => {
+      navHeight = nav.offsetHeight;
+      updateOffset();
+    };
+
+    updateOffset();
+    window.addEventListener("resize", measureNav);
 
     const st = ScrollTrigger.create({
       start: 0,
@@ -27,15 +50,15 @@ export default function Navbar() {
       onUpdate: (self) => {
         const y = self.scroll();
         nav.classList.toggle("nav-scrolled", y > 60);
-        if (y > lastY && y > 140 && !open) {
-          gsap.to(nav, { yPercent: -110, duration: 0.5, ease: "power3.out" });
-        } else {
-          gsap.to(nav, { yPercent: 0, duration: 0.5, ease: "power3.out" });
-        }
+        setNavHidden(y > lastY && y > 140 && !open);
         lastY = y;
       },
     });
-    return () => st.kill();
+    return () => {
+      st.kill();
+      window.removeEventListener("resize", measureNav);
+      root.style.removeProperty("--nav-offset");
+    };
   }, [open]);
 
   useEffect(() => {
@@ -55,7 +78,7 @@ export default function Navbar() {
     const delay = open ? 500 : 0;
 
     if (id === "formatos") {
-      setTimeout(() => navigate("/formatos"), delay);
+      setTimeout(() => transitionTo("/formatos"), delay);
       return;
     }
 
@@ -63,7 +86,7 @@ export default function Navbar() {
       if (id === "contacto" && document.getElementById("contacto")) {
         setTimeout(() => scrollToId(id), delay);
       } else {
-        setTimeout(() => navigate(`/#${id}`), delay);
+        setTimeout(() => transitionTo(`/#${id}`), delay);
       }
       return;
     }

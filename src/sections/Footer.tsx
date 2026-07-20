@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import { gsap } from "@/lib/anim";
 import { scrollToId } from "@/lib/scroll";
+import { usePageTransition } from "@/lib/page-transition";
 import Magnetic from "@/components/Magnetic";
 
 const SOCIALS = [
@@ -14,16 +15,16 @@ const SOCIALS = [
 export default function Footer() {
   const rootRef = useRef<HTMLElement>(null);
   const location = useLocation();
-  const navigate = useNavigate();
+  const { transitionTo } = usePageTransition();
 
   const go = (id: string) => {
     if (id === "formatos") {
-      navigate("/formatos");
+      transitionTo("/formatos");
       return;
     }
     if (location.pathname !== "/") {
       if (id === "contacto" && document.getElementById("contacto")) scrollToId(id);
-      else navigate(`/#${id}`);
+      else transitionTo(`/#${id}`);
       return;
     }
     scrollToId(id);
