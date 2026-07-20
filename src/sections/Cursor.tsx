@@ -23,11 +23,12 @@ export default function Cursor() {
       gsap.set(dot, { x: pos.x, y: pos.y });
     };
 
-    gsap.ticker.add(() => {
+    const tick = () => {
       ringPos.x += (pos.x - ringPos.x) * 0.16;
       ringPos.y += (pos.y - ringPos.y) * 0.16;
       gsap.set(ring, { x: ringPos.x, y: ringPos.y });
-    });
+    };
+    gsap.ticker.add(tick);
 
     const onOver = (e: MouseEvent) => {
       const t = (e.target as HTMLElement).closest<HTMLElement>("[data-cursor]");
@@ -53,6 +54,7 @@ export default function Cursor() {
     window.addEventListener("mouseover", onOver);
     return () => {
       document.body.classList.remove("custom-cursor");
+      gsap.ticker.remove(tick);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseover", onOver);
     };

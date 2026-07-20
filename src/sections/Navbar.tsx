@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { scrollToId } from "@/lib/scroll";
 import Magnetic from "@/components/Magnetic";
@@ -13,6 +14,8 @@ const LINKS = [
 export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const nav = navRef.current!;
@@ -49,7 +52,23 @@ export default function Navbar() {
 
   const go = (id: string) => {
     setOpen(false);
-    setTimeout(() => scrollToId(id), open ? 500 : 0);
+    const delay = open ? 500 : 0;
+
+    if (id === "formatos") {
+      setTimeout(() => navigate("/formatos"), delay);
+      return;
+    }
+
+    if (location.pathname !== "/") {
+      if (id === "contacto" && document.getElementById("contacto")) {
+        setTimeout(() => scrollToId(id), delay);
+      } else {
+        setTimeout(() => navigate(`/#${id}`), delay);
+      }
+      return;
+    }
+
+    setTimeout(() => scrollToId(id), delay);
   };
 
   return (
@@ -67,8 +86,9 @@ export default function Navbar() {
             <button
               key={l.id}
               onClick={() => go(l.id)}
+              aria-current={l.id === "formatos" && location.pathname === "/formatos" ? "page" : undefined}
               data-cursor="hover"
-              className="u-link font-mono2 text-[11px] tracking-[0.2em] uppercase text-bone/70 hover:text-bone transition-colors"
+              className={`u-link font-mono2 text-[11px] tracking-[0.2em] uppercase transition-colors ${l.id === "formatos" && location.pathname === "/formatos" ? "text-red" : "text-bone/70 hover:text-bone"}`}
             >
               {l.label}
             </button>
@@ -99,9 +119,9 @@ export default function Navbar() {
 
       <div id="mobile-menu" className="fixed inset-0 z-[140] bg-red hidden flex-col justify-center px-8" style={{ clipPath: "inset(0 0 100% 0)" }}>
         {LINKS.concat({ label: "Contacto", id: "contacto" }).map((l, i) => (
-          <button key={l.id} onClick={() => go(l.id)} className="m-link text-left py-2">
+          <button key={l.id} onClick={() => go(l.id)} aria-current={l.id === "formatos" && location.pathname === "/formatos" ? "page" : undefined} className="m-link text-left py-2">
             <span className="font-mono2 text-xs text-white/60 mr-4">0{i + 1}</span>
-            <span className="font-display text-5xl text-white uppercase">{l.label}</span>
+            <span className={`font-display text-5xl uppercase ${l.id === "formatos" && location.pathname === "/formatos" ? "text-ink" : "text-white"}`}>{l.label}</span>
           </button>
         ))}
         <p className="m-link absolute bottom-8 left-8 font-mono2 text-[10px] tracking-[0.3em] text-white/60 uppercase">GRPP® — Media Kit 2026</p>

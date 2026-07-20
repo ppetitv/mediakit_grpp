@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/anim";
-import { setLenis, getLenis } from "@/lib/scroll";
+import { setLenis, getLenis, scrollToId } from "@/lib/scroll";
 
 import Preloader from "@/sections/Preloader";
 import Cursor from "@/sections/Cursor";
@@ -19,6 +20,7 @@ const CHANNELS = ["Radio", "TV", "Digital","Vía Pública", "Influencers"];
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
+  const location = useLocation();
 
   /* Lenis smooth scroll wired into GSAP ticker */
   useEffect(() => {
@@ -66,17 +68,20 @@ export default function Home() {
       </main>
 
       <Footer />
-      <LenisStarter loaded={loaded} />
+      <LenisStarter loaded={loaded} hash={location.hash} />
     </div>
   );
 }
 
 /** Unlocks scroll once the preloader finishes */
-function LenisStarter({ loaded }: { loaded: boolean }) {
+function LenisStarter({ loaded, hash }: { loaded: boolean; hash: string }) {
   useEffect(() => {
     if (!loaded) return;
     getLenis()?.start();
-    requestAnimationFrame(() => ScrollTrigger.refresh());
-  }, [loaded]);
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      if (hash) scrollToId(hash.slice(1));
+    });
+  }, [hash, loaded]);
   return null;
 }

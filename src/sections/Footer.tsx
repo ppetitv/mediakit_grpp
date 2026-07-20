@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { gsap } from "@/lib/anim";
 import { scrollToId } from "@/lib/scroll";
 import Magnetic from "@/components/Magnetic";
@@ -12,6 +13,21 @@ const SOCIALS = [
 
 export default function Footer() {
   const rootRef = useRef<HTMLElement>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const go = (id: string) => {
+    if (id === "formatos") {
+      navigate("/formatos");
+      return;
+    }
+    if (location.pathname !== "/") {
+      if (id === "contacto" && document.getElementById("contacto")) scrollToId(id);
+      else navigate(`/#${id}`);
+      return;
+    }
+    scrollToId(id);
+  };
 
   useEffect(() => {
     const q = gsap.utils.selector(rootRef);
@@ -67,7 +83,7 @@ export default function Footer() {
                 { label: "Contacto", id: "contacto" },
               ].map((l) => (
                 <li key={l.id}>
-                  <button onClick={() => scrollToId(l.id)} data-cursor="hover" className="u-link text-bone/60 hover:text-bone text-sm transition-colors">
+                  <button onClick={() => go(l.id)} data-cursor="hover" className="u-link text-bone/60 hover:text-bone text-sm transition-colors">
                     {l.label}
                   </button>
                 </li>
@@ -78,7 +94,7 @@ export default function Footer() {
           <div className="md:col-span-4">
             <p className="font-mono2 text-[10px] tracking-[0.3em] uppercase text-bone/35 mb-6">¿Necesitas el media kit completo?</p>
             <p className="text-bone/60 text-sm leading-relaxed mb-6">Escríbenos y recibe tarifas, especificaciones técnicas y casos de éxito.</p>
-            <button onClick={() => scrollToId("contacto")} data-cursor="hover" className="u-link font-mono2 text-[11px] tracking-[0.2em] uppercase text-red">
+            <button onClick={() => go("contacto")} data-cursor="hover" className="u-link font-mono2 text-[11px] tracking-[0.2em] uppercase text-red">
               comercial@grpp.pe →
             </button>
           </div>
