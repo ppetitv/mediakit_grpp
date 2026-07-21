@@ -184,14 +184,14 @@ export default function Formats() {
     return () => mm.revert();
   }, []);
 
-  const tilt = (e: MouseEvent<HTMLDivElement>) => {
+  const tilt = (e: MouseEvent<HTMLElement>) => {
     const card = e.currentTarget;
     const r = card.getBoundingClientRect();
     const rx = ((e.clientY - r.top) / r.height - 0.5) * -7;
     const ry = ((e.clientX - r.left) / r.width - 0.5) * 9;
     gsap.to(card, { rotateX: rx, rotateY: ry, duration: 0.5, ease: "power2.out" });
   };
-  const untilt = (e: MouseEvent<HTMLDivElement>) => {
+  const untilt = (e: MouseEvent<HTMLElement>) => {
     gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.8, ease: "elastic.out(1,0.4)" });
   };
 
