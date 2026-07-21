@@ -10,16 +10,16 @@ const STATS = [
 
 const BRAND_LOGOS = [
   { name: "RPP", src: "/images/rpp_logo.svg", size: "w-16 md:w-24", offset: "md:translate-y-1" },
+  { name: "Studio92", src: "/images/studio92_logo.svg", size: "w-28 md:w-40", offset: "md:translate-y-2" },
+  { name: "Oxígeno", src: "/images/oxigeno_logo.svg", size: "w-28 md:w-40", offset: "md:translate-y-1" },
+  { name: "MegaMix", src: "/images/megamix_logo.svg", size: "w-20 md:w-28", offset: "md:-translate-y-2" },
   { name: "La Zona", src: "/images/lazona_logo.svg", size: "w-28 md:w-36", offset: "md:-translate-y-1" },
+  { name: "Felicidad", src: "/images/felicidad_logo.svg", size: "w-28 md:w-36", offset: "md:-translate-y-2" },
+  { name: "Corazón", src: "/images/corazon_logo.svg", size: "w-24 md:w-36", offset: "md:translate-y-1" },
+  { name: "Disney", src: "/images/disney_logo.svg", size: "w-24 md:w-32", offset: "md:translate-y-1" },
+  { name: "Stars", src: "/images/stars_logo.svg", size: "w-28 md:w-40", offset: "md:-translate-y-1" },
   { name: "Ooh La", src: "/images/oohla_logo.svg", size: "w-28 md:w-40", offset: "md:translate-y-2" },
   { name: "AudioPlayer", src: "/images/audioplayer_logo.svg", size: "w-36 md:w-52", offset: "md:-translate-y-1" },
-  { name: "Oxígeno", src: "/images/oxigeno_logo.svg", size: "w-28 md:w-40", offset: "md:translate-y-1" },
-  { name: "Felicidad", src: "/images/felicidad_logo.svg", size: "w-28 md:w-36", offset: "md:-translate-y-2" },
-  { name: "Studio92", src: "/images/studio92_logo.svg", size: "w-28 md:w-40", offset: "md:translate-y-2" },
-  { name: "Stars", src: "/images/stars_logo.svg", size: "w-28 md:w-40", offset: "md:-translate-y-1" },
-  { name: "Corazón", src: "/images/corazon_logo.svg", size: "w-24 md:w-36", offset: "md:translate-y-1" },
-  { name: "MegaMix", src: "/images/megamix_logo.svg", size: "w-20 md:w-28", offset: "md:-translate-y-2" },
-  { name: "Disney", src: "/images/disney_logo.svg", size: "w-24 md:w-32", offset: "md:translate-y-1" },
 ];
 
 export default function Stats() {

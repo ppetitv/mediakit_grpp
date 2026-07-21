@@ -1,5 +1,6 @@
 import { useEffect, useRef, type MouseEvent } from "react";
 import { gsap } from "@/lib/anim";
+import { usePageTransition } from "@/lib/page-transition";
 
 interface Format {
   id: string;
@@ -7,6 +8,7 @@ interface Format {
   desc: string;
   result: string;
   visual: "takeover" | "billboard" | "video" | "branded" | "audio" | "interstitial";
+  url: string;
 }
 
 const FORMATS: Format[] = [
@@ -16,6 +18,7 @@ const FORMATS: Format[] = [
     desc: "El formato de mayor impacto: tu marca toma la portada de RPP durante 24 horas.",
     result: "+200% recuerdo de marca",
     visual: "takeover",
+    url: "/formatos/skin-arco",
   },
   {
     id: "02",
@@ -23,6 +26,7 @@ const FORMATS: Format[] = [
     desc: "Dominio visual al tope de la home: 970×250 de presencia imposible de ignorar.",
     result: "+87% CTR promedio",
     visual: "billboard",
+    url: "/formatos/standard/top",
   },
   {
     id: "03",
@@ -30,6 +34,7 @@ const FORMATS: Format[] = [
     desc: "Tu spot, antes del contenido que millones de personas quieren ver.",
     result: "65% view-through rate",
     visual: "video",
+    url: "/formatos/video-top-full",
   },
   {
     id: "04",
@@ -37,6 +42,7 @@ const FORMATS: Format[] = [
     desc: "Historias producidas por nuestro equipo editorial que la audiencia elige consumir.",
     result: "3× más engagement",
     visual: "branded",
+    url: "/formatos",
   },
   {
     id: "05",
@@ -44,6 +50,7 @@ const FORMATS: Format[] = [
     desc: "La radio de siempre en los oídos de hoy: streaming, podcast y señal en vivo.",
     result: "+54% recordación",
     visual: "audio",
+    url: "/formatos",
   },
   {
     id: "06",
@@ -51,6 +58,7 @@ const FORMATS: Format[] = [
     desc: "Pantalla completa en los momentos clave de navegación. Atención total.",
     result: "92% visibilidad",
     visual: "interstitial",
+    url: "/formatos/interstitial",
   },
 ];
 
@@ -126,6 +134,7 @@ function Visual({ type }: { type: Format["visual"] }) {
 export default function Formats() {
   const rootRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const { transitionTo } = usePageTransition();
 
   useEffect(() => {
     const root = rootRef.current!;
@@ -208,12 +217,17 @@ export default function Formats() {
         <div className="px-5 md:px-10">
           <div ref={trackRef} className="flex flex-col md:flex-row gap-6 md:gap-8 md:w-max">
             {FORMATS.map((f) => (
-              <article
+              <a
                 key={f.id}
+                href={f.url}
+                onClick={(e) => {
+                  e.preventDefault();
+                  transitionTo(f.url);
+                }}
                 onMouseMove={tilt}
                 onMouseLeave={untilt}
                 data-cursor="VER"
-                className="fmt-card group relative shrink-0 w-full md:w-[30rem] lg:w-[34rem] bg-bone text-ink rounded-2xl overflow-hidden"
+                className="fmt-card group relative shrink-0 block w-full md:w-[30rem] lg:w-[34rem] bg-bone text-ink rounded-2xl overflow-hidden"
               >
                 <div className="relative h-52 md:h-64">
                   <Visual type={f.visual} />
@@ -232,7 +246,7 @@ export default function Formats() {
                     </span>
                   </div>
                 </div>
-              </article>
+              </a>
             ))}
 
             {/* end CTA card */}

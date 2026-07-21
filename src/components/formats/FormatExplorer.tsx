@@ -4,6 +4,8 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { getLenis } from "@/lib/scroll";
 import FormatPreview, { type FormatVisual } from "@/components/formats/FormatPreview";
+import FormatAccordion, { type FormatSpecs } from "@/components/formats/FormatAccordion";
+import FormatHighlights, { type FormatHighlight } from "@/components/formats/FormatHighlights";
 
 type Device = "Todos" | "Mobile" | "Desktop";
 type Availability = "Solo mobile" | "Solo desktop";
@@ -19,6 +21,112 @@ interface FormatItem {
   description: string;
   availability?: Availability;
   imageSrc?: string;
+  specs?: FormatSpecs;
+  highlights?: FormatHighlight[];
+}
+
+function getFormatHighlights(format: FormatItem): FormatHighlight[] {
+  if (format.highlights) return format.highlights;
+
+  const defaultHighlightsMap: Record<string, FormatHighlight[]> = {
+    interstitial: [
+      { icon: "eye", title: "Alta atención visual", description: "El formato domina la pantalla en momentos clave de navegación sin distracciones." },
+      { icon: "target", title: "Máxima recordación", description: "Posiciona el mensaje directamente en el centro del foco de atención." }
+    ],
+    interscroller: [
+      { icon: "sparkles", title: "Experiencia inmersiva", description: "Se revela progresivamente con el desplazamiento integrándose al contenido." },
+      { icon: "zap", title: "Sin fricción de lectura", description: "Ofrece alto impacto visual respetando el flujo de navegación del usuario." }
+    ],
+    skin: [
+      { icon: "layers", title: "Presencia sostenida", description: "Enmarca todo el sitio manteniendo visibilidad constante durante la sesión." },
+      { icon: "award", title: "Prestigio editorial", description: "Asocia la marca al entorno periodístico líder de GRPP." }
+    ],
+    "skin-arco": [
+      { icon: "layers", title: "Cobertura 360° en pantalla", description: "Toma completa de cabecera y marcos laterales para máxima notoriedad." },
+      { icon: "eye", title: "Dominio de portada", description: "Presencia imposible de ignorar en las secciones principales del portal." }
+    ],
+    top: [
+      { icon: "trending", title: "Primer contacto garantizado", description: "Visibilidad inmediata en la zona superior al cargar la página." },
+      { icon: "target", title: "Gran alcance masivo", description: "Ideal para campañas de lanzamiento con alta frecuencia de lectura." }
+    ],
+    caja: [
+      { icon: "target", title: "Ubicación estratégica", description: "Acompaña la lectura en puntos de alto involucramiento de la audiencia." },
+      { icon: "sparkles", title: "Formato ágil y versátil", description: "Excelente rendimiento para branding y llamados a la acción." }
+    ]
+  };
+
+  if (defaultHighlightsMap[format.slug]) {
+    return defaultHighlightsMap[format.slug];
+  }
+
+  return [
+    { icon: "eye", title: "Alta visibilidad de campaña", description: "Diseñado para captar la atención dentro del flujo editorial de GRPP." },
+    { icon: "target", title: "Conexión directa", description: "Optimizado para potenciar el recuerdo de marca y la conversión." }
+  ];
+}
+
+function getFormatSpecs(format: FormatItem): FormatSpecs {
+  if (format.specs) return format.specs;
+
+  const isMobileOnly = format.availability === "Solo mobile";
+  const isDesktopOnly = format.availability === "Solo desktop";
+
+  const defaultSpecsMap: Record<string, FormatSpecs> = {
+    interstitial: {
+      fichaTecnica: { tipoCompra: "CPM / CPD Directa", pesoMaximo: "150 KB (Initial) / 2 MB (Polite)", tiempoEntrega: "48h hábiles antes del inicio", audio: "Mute por defecto / Activación por tap" },
+      especificaciones: { dimensiones: "320x480 (Mobile) / 800x600 (Desktop)", formatosPermitidos: "HTML5, Zip, JPG, PNG", cierreControles: "Botón 'Cerrar ×' visible a los 3 seg", observaciones: "Debe ser totalmente responsive e incluir botón de cierre visible en la esquina superior derecha." },
+      dispositivos: { plataformas: "Multiplataforma (iOS, Android, Web)", comportamiento: "Pantalla completa overlay con bloqueo temporal de scroll", aspectRatio: "9:16 (Mobile) / 4:3 (Desktop)" }
+    },
+    interscroller: {
+      fichaTecnica: { tipoCompra: "CPM Directo", pesoMaximo: "200 KB (HTML5) / 5 MB (Video)", tiempoEntrega: "48h hábiles", audio: "Sin audio o mute por defecto" },
+      especificaciones: { dimensiones: "360x640 px (Viewport reveal)", formatosPermitidos: "HTML5, MP4, WebM, JPG", cierreControles: "No requiere cierre (scroll natural)", observaciones: "El formato se revela progresivamente en el fondo a medida que el usuario navega la nota editorial." },
+      dispositivos: { plataformas: "Solo Mobile (Web / App)", comportamiento: "Parallax / Parallax Reveal en viewport scroll", aspectRatio: "9:16 vertical scroll" }
+    },
+    skin: {
+      fichaTecnica: { tipoCompra: "CPD / CPM Directo", pesoMaximo: "250 KB por lateral", tiempoEntrega: "48h hábiles", audio: "Sin sonido" },
+      especificaciones: { dimensiones: "1920x1080 px (Canvas global) / 160px cada lateral", formatosPermitidos: "HTML5, JPG, PNG", cierreControles: "Pieza fija de acompañamiento", observaciones: "Debe mantener la legibilidad central del contenido editorial de 1200px intacta." },
+      dispositivos: { plataformas: "Solo Desktop", comportamiento: "Background fijo / Sticky lateral", aspectRatio: "16:9 Adaptable a pantallas > 1280px" }
+    },
+    "skin-arco": {
+      fichaTecnica: { tipoCompra: "CPD Exclusivo", pesoMaximo: "350 KB total", tiempoEntrega: "72h hábiles", audio: "Sin sonido" },
+      especificaciones: { dimensiones: "Header 1920x250 + Laterales 160x900 px", formatosPermitidos: "HTML5, Zip con assets", cierreControles: "Envolvente fija", observaciones: "Toma completa de cabecera y marcos laterales para máximo impacto de marca." },
+      dispositivos: { plataformas: "Solo Desktop", comportamiento: "Cabecera sincronizada con bordes laterales", aspectRatio: "Envolvente Desktop (> 1366px)" }
+    },
+    top: {
+      fichaTecnica: { tipoCompra: "CPM / CPD", pesoMaximo: "100 KB initial", tiempoEntrega: "24h hábiles", audio: "Sin audio" },
+      especificaciones: { dimensiones: "970x90 px (Desktop) / 320x50 px (Mobile)", formatosPermitidos: "HTML5, JPG, GIF, PNG", observaciones: "Ubicación destacada en la zona superior de todo el sitio." },
+      dispositivos: { plataformas: "Multiplataforma", comportamiento: "Header banner fijo o fluido", aspectRatio: "10:1 (Desktop) / 6:1 (Mobile)" }
+    },
+    caja: {
+      fichaTecnica: { tipoCompra: "CPM Run of Site", pesoMaximo: "120 KB", tiempoEntrega: "24h hábiles", audio: "Sin audio" },
+      especificaciones: { dimensiones: "300x250 px (MREC) / 300x600 px (Half Page)", formatosPermitidos: "HTML5, JPG, PNG", observaciones: "Integra perfectamente en barras laterales y dentro de cuerpos de noticias." },
+      dispositivos: { plataformas: "Multiplataforma", comportamiento: "Inline / Sidebar Sticky", aspectRatio: "6:5 (300x250) / 1:2 (300x600)" }
+    }
+  };
+
+  if (defaultSpecsMap[format.slug]) {
+    return defaultSpecsMap[format.slug];
+  }
+
+  return {
+    fichaTecnica: {
+      tipoCompra: "CPM / CPD Directa",
+      pesoMaximo: isMobileOnly ? "150 KB" : "250 KB",
+      tiempoEntrega: "48h hábiles antes del inicio de campaña",
+      audio: "Mute por defecto / Activación opcional por interacción de usuario",
+    },
+    especificaciones: {
+      dimensiones: isMobileOnly ? "320x100 px / 360x640 px" : isDesktopOnly ? "970x250 px / 1920x1080 canvas" : "Multiplataforma adaptable",
+      formatosPermitidos: "HTML5, MP4 (H.264), JPG, PNG",
+      cierreControles: "Integrados según comportamiento del formato",
+      observaciones: "Todos los códigos y etiquetas de seguimiento deben servirse bajo protocolo HTTPS estricto.",
+    },
+    dispositivos: {
+      plataformas: format.availability ?? (format.device === "Desktop" ? "Solo Desktop" : format.device === "Mobile" ? "Solo Mobile" : "Multiplataforma (Desktop + Mobile)"),
+      comportamiento: "Adaptación fluida según viewport del navegador",
+      aspectRatio: isMobileOnly ? "9:16 / 1:1" : isDesktopOnly ? "16:9 / 4:1" : "Responsive 16:9 & 9:16",
+    },
+  };
 }
 
 const RICH_MEDIA_FORMATS: FormatItem[] = [
@@ -133,6 +241,15 @@ export default function FormatExplorer() {
   const catalogBasePath = routeCatalog === "standard" ? "/formatos/standard" : "/formatos";
   const [activeSection, setActiveSection] = useState<Catalog>(routeCatalog);
   const [activeArea, setActiveArea] = useState<EcosystemArea>("display");
+  const [copied, setCopied] = useState(false);
+
+  const copyUrl = () => {
+    if (!selected) return;
+    const fullUrl = `${window.location.origin}${catalogBasePath}/${selected.slug}`;
+    navigator.clipboard.writeText(fullUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   useEffect(() => {
     document.title = selected
@@ -528,7 +645,18 @@ export default function FormatExplorer() {
                     {selected.availability && <div data-detail-reveal><PlatformBadge availability={selected.availability} /></div>}
                     <Dialog.Title data-detail-reveal className={`${selected.availability ? "mt-6" : "mt-0"} font-display text-[18vw] uppercase leading-[0.82] text-bone md:text-[6vw]`}>{selected.title}</Dialog.Title>
                     <Dialog.Description id="format-detail-description" data-detail-reveal className="mt-7 max-w-md text-sm leading-relaxed text-bone/55 md:text-base">{selected.description}</Dialog.Description>
-                    <button onClick={consultFormat} data-detail-reveal data-cursor="hover" className="mt-9 rounded-full bg-red px-6 py-4 font-mono2 text-[9px] uppercase tracking-[0.18em] text-white transition-colors hover:bg-bone hover:text-ink">Consultar este formato →</button>
+                    <div data-detail-reveal>
+                      <FormatHighlights highlights={getFormatHighlights(selected)} />
+                    </div>
+                    <div data-detail-reveal>
+                      <FormatAccordion specs={getFormatSpecs(selected)} />
+                    </div>
+                    <div data-detail-reveal className="mt-8 flex flex-wrap gap-3">
+                      <button onClick={consultFormat} data-cursor="hover" className="rounded-full bg-red px-6 py-4 font-mono2 text-[9px] uppercase tracking-[0.18em] text-white transition-colors hover:bg-bone hover:text-ink">Consultar este formato →</button>
+                      <button onClick={copyUrl} data-cursor="hover" className="rounded-full border border-white/20 px-5 py-4 font-mono2 text-[9px] uppercase tracking-[0.18em] text-bone transition-colors hover:border-white hover:bg-white/10">
+                        {copied ? "¡Enlace copiado! ✓" : "Copiar enlace ↗"}
+                      </button>
+                    </div>
                   </div>
                 </div>
 
