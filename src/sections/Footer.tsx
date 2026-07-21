@@ -77,7 +77,7 @@ export default function Footer() {
             <p className="font-mono2 text-[10px] tracking-[0.3em] uppercase text-bone/35 mb-6">Menú</p>
             <ul className="space-y-3">
               {[
-                { label: "Señal", id: "hero" },
+                { label: "Inicio", id: "hero" },
                 { label: "Audiencia", id: "audiencia" },
                 { label: "Formatos", id: "formatos" },
                 { label: "Marcas", id: "marcas" },
@@ -96,7 +96,7 @@ export default function Footer() {
             <p className="font-mono2 text-[10px] tracking-[0.3em] uppercase text-bone/35 mb-6">¿Necesitas el media kit completo?</p>
             <p className="text-bone/60 text-sm leading-relaxed mb-6">Escríbenos y recibe tarifas, especificaciones técnicas y casos de éxito.</p>
             <button onClick={() => go("contacto")} data-cursor="hover" className="u-link font-mono2 text-[11px] tracking-[0.2em] uppercase text-red">
-              comercial@grpp.pe →
+              publicidad@gruporpp.com.pe →
             </button>
           </div>
         </div>
@@ -113,8 +113,9 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10 font-mono2 text-[10px] tracking-[0.2em] uppercase text-bone/35">
+          <p>GRUPORPP S.A.C. - RUC: 20492353214</p>
           <p>©2026 GRPP — Todos los derechos reservados</p>
-          <p>Diseñado para conectar <span className="text-red">●</span> Lima, Perú</p>
+
         </div>
       </div>
     </footer>

@@ -62,8 +62,7 @@ export default function Contact() {
             Cuéntanos tu reto y un especialista de nuestro equipo comercial te contactará con una propuesta a la medida de tu campaña.
           </p>
           <div className="contact-fade mt-12 space-y-5 font-mono2 text-xs tracking-[0.15em] uppercase text-bone/60">
-            <p className="flex items-center gap-4"><span className="w-2 h-2 rounded-full bg-red" /> comercial@grpp.pe</p>
-            <p className="flex items-center gap-4"><span className="w-2 h-2 rounded-full bg-red" /> Lima, Perú — Respuesta en 24h</p>
+            <p className="flex items-center gap-4"><span className="w-2 h-2 rounded-full bg-red" /> publicidad@gruporpp.com.pe</p>
           </div>
         </div>
 
@@ -103,9 +102,8 @@ export default function Contact() {
               ref={btnRef}
               type="submit"
               data-cursor="hover"
-              className={`group relative w-full sm:w-auto overflow-hidden rounded-full px-12 py-5 font-mono2 text-[11px] tracking-[0.22em] uppercase transition-colors duration-500 ${
-                sent ? "bg-bone text-ink" : "bg-red text-white"
-              }`}
+              className={`group relative w-full sm:w-auto overflow-hidden rounded-full px-12 py-5 font-mono2 text-[11px] tracking-[0.22em] uppercase transition-colors duration-500 ${sent ? "bg-bone text-ink" : "bg-red text-white"
+                }`}
             >
               <span className="relative z-10 flex items-center justify-center gap-3">
                 {sent ? (
