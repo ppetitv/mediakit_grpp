@@ -84,7 +84,7 @@ export default function Stats() {
   }, []);
 
   return (
-    <section ref={rootRef} id="audiencia" className="relative bg-bone text-ink py-24 md:py-36 px-5 md:px-10 rounded-t-[2rem] md:rounded-t-[3rem] -mt-6 z-10">
+    <section ref={rootRef} id="audiencia" className="relative z-10 mt-[6px] rounded-t-[2rem] bg-bone px-5 py-24 text-ink md:-mt-6 md:rounded-t-[3rem] md:px-10 md:py-36">
       <div className="flex items-end justify-between mb-14 md:mb-20">
         <div>
           <p className="font-mono2 text-[10px] md:text-xs tracking-[0.3em] uppercase text-ink/50 mb-4">
