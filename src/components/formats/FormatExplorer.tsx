@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useLocation, useNavigate, useParams } from "react-router";
+import { ChevronDown } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { getLenis } from "@/lib/scroll";
 import FormatPreview, { type FormatVisual } from "@/components/formats/FormatPreview";
@@ -499,13 +500,13 @@ export default function FormatExplorer() {
         <div className="relative">
           <label className="relative block">
             <span className="sr-only">Área del ecosistema</span>
-            <select value={activeArea} onChange={(event) => scrollToArea(event.target.value as EcosystemArea)} className="h-12 w-full appearance-none rounded-lg border border-ink/25 bg-white px-4 pr-11 text-sm font-semibold text-ink outline-none transition-colors focus:border-red">
+            <select value={activeArea} onChange={(event) => scrollToArea(event.target.value as EcosystemArea)} className="h-12 w-full appearance-none rounded-lg border border-ink/18 bg-white/70 px-4 pr-12 text-sm font-semibold text-ink shadow-[0_1px_0_rgba(22,22,24,0.04)] outline-none transition-colors focus:border-ink/40 focus:bg-white focus-visible:ring-2 focus-visible:ring-red/30">
               {ECOSYSTEM_AREAS.map((area) => <option key={area.id} value={area.id}>{area.label}</option>)}
             </select>
-            <span aria-hidden="true" className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-base text-ink/55">⌄</span>
+            <ChevronDown aria-hidden="true" strokeWidth={1.8} className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/50" />
           </label>
           {activeArea === "display" && (
-            <nav className="mt-2 flex overflow-x-auto border-b border-ink/15 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Secciones de Display">
+            <nav className="mt-3 flex overflow-x-auto border-b border-ink/15 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Secciones de Display">
               {CATALOG_ORDER.map((catalog) => {
                 const active = activeSection === catalog;
                 return (
