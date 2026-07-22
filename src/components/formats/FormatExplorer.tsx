@@ -239,6 +239,13 @@ export default function FormatExplorer() {
   const selectedCatalogData = CATALOGS[routeCatalog];
   const selected = selectedCatalogData.formats.find((format) => format.slug === formatSlug) ?? null;
   const catalogBasePath = routeCatalog === "standard" ? "/formatos/standard" : "/formatos";
+  const selectedIndex = selected ? selectedCatalogData.formats.findIndex((format) => format.id === selected.id) : -1;
+  const previousFormat = selectedIndex >= 0
+    ? selectedCatalogData.formats[(selectedIndex - 1 + selectedCatalogData.formats.length) % selectedCatalogData.formats.length]
+    : null;
+  const nextFormat = selectedIndex >= 0
+    ? selectedCatalogData.formats[(selectedIndex + 1) % selectedCatalogData.formats.length]
+    : null;
   const [activeSection, setActiveSection] = useState<Catalog>(routeCatalog);
   const [activeArea, setActiveArea] = useState<EcosystemArea>("display");
   const [copied, setCopied] = useState(false);
@@ -467,8 +474,11 @@ export default function FormatExplorer() {
     const formats = selectedCatalogData.formats;
     const index = formats.findIndex((format) => format.id === selected.id);
     const nextIndex = (index + direction + formats.length) % formats.length;
-    const nextFormat = formats[nextIndex];
-    if (nextFormat) navigate(`${catalogBasePath}/${nextFormat.slug}`, { replace: true });
+    const targetFormat = formats[nextIndex];
+    if (targetFormat) {
+      detailRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      navigate(`${catalogBasePath}/${targetFormat.slug}`, { replace: true });
+    }
   };
 
   const consultFormat = () => {
@@ -630,11 +640,14 @@ export default function FormatExplorer() {
         <Dialog.Portal>
           <Dialog.Overlay ref={overlayRef} className="fixed inset-0 z-[230] bg-ink/60 backdrop-blur-sm" />
           {selected && (
-            <Dialog.Content ref={setDetailNode} onEscapeKeyDown={(event) => { event.preventDefault(); closeDetail(); }} className="fixed inset-0 z-[240] overflow-y-auto bg-ink text-bone outline-none" style={{ visibility: "hidden", willChange: "transform" }} aria-describedby="format-detail-description">
-              <div className="mx-auto flex min-h-[100dvh] max-w-[1600px] flex-col px-5 pb-8 pt-6 md:px-10 md:pb-10 md:pt-8">
+            <Dialog.Content ref={setDetailNode} data-lenis-prevent onEscapeKeyDown={(event) => { event.preventDefault(); closeDetail(); }} className="fixed inset-0 z-[240] h-[100dvh] max-h-[100dvh] touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain bg-ink text-bone outline-none [-webkit-overflow-scrolling:touch]" style={{ visibility: "hidden", willChange: "transform" }} aria-describedby="format-detail-description">
+              <div className="mx-auto flex min-h-full max-w-[1600px] flex-col px-5 pb-[calc(env(safe-area-inset-bottom)+2rem)] pt-[calc(env(safe-area-inset-top)+1.5rem)] md:px-10 md:pb-10 md:pt-8">
                 <div className="flex items-center justify-between border-b border-white/12 pb-5">
                   <p data-detail-reveal className="font-mono2 text-[9px] uppercase tracking-[0.25em] text-bone/40">Formato {selected.id} / {String(selectedCatalogData.formats.length).padStart(2, "0")}</p>
-                  <button onClick={() => closeDetail()} data-cursor="hover" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-xl text-bone transition-colors hover:bg-bone hover:text-ink" aria-label="Cerrar detalle">×</button>
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => closeDetail()} data-cursor="hover" className="hidden font-mono2 text-[8px] uppercase tracking-[0.18em] text-bone/50 transition-colors hover:text-bone sm:block">← Todos los formatos</button>
+                    <button onClick={() => closeDetail()} data-cursor="hover" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-xl text-bone transition-colors hover:bg-bone hover:text-ink" aria-label="Cerrar detalle">×</button>
+                  </div>
                 </div>
 
                 <div className="grid flex-1 items-center gap-10 py-10 md:grid-cols-12 md:gap-12 md:py-12">
@@ -660,10 +673,23 @@ export default function FormatExplorer() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between border-t border-white/12 pt-5">
-                  <button onClick={() => stepDetail(-1)} data-cursor="hover" className="font-mono2 text-[9px] uppercase tracking-[0.2em] text-bone/50 transition-colors hover:text-bone">← Anterior</button>
-                  <button onClick={() => stepDetail(1)} data-cursor="hover" className="font-mono2 text-[9px] uppercase tracking-[0.2em] text-bone/50 transition-colors hover:text-bone">Siguiente →</button>
-                </div>
+                <nav data-detail-reveal className="mt-6 border-t border-white/12 pt-5 md:mt-8" aria-label="Navegación del catálogo">
+                  <div className="mb-4 flex items-center justify-between font-mono2 text-[9px] uppercase tracking-[0.2em] text-bone/40">
+                    <span>Explora el catálogo</span>
+                    <span>{String(selectedIndex + 1).padStart(2, "0")} / {String(selectedCatalogData.formats.length).padStart(2, "0")}</span>
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <button onClick={() => stepDetail(-1)} data-cursor="hover" className="order-2 flex h-14 w-full items-center justify-between rounded-full border border-white/20 px-5 font-mono2 text-[9px] uppercase tracking-[0.16em] text-bone/70 transition-colors hover:border-bone hover:bg-white/[0.08] hover:text-bone sm:order-1">
+                      <span>← Anterior</span>
+                      <span className="max-w-[52%] truncate text-bone/40">{previousFormat?.title}</span>
+                    </button>
+                    <button onClick={() => closeDetail()} data-cursor="hover" className="order-3 flex h-14 items-center justify-center rounded-full border border-white/20 px-5 font-mono2 text-[8px] uppercase tracking-[0.16em] text-bone/70 transition-colors hover:border-bone hover:bg-white/[0.08] hover:text-bone sm:order-2">Ver todos los formatos</button>
+                    <button onClick={() => stepDetail(1)} data-cursor="hover" className="group order-1 flex h-14 w-full items-center justify-between rounded-full bg-bone px-6 font-mono2 text-[9px] uppercase tracking-[0.16em] text-ink transition-colors hover:bg-red hover:text-white sm:order-3">
+                      <span>Siguiente</span>
+                      <span className="flex min-w-0 items-center gap-3"><span className="truncate">{nextFormat?.title}</span><span className="text-base leading-none transition-transform group-hover:translate-x-1">→</span></span>
+                    </button>
+                  </div>
+                </nav>
               </div>
             </Dialog.Content>
           )}
