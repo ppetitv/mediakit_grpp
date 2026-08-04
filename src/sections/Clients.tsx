@@ -44,11 +44,11 @@ export default function Clients() {
   }, []);
 
   return (
-    <section ref={rootRef} id="marcas" className="relative bg-bone text-ink py-24 md:py-36 overflow-hidden">
+    <section ref={rootRef} id="clientes" className="relative bg-bone text-ink py-24 md:py-36 overflow-hidden">
       <div className="px-5 md:px-10 mb-14 md:mb-20 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <p className="clients-head font-mono2 text-[10px] md:text-xs tracking-[0.3em] uppercase text-ink/50 mb-4">
-            <span className="text-red">04</span> — Clientes
+            <span className="text-red">05</span> — Clientes
           </p>
           <h2 className="clients-head font-display uppercase leading-[0.95] text-[11vw] md:text-[6.5vw]">
             Marcas que<br /><span className="text-red">confían</span> en nosotros

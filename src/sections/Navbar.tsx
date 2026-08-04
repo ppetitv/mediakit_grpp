@@ -8,8 +8,8 @@ import Magnetic from "@/components/Magnetic";
 const LINKS = [
   { label: "Home", id: "hero" },
   { label: "Audiencia", id: "audiencia" },
-  { label: "Formatos", id: "formatos" },
   { label: "Marcas", id: "marcas" },
+  { label: "Formatos", id: "formatos" },
 ];
 
 export default function Navbar() {
@@ -21,46 +21,28 @@ export default function Navbar() {
 
   useEffect(() => {
     const nav = navRef.current!;
-    let lastY = 0;
-    let navHeight = nav.offsetHeight;
-    let navHidden = false;
     const root = document.documentElement;
 
     const updateOffset = () => {
-      root.style.setProperty("--nav-offset", navHidden ? "0px" : `${navHeight}px`);
-    };
-
-    const setNavHidden = (hidden: boolean) => {
-      if (hidden === navHidden) return;
-      navHidden = hidden;
-      updateOffset();
-      gsap.to(nav, { yPercent: hidden ? -110 : 0, duration: 0.5, ease: "power3.out", overwrite: true });
-    };
-
-    const measureNav = () => {
-      navHeight = nav.offsetHeight;
-      updateOffset();
+      root.style.setProperty("--nav-offset", `${nav.offsetHeight}px`);
     };
 
     updateOffset();
-    window.addEventListener("resize", measureNav);
+    window.addEventListener("resize", updateOffset);
 
     const st = ScrollTrigger.create({
       start: 0,
       end: "max",
       onUpdate: (self) => {
-        const y = self.scroll();
-        nav.classList.toggle("nav-scrolled", y > 60);
-        setNavHidden(y > lastY && y > 140 && !open);
-        lastY = y;
+        nav.classList.toggle("nav-scrolled", self.scroll() > 60);
       },
     });
     return () => {
       st.kill();
-      window.removeEventListener("resize", measureNav);
+      window.removeEventListener("resize", updateOffset);
       root.style.removeProperty("--nav-offset");
     };
-  }, [open]);
+  }, []);
 
   useEffect(() => {
     const menu = document.getElementById("mobile-menu");

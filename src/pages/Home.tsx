@@ -10,6 +10,7 @@ import Cursor from "@/sections/Cursor";
 import Navbar from "@/sections/Navbar";
 import Hero from "@/sections/Hero";
 import Stats from "@/sections/Stats";
+import Brands from "@/sections/Brands";
 import Manifesto from "@/sections/Manifesto";
 import Formats from "@/sections/Formats";
 import Clients from "@/sections/Clients";
@@ -68,6 +69,7 @@ export default function Home() {
         </div>
 
         <Stats />
+        <Brands />
         <Manifesto />
         <Formats />
         <Clients />

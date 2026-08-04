@@ -202,7 +202,7 @@ export default function Formats() {
         <div className="px-5 md:px-10 mb-10 md:mb-12 flex items-end justify-between shrink-0">
           <div>
             <p className="font-mono2 text-[10px] md:text-xs tracking-[0.3em] uppercase text-white/60 mb-4">
-              <span className="text-ink">03</span> — Formatos destacados
+              <span className="text-ink">04</span> — Formatos destacados
             </p>
             <h2 className="font-display uppercase leading-[0.95] text-[11vw] md:text-[5.5vw]">
               Formatos que<br />se hacen <span className="text-ink">notar</span>

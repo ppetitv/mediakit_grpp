@@ -73,7 +73,7 @@ export default function Manifesto() {
   return (
     <section ref={rootRef} className="relative bg-ink py-28 md:py-40 px-5 md:px-10 overflow-hidden">
       <p className="mani-side font-mono2 text-[10px] md:text-xs tracking-[0.3em] uppercase text-bone/40 mb-10">
-        <span className="text-red">02</span> — Prestigio y confianza asegurada
+        <span className="text-red">03</span> — Prestigio y confianza asegurada
       </p>
 
       <p className="word-scrub max-w-5xl font-medium text-[6.4vw] md:text-[3.4vw] leading-[1.18] tracking-tight">

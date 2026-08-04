@@ -51,7 +51,7 @@ export default function Contact() {
       <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
         <div>
           <p className="contact-fade font-mono2 text-[10px] md:text-xs tracking-[0.3em] uppercase text-bone/40 mb-8">
-            <span className="text-red">05</span> — Contacto
+            <span className="text-red">06</span> — Contacto
           </p>
           <h2 className="font-display uppercase leading-[0.95] text-[13vw] lg:text-[6.2vw] text-bone">
             <span className="reveal-line contact-reveal"><span>¿Listo para</span></span>
