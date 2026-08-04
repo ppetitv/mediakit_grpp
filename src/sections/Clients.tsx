@@ -2,8 +2,24 @@ import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/anim";
 import VelocityMarquee from "@/components/VelocityMarquee";
 
-const CLIENTS_A = ["Latam Airlines", "Alicorp", "Intercorp", "Pacífico Seguros"];
-const CLIENTS_B = ["Alicorp", "Pacífico Seguros", "Latam Airlines", "Intercorp"];
+interface ClientLogo {
+  src: string;
+  name: string;
+}
+
+const ROW_A: ClientLogo[] = [
+  { src: "/images/clientes/latam-airlines.svg", name: "LATAM Airlines" },
+  { src: "/images/clientes/alicorp.svg", name: "Alicorp" },
+  { src: "/images/clientes/intercorp.svg", name: "Intercorp" },
+  { src: "/images/clientes/pacifico_seguros.svg", name: "Pacífico Seguros" },
+];
+
+const ROW_B: ClientLogo[] = [
+  { src: "/images/clientes/pacifico_seguros.svg", name: "Pacífico Seguros" },
+  { src: "/images/clientes/intercorp.svg", name: "Intercorp" },
+  { src: "/images/clientes/alicorp.svg", name: "Alicorp" },
+  { src: "/images/clientes/latam-airlines.svg", name: "LATAM Airlines" },
+];
 
 export default function Clients() {
   const rootRef = useRef<HTMLElement>(null);
@@ -44,24 +60,32 @@ export default function Clients() {
       </div>
 
       <div className="space-y-3 md:space-y-5 -rotate-1">
-        <VelocityMarquee baseSpeed={70} className="border-y border-ink/10 py-4 md:py-6 bg-bone">
-          {CLIENTS_A.map((c) => (
-            <span key={c} className="flex items-center shrink-0">
-              <span className="font-display uppercase text-[9vw] md:text-[4.5vw] leading-none text-ink px-6 md:px-10 hover:text-red transition-colors duration-300" data-cursor="hover">
-                {c}
-              </span>
-              <span className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-red shrink-0" />
+        <VelocityMarquee baseSpeed={70} className="border-y border-ink/10 py-5 md:py-7 bg-bone">
+          {ROW_A.map((logo) => (
+            <span key={logo.src} className="flex items-center shrink-0">
+              <img
+                src={logo.src}
+                alt={logo.name}
+                title={logo.name}
+                draggable={false}
+                className="h-10 md:h-14 w-auto px-6 md:px-8 select-none object-contain"
+              />
+              <span className="font-mono2 text-red text-xl md:text-2xl shrink-0">✦</span>
             </span>
           ))}
         </VelocityMarquee>
 
-        <VelocityMarquee baseSpeed={55} reverse className="border-b border-ink/10 py-4 md:py-6 bg-bone">
-          {CLIENTS_B.map((c) => (
-            <span key={c} className="flex items-center shrink-0">
-              <span className="font-display uppercase text-[9vw] md:text-[4.5vw] leading-none text-stroke px-6 md:px-10" style={{ WebkitTextStrokeColor: "rgba(11,11,12,0.55)" }}>
-                {c}
-              </span>
-              <span className="font-mono2 text-red text-xl md:text-3xl shrink-0">✦</span>
+        <VelocityMarquee baseSpeed={55} reverse className="border-b border-ink/10 py-5 md:py-7 bg-bone">
+          {ROW_B.map((logo) => (
+            <span key={logo.src} className="flex items-center shrink-0">
+              <img
+                src={logo.src}
+                alt={logo.name}
+                title={logo.name}
+                draggable={false}
+                className="h-10 md:h-14 w-auto px-6 md:px-8 select-none object-contain grayscale opacity-40"
+              />
+              <span className="font-mono2 text-red text-xl md:text-2xl shrink-0">✦</span>
             </span>
           ))}
         </VelocityMarquee>

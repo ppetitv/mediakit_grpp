@@ -207,13 +207,15 @@ export default function Hero({ started }: { started: boolean }) {
           <span className="reveal-line"><span><span className="text-image-mask">millones</span> de</span></span>
           <span className="reveal-line"><span>
             personas{" "}
-            <span ref={rotRef} className="relative inline-block overflow-hidden align-bottom text-red h-[0.98em]">
+            <span ref={rotRef} className="relative inline-block align-baseline leading-[0.92] text-red">
               <span className="invisible whitespace-nowrap">INFORMADAS</span>
-              {ROTATING.map((w, i) => (
-                <span key={i} className="rot-word block absolute left-0 top-0 whitespace-nowrap">
-                  {w}
-                </span>
-              ))}
+              <span className="absolute inset-0 overflow-hidden">
+                {ROTATING.map((w, i) => (
+                  <span key={i} className="rot-word block absolute left-0 top-0 whitespace-nowrap">
+                    {w}
+                  </span>
+                ))}
+              </span>
             </span>
           </span></span>
         </h1>
