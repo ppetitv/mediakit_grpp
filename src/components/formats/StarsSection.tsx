@@ -241,13 +241,13 @@ export default function StarsSection() {
             <div className="relative z-20 pb-16 md:col-span-3 md:pb-24 md:pl-6">
               <div data-area-reveal className="border-t border-white/30 py-6">
                 <StarMark className="mb-5 h-7 w-7 text-white" />
-                <p className="max-w-[18rem] text-base font-semibold leading-snug md:text-lg">
+                <p className="max-w-[19rem] text-sm font-semibold leading-relaxed text-white md:text-base">
                   Nuestros influencers cuentan con el soporte mediático de Grupo RPP.
                 </p>
               </div>
               <div data-area-reveal className="border-t border-white/30 py-6">
                 <StarMark className="mb-5 h-7 w-7 text-white" />
-                <p className="max-w-[19rem] text-sm font-bold leading-relaxed text-white md:text-base">
+                <p className="max-w-[19rem] text-sm font-semibold leading-relaxed text-white md:text-base">
                   Los promocionamos en nuestra FM para potenciar sus KPIs y posicionarlos en territorios de valor para las marcas.
                 </p>
               </div>
