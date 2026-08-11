@@ -295,6 +295,47 @@ body {
   transform-style: preserve-3d;
 }
 
+/* ---------- Stars title logo: manual positioning controls ---------- */
+.stars-title-logo {
+  display: block;
+  width: 192px;
+  transform-origin: top left;
+  transform: translate(0, 0) rotate(0deg);
+}
+
+@media (min-width: 768px) {
+  .stars-title-logo-anchor {
+    align-self: flex-start;
+  }
+
+  .stars-title-logo {
+    /* Relación óptica entre el contorno “STARS” del SVG y las mayúsculas del título. */
+    width: 2.96em;
+    transform: translate(0em, 0.16em) rotate(0deg);
+  }
+}
+
+/* ---------- Stars horizontal logo: manual positioning controls ---------- */
+.stars-horizontal-logo-anchor {
+  align-self: center;
+}
+
+.stars-horizontal-logo {
+  /* El SVG incluye “GRUPO RPP”; esta altura iguala ópticamente la palabra STARS con el texto. */
+  display: block;
+  width: auto;
+  height: 1.04em;
+  transform-origin: left center;
+  transform: translate(0em, 0.1em) scale(1);
+}
+
+@media (min-width: 768px) {
+  .stars-horizontal-logo {
+    height: 1.08em;
+    transform: translate(0em, 0.11em) scale(1);
+  }
+}
+
 /* vertical text */
 .v-text {
   writing-mode: vertical-rl;

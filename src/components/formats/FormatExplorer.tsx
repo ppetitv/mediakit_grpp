@@ -7,11 +7,12 @@ import { getLenis } from "@/lib/scroll";
 import FormatPreview, { type FormatVisual } from "@/components/formats/FormatPreview";
 import FormatAccordion, { type FormatSpecs } from "@/components/formats/FormatAccordion";
 import FormatHighlights, { type FormatHighlight } from "@/components/formats/FormatHighlights";
+import StarsSection from "@/components/formats/StarsSection";
 
 type Device = "Todos" | "Mobile" | "Desktop";
 type Availability = "Solo mobile" | "Solo desktop";
 type Catalog = "rich-media" | "standard";
-type EcosystemArea = "display" | "branded-content" | "streaming";
+type EcosystemArea = "display" | "branded-content" | "streaming" | "stars";
 
 interface FormatItem {
   id: string;
@@ -177,6 +178,7 @@ const ECOSYSTEM_AREAS: { id: EcosystemArea; label: string }[] = [
   { id: "display", label: "Display" },
   { id: "branded-content", label: "Branded Content" },
   { id: "streaming", label: "Streaming" },
+  { id: "stars", label: "Stars" },
 ];
 const GALLERY_RHYTHM = [
   "md:col-span-7",
@@ -523,7 +525,7 @@ export default function FormatExplorer() {
       <div className="mx-auto max-w-[1600px] md:grid md:grid-cols-[250px_minmax(0,1fr)]">
         <aside className="relative hidden border-r border-ink/12 bg-bone md:block">
           <div className="sticky px-7 py-10" style={{ top: "calc(var(--nav-offset, 0px) + 1.5rem)" }}>
-            <p className="font-mono2 text-[9px] uppercase tracking-[0.22em] text-ink/35">Índice del catálogo</p>
+            <p className="font-mono2 text-[9px] uppercase tracking-[0.22em] text-ink/35">Índice de Formatos</p>
             <nav className="mt-7" aria-label="Ecosistema de formatos">
               {ECOSYSTEM_AREAS.map((area) => {
                 const active = activeArea === area.id;
@@ -627,13 +629,14 @@ export default function FormatExplorer() {
                 <h2 data-area-reveal className="font-display text-[15vw] uppercase leading-[0.84] md:col-span-8 md:text-[6.4vw]">Contenido que<br /><span className="text-red">se escucha</span></h2>
                 <p data-area-reveal className="max-w-sm text-sm leading-relaxed text-ink/55 md:col-span-4 md:text-base">Soluciones de audio y escucha digital que acompañan a la audiencia dentro y fuera de la pantalla.</p>
               </div>
-              <div data-area-reveal className="mt-16 grid border-y border-ink/15 sm:grid-cols-3 md:mt-24">
-                <div className="flex min-h-28 items-center border-b border-ink/15 px-5 sm:border-b-0 sm:border-r md:min-h-36 md:px-7"><img src="/images/stars_logo.svg" alt="Stars" className="h-10 w-auto max-w-[130px]" /></div>
+              <div data-area-reveal className="mt-16 grid border-y border-ink/15 sm:grid-cols-2 md:mt-24">
                 <div className="flex min-h-28 items-center border-b border-ink/15 px-5 sm:border-b-0 sm:border-r md:min-h-36 md:px-7"><img src="/images/audioplayer_logo.svg" alt="Audioplayer" className="h-10 w-auto max-w-[150px]" /></div>
                 <div className="flex min-h-28 items-center px-5 md:min-h-36 md:px-7"><span className="text-lg font-semibold md:text-xl">Streaming</span></div>
               </div>
             </div>
           </section>
+
+          <StarsSection />
         </div>
       </div>
 
