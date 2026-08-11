@@ -223,14 +223,18 @@ export default function StarsSection() {
             </h2>
           </div>
 
-          <div className="mt-10 grid md:mt-0 md:grid-cols-12 md:items-end">
+          <div className="mt-10 grid md:mt-6 md:grid-cols-12 md:items-end">
             <div data-stars-cast className="relative z-10 mx-0 min-w-0 md:col-span-9 md:-ml-16 md:-mr-10">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-[1%] left-1/2 z-0 h-[5%] w-[68%] -translate-x-1/2 rounded-[50%] bg-ink/15 blur-xl md:bottom-[2%] md:h-[7%] md:w-[72%] md:blur-2xl"
+              />
               <img
                 src="/images/stars/Influencers Stars.avif"
                 alt="Conductores e influencers de Stars Grupo RPP"
                 loading="lazy"
                 decoding="async"
-                className="mx-auto block h-auto max-w-full object-contain object-bottom md:w-[85%]"
+                className="stars-cast-image relative z-10 mx-auto block h-auto max-w-full object-contain object-bottom md:w-[80%]"
               />
             </div>
 
@@ -243,7 +247,7 @@ export default function StarsSection() {
               </div>
               <div data-area-reveal className="border-t border-white/30 py-6">
                 <StarMark className="mb-5 h-7 w-7 text-white" />
-                <p className="max-w-[19rem] text-sm font-bold leading-relaxed text-white/75 md:text-base">
+                <p className="max-w-[19rem] text-sm font-bold leading-relaxed text-white md:text-base">
                   Los promocionamos en nuestra FM para potenciar sus KPIs y posicionarlos en territorios de valor para las marcas.
                 </p>
               </div>
@@ -304,7 +308,7 @@ export default function StarsSection() {
               >
                 <div className="flex items-start justify-between">
                   <span className="font-mono2 text-[9px] tracking-[0.2em] text-ink/45">
-                    {benefit.id} / 04
+                    {benefit.id}
                   </span>
                   <img src="/images/acento.svg" alt="" className="h-9 w-auto md:h-11" />
                 </div>

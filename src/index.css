@@ -336,6 +336,19 @@ body {
   }
 }
 
+/* ---------- Stars cast: soften the source image's natural lower crop ---------- */
+.stars-cast-image {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 92%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 92%, transparent 100%);
+}
+
+@media (min-width: 768px) {
+  .stars-cast-image {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 88%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 88%, transparent 100%);
+  }
+}
+
 /* vertical text */
 .v-text {
   writing-mode: vertical-rl;
