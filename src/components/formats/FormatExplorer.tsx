@@ -5,6 +5,7 @@ import { ChevronDown } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { getLenis } from "@/lib/scroll";
 import FormatPreview, { type FormatVisual } from "@/components/formats/FormatPreview";
+import FormatVideoDemo, { type FormatDemoVideo } from "@/components/formats/FormatVideoDemo";
 import FormatAccordion, { type FormatSpecs } from "@/components/formats/FormatAccordion";
 import FormatHighlights, { type FormatHighlight } from "@/components/formats/FormatHighlights";
 import StarsSection from "@/components/formats/StarsSection";
@@ -23,6 +24,7 @@ interface FormatItem {
   description: string;
   availability?: Availability;
   imageSrc?: string;
+  demoVideos?: readonly [FormatDemoVideo, ...FormatDemoVideo[]];
   specs?: FormatSpecs;
   highlights?: FormatHighlight[];
 }
@@ -150,10 +152,10 @@ const RICH_MEDIA_FORMATS: FormatItem[] = [
 ];
 
 const STANDARD_FORMATS: FormatItem[] = [
-  { id: "01", slug: "top", title: "Top", device: "Multiplataforma", visual: "video", imageSrc: "/images/formats/standard/top.png", description: "Una franja horizontal ubicada en la zona superior que asegura presencia desde el primer contacto con el contenido." },
-  { id: "02", slug: "caja", title: "Caja", device: "Multiplataforma", visual: "widget", imageSrc: "/images/formats/standard/caja.png", description: "Una pieza rectangular versátil que acompaña la lectura y mantiene la marca visible dentro del recorrido editorial." },
-  { id: "03", slug: "middle", title: "Middle", device: "Multiplataforma", visual: "lower-third", imageSrc: "/images/formats/standard/middle.png", description: "Un formato horizontal integrado a mitad de página, pensado para alcanzar a una audiencia ya involucrada con el contenido." },
-  { id: "04", slug: "doble-caja", title: "Doble Caja", device: "Desktop", visual: "skin", imageSrc: "/images/formats/standard/doble-caja.png", description: "Dos espacios coordinados que amplían la presencia de campaña y permiten construir una comunicación visual complementaria.", availability: "Solo desktop" },
+  { id: "01", slug: "top", title: "Top", device: "Multiplataforma", visual: "video", imageSrc: "/images/formats/standard/top.png", demoVideos: [{ device: "Mobile", src: "/images/formats/estandar/Top%20Mobile%20320x100%20(1).mp4" }], description: "Una franja horizontal ubicada en la zona superior que asegura presencia desde el primer contacto con el contenido." },
+  { id: "02", slug: "caja", title: "Caja", device: "Multiplataforma", visual: "widget", imageSrc: "/images/formats/standard/caja.png", demoVideos: [{ device: "Desktop", src: "/images/formats/estandar/Banner%20Caja%20250x300%20(1).mp4" }], description: "Una pieza rectangular versátil que acompaña la lectura y mantiene la marca visible dentro del recorrido editorial." },
+  { id: "03", slug: "middle", title: "Middle", device: "Multiplataforma", visual: "lower-third", imageSrc: "/images/formats/standard/middle.png", demoVideos: [{ device: "Desktop", src: "/images/formats/estandar/Banner%20Middle%20970x180%20(1).mp4" }, { device: "Mobile", src: "/images/formats/estandar/Middle%20Mobile%20320x100%20(1).mp4" }], description: "Un formato horizontal integrado a mitad de página, pensado para alcanzar a una audiencia ya involucrada con el contenido." },
+  { id: "04", slug: "doble-caja", title: "Doble Caja", device: "Desktop", visual: "skin", imageSrc: "/images/formats/standard/doble-caja.png", demoVideos: [{ device: "Desktop", src: "/images/formats/estandar/Doble%20Caja%20300x600.mp4" }], description: "Dos espacios coordinados que amplían la presencia de campaña y permiten construir una comunicación visual complementaria.", availability: "Solo desktop" },
   { id: "05", slug: "destaque", title: "Destaque", device: "Multiplataforma", visual: "hotspot", imageSrc: "/images/formats/standard/destaque.png", description: "Una posición de alta visibilidad que separa la campaña del flujo habitual y refuerza la recordación de marca." },
   { id: "06", slug: "intertexto", title: "Intertexto", device: "Multiplataforma", visual: "before-after", imageSrc: "/images/formats/standard/intertexto.png", description: "Una pieza insertada entre bloques editoriales que aparece de forma natural durante la lectura del artículo." },
 ];
@@ -656,7 +658,11 @@ export default function FormatExplorer() {
 
                 <div className="grid flex-1 items-center gap-10 py-10 md:grid-cols-12 md:gap-12 md:py-12">
                   <div data-detail-reveal className="md:col-span-8">
-                    <FormatPreview key={`${routeCatalog}-${selected.id}`} visual={selected.visual} title={selected.title} imageSrc={selected.imageSrc} />
+                    {selected.demoVideos ? (
+                      <FormatVideoDemo key={`${routeCatalog}-${selected.id}`} title={selected.title} videos={selected.demoVideos} poster={selected.imageSrc} />
+                    ) : (
+                      <FormatPreview key={`${routeCatalog}-${selected.id}`} visual={selected.visual} title={selected.title} imageSrc={selected.imageSrc} />
+                    )}
                   </div>
                   <div className="md:col-span-4">
                     {selected.availability && <div data-detail-reveal><PlatformBadge availability={selected.availability} /></div>}
