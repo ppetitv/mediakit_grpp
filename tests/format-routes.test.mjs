@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { matchRoutes } from "react-router";
-import { FORMAT_SECTION_ROUTES, getFormatSection } from "../src/lib/format-routes.ts";
+import { FORMAT_SECTION_ROUTES, STREAMING_FAMILY_ROUTES, getFormatSection, getFormatSectionTarget } from "../src/lib/format-routes.ts";
 
 const routes = [
   ...Object.values(FORMAT_SECTION_ROUTES).map(({ path }) => ({ path })),
@@ -33,4 +33,18 @@ test("existing individual format URLs keep their catalog and slug", () => {
 test("the existing catalog entry point remains available", () => {
   assert.equal(getFormatSection("/formatos"), "display");
   assert.ok(matchRoutes(routes, "/formatos"));
+});
+
+test("streaming families have direct links to visible sections", () => {
+  for (const { path, target } of Object.values(STREAMING_FAMILY_ROUTES)) {
+    const url = new URL(path, "http://localhost");
+    assert.equal(getFormatSection(url.pathname), "streaming");
+    assert.equal(getFormatSectionTarget(url.pathname, url.hash), target);
+    assert.equal(matchRoutes(routes, url.pathname).at(-1).params.formatSlug, undefined);
+  }
+});
+
+test("unknown or unrelated fragments cannot override a section destination", () => {
+  assert.equal(getFormatSectionTarget("/formatos/streaming", "#missing"), "area-streaming");
+  assert.equal(getFormatSectionTarget("/formatos/standard", "#streaming-hibrido"), "catalog-standard");
 });

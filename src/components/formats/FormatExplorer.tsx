@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { ChevronDown } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { getLenis } from "@/lib/scroll";
-import { FORMAT_SECTION_ROUTES, getFormatSection, type FormatSection } from "@/lib/format-routes";
+import { FORMAT_SECTION_ROUTES, getFormatSection, getFormatSectionTarget, type FormatSection } from "@/lib/format-routes";
 import FormatPreview, { type FormatVisual } from "@/components/formats/FormatPreview";
 import FormatVideoDemo, { type FormatDemoVideo } from "@/components/formats/FormatVideoDemo";
 import FormatAccordion, { type FormatSpecs } from "@/components/formats/FormatAccordion";
@@ -377,27 +377,57 @@ export default function FormatExplorer() {
     if (previous && (selected || (previous.detail && previous.section === routeSection))) return;
 
     let positioned = false;
-    const frame = requestAnimationFrame(() => {
+    let canceled = false;
+    let frame = 0;
+    const positionTarget = () => {
+      if (canceled) return;
       positioned = true;
-      const target = document.getElementById(FORMAT_SECTION_ROUTES[routeSection].target);
+      const target = document.getElementById(getFormatSectionTarget(location.pathname, location.hash));
       if (!target) return;
       ScrollTrigger.refresh();
-      const headerHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-offset")) || 0;
-      const offset = -headerHeight - (window.innerWidth < 768 ? (indexRef.current?.offsetHeight ?? 0) + 12 : 24);
+      const getOffset = () => {
+        const headerHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-offset")) || 0;
+        return -headerHeight - (window.innerWidth < 768 ? (indexRef.current?.offsetHeight ?? 0) + 12 : 24);
+      };
+      const offset = getOffset();
       const lenis = getLenis();
       const immediate = !previous || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const focusTarget = () => {
+        if (location.hash && target.hasAttribute("tabindex")) target.focus({ preventScroll: true });
+      };
       if (lenis) {
         lenis.resize();
-        lenis.scrollTo(target, { offset, duration: 1.25, immediate, force: true });
+        lenis.scrollTo(target, {
+          offset, duration: 1.25, immediate, force: true,
+          onComplete: () => {
+            frame = requestAnimationFrame(() => {
+              if (canceled) return;
+              // The mobile index can shrink when the destination becomes active.
+              lenis.resize();
+              lenis.scrollTo(target, { offset: getOffset(), immediate: true, force: true });
+              focusTarget();
+            });
+          },
+        });
       } else {
         window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY + offset, behavior: immediate ? "instant" : "smooth" });
+        focusTarget();
       }
-    });
+    };
+    const schedulePosition = () => {
+      if (canceled) return;
+      frame = requestAnimationFrame(() => {
+        frame = requestAnimationFrame(positionTarget);
+      });
+    };
+    if (!previous) void document.fonts.ready.then(schedulePosition);
+    else schedulePosition();
     return () => {
+      canceled = true;
       cancelAnimationFrame(frame);
       if (!positioned) previousRouteRef.current = previous;
     };
-  }, [location.key, routeSection, selected]);
+  }, [location.key, location.pathname, location.hash, routeSection, selected]);
 
   const setDetailNode = useCallback((node: HTMLDivElement | null) => {
     detailRef.current = node;

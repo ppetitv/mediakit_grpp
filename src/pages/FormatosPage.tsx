@@ -12,6 +12,8 @@ import FormatExplorer from "@/components/formats/FormatExplorer";
 export default function FormatosPage() {
   useEffect(() => {
     markExperienceLoaded();
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
     const lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 1 });
     setLenis(lenis);
@@ -25,6 +27,7 @@ export default function FormatosPage() {
       gsap.ticker.remove(raf);
       lenis.destroy();
       setLenis(null);
+      window.history.scrollRestoration = previousScrollRestoration;
     };
   }, []);
 
