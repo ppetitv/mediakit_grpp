@@ -112,7 +112,7 @@ export default function StreamingBenefits() {
           <div className="lg:col-span-7">
             <p data-benefits-intro className="text-[9px] uppercase tracking-[0.22em] text-bone/45">El valor de conectar</p>
             <h3 data-benefits-intro className="mt-6 font-display text-[12vw] uppercase leading-[0.95] sm:text-6xl md:text-[5vw]">
-              ¿Por qué <span className="text-red">streaming</span><br />de RPP?
+              ¿Por qué <span className="text-red">streaming</span><br />de GRPP?
             </h3>
           </div>
           <p data-benefits-intro className="max-w-md text-sm leading-relaxed text-bone/65 lg:col-span-5 lg:pb-1">
