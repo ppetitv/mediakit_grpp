@@ -232,6 +232,8 @@ export default function StarsSection() {
               <img
                 src="/images/stars/Influencers Stars.avif"
                 alt="Conductores e influencers de Stars Grupo RPP"
+                width={1200}
+                height={800}
                 loading="lazy"
                 decoding="async"
                 className="stars-cast-image relative z-10 mx-auto block h-auto max-w-full object-contain object-bottom md:w-[80%]"

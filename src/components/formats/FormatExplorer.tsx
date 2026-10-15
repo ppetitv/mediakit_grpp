@@ -9,6 +9,7 @@ import FormatVideoDemo, { type FormatDemoVideo } from "@/components/formats/Form
 import FormatAccordion, { type FormatSpecs } from "@/components/formats/FormatAccordion";
 import FormatHighlights, { type FormatHighlight } from "@/components/formats/FormatHighlights";
 import StarsSection from "@/components/formats/StarsSection";
+import StreamingSection from "@/components/formats/StreamingSection";
 
 type Device = "Todos" | "Mobile" | "Desktop";
 type Availability = "Solo mobile" | "Solo desktop";
@@ -624,19 +625,7 @@ export default function FormatExplorer() {
             </div>
           </section>
 
-          <section id="area-streaming" data-ecosystem-area="streaming" className="bg-[#dedcd6] px-5 py-24 text-ink md:px-10 md:py-36">
-            <div className="mx-auto max-w-[1120px]">
-              <p data-area-reveal className="font-mono2 text-[9px] uppercase tracking-[0.24em] text-ink/35">Ecosistema / Streaming</p>
-              <div className="mt-8 grid gap-10 md:grid-cols-12 md:items-end">
-                <h2 data-area-reveal className="font-display text-[15vw] uppercase leading-[0.84] md:col-span-8 md:text-[6.4vw]">Contenido que<br /><span className="text-red">se escucha</span></h2>
-                <p data-area-reveal className="max-w-sm text-sm leading-relaxed text-ink/55 md:col-span-4 md:text-base">Soluciones de audio y escucha digital que acompañan a la audiencia dentro y fuera de la pantalla.</p>
-              </div>
-              <div data-area-reveal className="mt-16 grid border-y border-ink/15 sm:grid-cols-2 md:mt-24">
-                <div className="flex min-h-28 items-center border-b border-ink/15 px-5 sm:border-b-0 sm:border-r md:min-h-36 md:px-7"><img src="/images/audioplayer_logo.svg" alt="Audioplayer" className="h-10 w-auto max-w-[150px]" /></div>
-                <div className="flex min-h-28 items-center px-5 md:min-h-36 md:px-7"><span className="text-lg font-semibold md:text-xl">Streaming</span></div>
-              </div>
-            </div>
-          </section>
+          <StreamingSection />
 
           <StarsSection />
         </div>

@@ -1,11 +1,22 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { gsap } from "@/lib/anim";
 import Magnetic from "@/components/Magnetic";
+import { CONTACT_INTEREST_EVENT } from "@/lib/contact";
 
 export default function Contact() {
   const rootRef = useRef<HTMLElement>(null);
   const [sent, setSent] = useState(false);
+  const [interest, setInterest] = useState("");
   const btnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const selectInterest = (event: Event) => {
+      setInterest((event as CustomEvent<string>).detail);
+      setSent(false);
+    };
+    window.addEventListener(CONTACT_INTEREST_EVENT, selectInterest);
+    return () => window.removeEventListener(CONTACT_INTEREST_EVENT, selectInterest);
+  }, []);
 
   useEffect(() => {
     const q = gsap.utils.selector(rootRef);
@@ -67,6 +78,16 @@ export default function Contact() {
         </div>
 
         <form onSubmit={submit} className="contact-fade space-y-8 lg:pt-24">
+          {interest && (
+            <div className="border-l-2 border-red bg-white/[0.04] px-4 py-3" role="status">
+              <p className="text-[9px] uppercase tracking-[0.16em] text-bone/45">Tu consulta</p>
+              <div className="mt-2 flex items-center justify-between gap-4">
+                <p className="text-sm leading-relaxed text-bone">{interest}</p>
+                <button type="button" onClick={() => setInterest("")} aria-label="Quitar programa seleccionado" className="flex h-9 w-9 shrink-0 items-center justify-center text-xl text-bone/50 transition-colors hover:text-bone focus-visible:outline focus-visible:outline-2 focus-visible:outline-red">×</button>
+              </div>
+              <input type="hidden" name="interes" value={interest} />
+            </div>
+          )}
           <div className="grid sm:grid-cols-2 gap-8">
             <div className="field">
               <label htmlFor="f-nombre">Nombre y apellido</label>
