@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { ChevronDown } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { getLenis } from "@/lib/scroll";
+import { FORMAT_SECTION_ROUTES, getFormatSection, type FormatSection } from "@/lib/format-routes";
 import FormatPreview, { type FormatVisual } from "@/components/formats/FormatPreview";
 import FormatVideoDemo, { type FormatDemoVideo } from "@/components/formats/FormatVideoDemo";
 import FormatAccordion, { type FormatSpecs } from "@/components/formats/FormatAccordion";
@@ -241,6 +242,8 @@ export default function FormatExplorer() {
   const detailTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const hasOpenedRef = useRef(false);
   const closingRef = useRef(false);
+  const previousRouteRef = useRef<{ section: FormatSection; detail: boolean } | null>(null);
+  const routeSection = getFormatSection(location.pathname);
   const routeCatalog: Catalog = location.pathname.startsWith("/formatos/standard") ? "standard" : "rich-media";
   const selectedCatalogData = CATALOGS[routeCatalog];
   const selected = selectedCatalogData.formats.find((format) => format.slug === formatSlug) ?? null;
@@ -253,7 +256,7 @@ export default function FormatExplorer() {
     ? selectedCatalogData.formats[(selectedIndex + 1) % selectedCatalogData.formats.length]
     : null;
   const [activeSection, setActiveSection] = useState<Catalog>(routeCatalog);
-  const [activeArea, setActiveArea] = useState<EcosystemArea>("display");
+  const [activeArea, setActiveArea] = useState<EcosystemArea>(routeSection in CATALOGS ? "display" : routeSection as EcosystemArea);
   const [copied, setCopied] = useState(false);
 
   const copyUrl = () => {
@@ -267,8 +270,8 @@ export default function FormatExplorer() {
   useEffect(() => {
     document.title = selected
       ? `${selected.title} | ${selectedCatalogData.label} | Formatos GRPP`
-      : "Catálogo de formatos digitales | GRPP";
-  }, [selected, selectedCatalogData.label]);
+      : `${FORMAT_SECTION_ROUTES[routeSection].label} | Formatos GRPP`;
+  }, [selected, selectedCatalogData.label, routeSection]);
 
   useLayoutEffect(() => {
     const root = rootRef.current;
@@ -339,27 +342,6 @@ export default function FormatExplorer() {
     return () => pendingImages.forEach((image) => image.removeEventListener("load", refresh));
   }, []);
 
-  const scrollToCatalog = (catalog: Catalog) => {
-    const target = document.getElementById(`catalog-${catalog}`);
-    if (!target) return;
-    setActiveArea("display");
-    setActiveSection(catalog);
-    const offset = window.innerWidth < 768 ? -(indexRef.current?.offsetHeight ?? 0) - 12 : -24;
-    const lenis = getLenis();
-    if (lenis) lenis.scrollTo(target, { offset, duration: 1.25 });
-    else target.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const scrollToArea = (area: EcosystemArea) => {
-    const target = document.getElementById(`area-${area}`);
-    if (!target) return;
-    setActiveArea(area);
-    const offset = window.innerWidth < 768 ? -(indexRef.current?.offsetHeight ?? 0) - 12 : -24;
-    const lenis = getLenis();
-    if (lenis) lenis.scrollTo(target, { offset, duration: 1.35 });
-    else target.scrollIntoView({ behavior: "smooth" });
-  };
-
   const openDetail = (format: FormatItem, catalog: Catalog, event: MouseEvent<HTMLAnchorElement>) => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
@@ -389,16 +371,33 @@ export default function FormatExplorer() {
   }, []);
 
   useEffect(() => {
-    if (formatSlug || routeCatalog !== "standard") return;
-    requestAnimationFrame(() => {
-      const target = document.getElementById("catalog-standard");
+    const previous = previousRouteRef.current;
+    previousRouteRef.current = { section: routeSection, detail: selected !== null };
+    // Opening or closing a detail must preserve its originating card's position.
+    if (previous && (selected || (previous.detail && previous.section === routeSection))) return;
+
+    let positioned = false;
+    const frame = requestAnimationFrame(() => {
+      positioned = true;
+      const target = document.getElementById(FORMAT_SECTION_ROUTES[routeSection].target);
       if (!target) return;
-      const offset = -(indexRef.current?.offsetHeight ?? 0) - 12;
+      ScrollTrigger.refresh();
+      const headerHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-offset")) || 0;
+      const offset = -headerHeight - (window.innerWidth < 768 ? (indexRef.current?.offsetHeight ?? 0) + 12 : 24);
       const lenis = getLenis();
-      if (lenis) lenis.scrollTo(target, { offset, duration: 1.25 });
-      else target.scrollIntoView({ behavior: "smooth" });
+      const immediate = !previous || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (lenis) {
+        lenis.resize();
+        lenis.scrollTo(target, { offset, duration: 1.25, immediate, force: true });
+      } else {
+        window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY + offset, behavior: immediate ? "instant" : "smooth" });
+      }
     });
-  }, [formatSlug, routeCatalog]);
+    return () => {
+      cancelAnimationFrame(frame);
+      if (!positioned) previousRouteRef.current = previous;
+    };
+  }, [location.key, routeSection, selected]);
 
   const setDetailNode = useCallback((node: HTMLDivElement | null) => {
     detailRef.current = node;
@@ -505,7 +504,7 @@ export default function FormatExplorer() {
         <div className="relative">
           <label className="relative block">
             <span className="sr-only">Área del ecosistema</span>
-            <select value={activeArea} onChange={(event) => scrollToArea(event.target.value as EcosystemArea)} className="h-12 w-full appearance-none rounded-lg border border-ink/18 bg-white/70 px-4 pr-12 text-sm font-semibold text-ink shadow-[0_1px_0_rgba(22,22,24,0.04)] outline-none transition-colors focus:border-ink/40 focus:bg-white focus-visible:ring-2 focus-visible:ring-red/30">
+            <select value={activeArea} onChange={(event) => navigate(FORMAT_SECTION_ROUTES[event.target.value as EcosystemArea].path)} className="h-12 w-full appearance-none rounded-lg border border-ink/18 bg-white/70 px-4 pr-12 text-sm font-semibold text-ink shadow-[0_1px_0_rgba(22,22,24,0.04)] outline-none transition-colors focus:border-ink/40 focus:bg-white focus-visible:ring-2 focus-visible:ring-red/30">
               {ECOSYSTEM_AREAS.map((area) => <option key={area.id} value={area.id}>{area.label}</option>)}
             </select>
             <ChevronDown aria-hidden="true" strokeWidth={1.8} className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/50" />
@@ -515,9 +514,9 @@ export default function FormatExplorer() {
               {CATALOG_ORDER.map((catalog) => {
                 const active = activeSection === catalog;
                 return (
-                  <button key={catalog} onClick={() => scrollToCatalog(catalog)} aria-current={active ? "location" : undefined} className={`min-h-11 shrink-0 border-b-2 px-4 text-sm font-semibold transition-colors ${active ? "border-red text-red" : "border-transparent text-ink/45"}`}>
+                  <Link key={catalog} to={FORMAT_SECTION_ROUTES[catalog].path} aria-current={active ? "location" : undefined} className={`inline-flex min-h-11 shrink-0 items-center border-b-2 px-4 text-sm font-semibold transition-colors ${active ? "border-red text-red" : "border-transparent text-ink/45"}`}>
                     {CATALOGS[catalog].label}
-                  </button>
+                  </Link>
                 );
               })}
             </nav>
@@ -534,17 +533,17 @@ export default function FormatExplorer() {
                 const active = activeArea === area.id;
                 return (
                   <div key={area.id} className="border-t border-ink/12 py-4 first:border-t-0 first:pt-0">
-                    <button onClick={() => scrollToArea(area.id)} data-cursor="hover" aria-current={active ? "location" : undefined} className={`w-full rounded-md border-l-[3px] px-4 py-3 text-left text-lg font-semibold leading-tight transition-colors duration-300 ${active ? "border-red bg-red text-white" : "border-transparent text-ink/45 hover:bg-ink/[0.04] hover:text-ink"}`}>
+                    <Link to={FORMAT_SECTION_ROUTES[area.id].path} data-cursor="hover" aria-current={active ? "location" : undefined} className={`block w-full rounded-md border-l-[3px] px-4 py-3 text-left text-lg font-semibold leading-tight transition-colors duration-300 ${active ? "border-red bg-red text-white" : "border-transparent text-ink/45 hover:bg-ink/[0.04] hover:text-ink"}`}>
                       {area.label}
-                    </button>
+                    </Link>
                     {area.id === "display" && (
                       <div className="ml-[3px] mt-3 space-y-1 border-l border-ink/12 pl-4">
                         {CATALOG_ORDER.map((catalog) => {
                           const sectionActive = activeArea === "display" && activeSection === catalog;
                           return (
-                            <button key={catalog} onClick={() => scrollToCatalog(catalog)} data-cursor="hover" aria-current={sectionActive ? "location" : undefined} className={`block w-full rounded-md px-3 py-2 text-left text-sm font-semibold transition-colors ${sectionActive ? "bg-red/[0.08] text-red" : "text-ink/45 hover:bg-ink/[0.04] hover:text-ink"}`}>
+                            <Link key={catalog} to={FORMAT_SECTION_ROUTES[catalog].path} data-cursor="hover" aria-current={sectionActive ? "location" : undefined} className={`block w-full rounded-md px-3 py-2 text-left text-sm font-semibold transition-colors ${sectionActive ? "bg-red/[0.08] text-red" : "text-ink/45 hover:bg-ink/[0.04] hover:text-ink"}`}>
                               {CATALOGS[catalog].label}
-                            </button>
+                            </Link>
                           );
                         })}
                       </div>
