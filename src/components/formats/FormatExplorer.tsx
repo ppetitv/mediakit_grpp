@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { ChevronDown } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { getLenis } from "@/lib/scroll";
+import { getFormatThumbnail } from "@/lib/format-thumbnails";
 import { FORMAT_SECTION_ROUTES, getFormatSection, getFormatSectionTarget, type FormatSection } from "@/lib/format-routes";
 import FormatPreview, { type FormatVisual } from "@/components/formats/FormatPreview";
 import FormatVideoDemo, { type FormatDemoVideo } from "@/components/formats/FormatVideoDemo";
@@ -25,7 +26,6 @@ interface FormatItem {
   visual: FormatVisual;
   description: string;
   availability?: Availability;
-  imageSrc?: string;
   demoVideos?: readonly [FormatDemoVideo, ...FormatDemoVideo[]];
   specs?: FormatSpecs;
   highlights?: FormatHighlight[];
@@ -154,12 +154,12 @@ const RICH_MEDIA_FORMATS: FormatItem[] = [
 ];
 
 const STANDARD_FORMATS: FormatItem[] = [
-  { id: "01", slug: "top", title: "Top", device: "Multiplataforma", visual: "video", imageSrc: "/images/formats/standard/top.png", demoVideos: [{ device: "Mobile", src: "/images/formats/estandar/Top%20Mobile%20320x100%20(1).mp4" }], description: "Una franja horizontal ubicada en la zona superior que asegura presencia desde el primer contacto con el contenido." },
-  { id: "02", slug: "caja", title: "Caja", device: "Multiplataforma", visual: "widget", imageSrc: "/images/formats/standard/caja.png", demoVideos: [{ device: "Desktop", src: "/images/formats/estandar/Banner%20Caja%20250x300%20(1).mp4" }], description: "Una pieza rectangular versátil que acompaña la lectura y mantiene la marca visible dentro del recorrido editorial." },
-  { id: "03", slug: "middle", title: "Middle", device: "Multiplataforma", visual: "lower-third", imageSrc: "/images/formats/standard/middle.png", demoVideos: [{ device: "Desktop", src: "/images/formats/estandar/Banner%20Middle%20970x180%20(1).mp4" }, { device: "Mobile", src: "/images/formats/estandar/Middle%20Mobile%20320x100%20(1).mp4" }], description: "Un formato horizontal integrado a mitad de página, pensado para alcanzar a una audiencia ya involucrada con el contenido." },
-  { id: "04", slug: "doble-caja", title: "Doble Caja", device: "Desktop", visual: "skin", imageSrc: "/images/formats/standard/doble-caja.png", demoVideos: [{ device: "Desktop", src: "/images/formats/estandar/Doble%20Caja%20300x600.mp4" }], description: "Dos espacios coordinados que amplían la presencia de campaña y permiten construir una comunicación visual complementaria.", availability: "Solo desktop" },
-  { id: "05", slug: "destaque", title: "Destaque", device: "Multiplataforma", visual: "hotspot", imageSrc: "/images/formats/standard/destaque.png", description: "Una posición de alta visibilidad que separa la campaña del flujo habitual y refuerza la recordación de marca." },
-  { id: "06", slug: "intertexto", title: "Intertexto", device: "Multiplataforma", visual: "before-after", imageSrc: "/images/formats/standard/intertexto.png", description: "Una pieza insertada entre bloques editoriales que aparece de forma natural durante la lectura del artículo." },
+  { id: "01", slug: "top", title: "Top", device: "Multiplataforma", visual: "video", demoVideos: [{ device: "Mobile", src: "/images/formats/estandar/Top%20Mobile%20320x100%20(1).mp4" }], description: "Una franja horizontal ubicada en la zona superior que asegura presencia desde el primer contacto con el contenido." },
+  { id: "02", slug: "caja", title: "Caja", device: "Multiplataforma", visual: "widget", demoVideos: [{ device: "Desktop", src: "/images/formats/estandar/Banner%20Caja%20250x300%20(1).mp4" }], description: "Una pieza rectangular versátil que acompaña la lectura y mantiene la marca visible dentro del recorrido editorial." },
+  { id: "03", slug: "middle", title: "Middle", device: "Multiplataforma", visual: "lower-third", demoVideos: [{ device: "Desktop", src: "/images/formats/estandar/Banner%20Middle%20970x180%20(1).mp4" }, { device: "Mobile", src: "/images/formats/estandar/Middle%20Mobile%20320x100%20(1).mp4" }], description: "Un formato horizontal integrado a mitad de página, pensado para alcanzar a una audiencia ya involucrada con el contenido." },
+  { id: "04", slug: "doble-caja", title: "Doble Caja", device: "Desktop", visual: "skin", demoVideos: [{ device: "Desktop", src: "/images/formats/estandar/Doble%20Caja%20300x600.mp4" }], description: "Dos espacios coordinados que amplían la presencia de campaña y permiten construir una comunicación visual complementaria.", availability: "Solo desktop" },
+  { id: "05", slug: "destaque", title: "Destaque", device: "Multiplataforma", visual: "hotspot", description: "Una posición de alta visibilidad que separa la campaña del flujo habitual y refuerza la recordación de marca." },
+  { id: "06", slug: "intertexto", title: "Intertexto", device: "Multiplataforma", visual: "before-after", description: "Una pieza insertada entre bloques editoriales que aparece de forma natural durante la lectura del artículo." },
 ];
 
 const CATALOGS: Record<Catalog, { label: string; heading: [string, string]; description: string; formats: FormatItem[] }> = {
@@ -613,7 +613,7 @@ export default function FormatExplorer() {
                     <article key={`${catalog}-${format.id}`} data-gallery-item className={GALLERY_RHYTHM[index % GALLERY_RHYTHM.length]}>
                       <a href={`${catalogBasePath}/${format.slug}`} onClick={(event) => openDetail(format, catalog, event)} data-cursor="ABRIR" className="group block w-full text-left active:scale-[0.99]" aria-label={`Abrir detalle de ${format.title}`}>
                         <div data-gallery-preview className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
-                          <FormatPreview visual={format.visual} title={format.title} imageSrc={format.imageSrc} />
+                          <FormatPreview visual={format.visual} title={format.title} imageSrc={getFormatThumbnail(catalog, format.slug)} priority={index === 0 && routeSection === catalog} />
                           <div className="pointer-events-none absolute inset-0 bg-ink/0 transition-colors duration-500 group-hover:bg-ink/[0.06]" />
                           <span className="absolute bottom-5 right-5 flex h-12 w-12 translate-y-3 items-center justify-center rounded-full bg-red text-xl text-white opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 md:bottom-7 md:right-7 md:h-14 md:w-14">↗</span>
                         </div>
@@ -677,9 +677,9 @@ export default function FormatExplorer() {
                 <div className="grid flex-1 items-center gap-10 py-10 md:grid-cols-12 md:gap-12 md:py-12">
                   <div data-detail-reveal className="md:col-span-8">
                     {selected.demoVideos ? (
-                      <FormatVideoDemo key={`${routeCatalog}-${selected.id}`} title={selected.title} videos={selected.demoVideos} poster={selected.imageSrc} />
+                      <FormatVideoDemo key={`${routeCatalog}-${selected.id}`} title={selected.title} videos={selected.demoVideos} poster={getFormatThumbnail(routeCatalog, selected.slug)} />
                     ) : (
-                      <FormatPreview key={`${routeCatalog}-${selected.id}`} visual={selected.visual} title={selected.title} imageSrc={selected.imageSrc} />
+                      <FormatPreview key={`${routeCatalog}-${selected.id}`} visual={selected.visual} title={selected.title} imageSrc={getFormatThumbnail(routeCatalog, selected.slug)} priority sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1599px) 66vw, 1000px" />
                     )}
                   </div>
                   <div className="md:col-span-4">

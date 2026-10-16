@@ -1,0 +1,170 @@
+[
+  {
+    "catalog": "rich-media",
+    "slug": "interstitial",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 32128,
+    "smallBytes": 10812
+  },
+  {
+    "catalog": "standard",
+    "slug": "middle",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 23100,
+    "smallBytes": 7306
+  },
+  {
+    "catalog": "standard",
+    "slug": "top",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 21772,
+    "smallBytes": 6920
+  },
+  {
+    "catalog": "standard",
+    "slug": "caja",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 21668,
+    "smallBytes": 7060
+  },
+  {
+    "catalog": "standard",
+    "slug": "doble-caja",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 19432,
+    "smallBytes": 5732
+  },
+  {
+    "catalog": "standard",
+    "slug": "destaque",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 25674,
+    "smallBytes": 8236
+  },
+  {
+    "catalog": "standard",
+    "slug": "intertexto",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 23532,
+    "smallBytes": 7322
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "interscroller",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 19188,
+    "smallBytes": 5398
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "skin",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 24586,
+    "smallBytes": 7684
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "skin-arco",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 21290,
+    "smallBytes": 6940
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "widget",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 25242,
+    "smallBytes": 8622
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "zocalo",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 28598,
+    "smallBytes": 8872
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "historias",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 28226,
+    "smallBytes": 9618
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "sondeo",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 32296,
+    "smallBytes": 10538
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "scratch",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 26922,
+    "smallBytes": 8850
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "antes-y-despues",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 24500,
+    "smallBytes": 8058
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "banner-360",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 37968,
+    "smallBytes": 11944
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "hot-spot",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 31234,
+    "smallBytes": 10548
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "contador",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 43634,
+    "smallBytes": 15944
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "social-ad",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 26840,
+    "smallBytes": 9654
+  },
+  {
+    "catalog": "rich-media",
+    "slug": "video-top-full",
+    "width": 1448,
+    "height": 1086,
+    "fullBytes": 21818,
+    "smallBytes": 6774
+  }
+]
