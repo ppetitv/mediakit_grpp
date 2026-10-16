@@ -666,9 +666,14 @@ export default function FormatExplorer() {
           {selected && (
             <Dialog.Content ref={setDetailNode} data-lenis-prevent onEscapeKeyDown={(event) => { event.preventDefault(); closeDetail(); }} className="fixed inset-0 z-[240] h-[100dvh] max-h-[100dvh] touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain bg-ink text-bone outline-none [-webkit-overflow-scrolling:touch]" style={{ visibility: "hidden", willChange: "transform" }} aria-describedby="format-detail-description">
               <div className="mx-auto flex min-h-full max-w-[1600px] flex-col px-5 pb-[calc(env(safe-area-inset-bottom)+2rem)] pt-[calc(env(safe-area-inset-top)+1.5rem)] md:px-10 md:pb-10 md:pt-8">
-                <div className="flex items-center justify-between border-b border-white/12 pb-5">
-                  <p data-detail-reveal className="font-mono2 text-[9px] uppercase tracking-[0.25em] text-bone/40">Formato {selected.id} / {String(selectedCatalogData.formats.length).padStart(2, "0")}</p>
-                  <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between gap-4 border-b border-white/12 pb-5">
+                  <div data-detail-reveal className="flex min-w-0 items-center gap-4 sm:gap-5">
+                    <Link to="/#hero" aria-label="Ir al inicio de GRPP" data-cursor="hover" className="flex min-h-11 shrink-0 items-center rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bone">
+                      <img src="/images/grpp.svg" alt="GRPP" width={64} height={28} className="h-8 w-auto md:h-9" />
+                    </Link>
+                    <p className="whitespace-nowrap border-l border-white/15 py-1 pl-4 font-mono2 text-[9px] uppercase tracking-[0.25em] text-bone/40 sm:pl-5">Formato {selected.id} / {String(selectedCatalogData.formats.length).padStart(2, "0")}</p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-3">
                     <button onClick={() => closeDetail()} data-cursor="hover" className="hidden font-mono2 text-[8px] uppercase tracking-[0.18em] text-bone/50 transition-colors hover:text-bone sm:block">← Todos los formatos</button>
                     <button onClick={() => closeDetail()} data-cursor="hover" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-xl text-bone transition-colors hover:bg-bone hover:text-ink" aria-label="Cerrar detalle">×</button>
                   </div>
