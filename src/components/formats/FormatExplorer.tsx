@@ -18,6 +18,18 @@ type Availability = "Solo mobile" | "Solo desktop";
 type Catalog = "rich-media" | "standard";
 type EcosystemArea = "display" | "branded-content" | "streaming" | "stars";
 
+interface CatalogOrigin {
+  path: string;
+  scrollY: number;
+  cardHref: string;
+}
+
+interface FormatNavigationState {
+  catalogOrigin?: CatalogOrigin;
+  restoreCatalog?: CatalogOrigin;
+  skipCatalogPosition?: boolean;
+}
+
 interface FormatItem {
   id: string;
   slug: string;
@@ -233,12 +245,14 @@ function getSourceTransform(rect: DOMRect | null) {
 export default function FormatExplorer() {
   const navigate = useNavigate();
   const location = useLocation();
+  const navigationState = location.state as FormatNavigationState | null;
   const { formatSlug } = useParams();
   const rootRef = useRef<HTMLElement>(null);
   const indexRef = useRef<HTMLDivElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const sourceRectRef = useRef<DOMRect | null>(null);
+  const catalogOriginRef = useRef<CatalogOrigin | null>(navigationState?.catalogOrigin ?? null);
   const detailTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const hasOpenedRef = useRef(false);
   const closingRef = useRef(false);
@@ -349,7 +363,13 @@ export default function FormatExplorer() {
     sourceRectRef.current = (preview ?? event.currentTarget).getBoundingClientRect();
     gsap.fromTo(event.currentTarget, { scale: 1 }, { scale: 0.985, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.inOut" });
     const basePath = catalog === "standard" ? "/formatos/standard" : "/formatos";
-    navigate(`${basePath}/${format.slug}`);
+    const catalogOrigin: CatalogOrigin = {
+      path: `${location.pathname}${location.search}${location.hash}`,
+      scrollY: window.scrollY,
+      cardHref: `${basePath}/${format.slug}`,
+    };
+    catalogOriginRef.current = catalogOrigin;
+    navigate(catalogOrigin.cardHref, { state: { catalogOrigin } satisfies FormatNavigationState });
   };
 
   useEffect(() => {
@@ -373,8 +393,9 @@ export default function FormatExplorer() {
   useEffect(() => {
     const previous = previousRouteRef.current;
     previousRouteRef.current = { section: routeSection, detail: selected !== null };
-    // Opening or closing a detail must preserve its originating card's position.
-    if (previous && (selected || (previous.detail && previous.section === routeSection))) return;
+    if (selected || navigationState?.skipCatalogPosition) return;
+    const restoreCatalog = navigationState?.restoreCatalog
+      ?? (previous?.detail ? catalogOriginRef.current : null);
 
     let positioned = false;
     let canceled = false;
@@ -382,6 +403,19 @@ export default function FormatExplorer() {
     const positionTarget = () => {
       if (canceled) return;
       positioned = true;
+      if (restoreCatalog) {
+        // Restore after the dialog unlocks scrolling and refreshes the page layout.
+        ScrollTrigger.refresh();
+        const lenis = getLenis();
+        lenis?.resize();
+        if (lenis) lenis.scrollTo(restoreCatalog.scrollY, { immediate: true, force: true });
+        else window.scrollTo({ top: restoreCatalog.scrollY, behavior: "instant" });
+        const card = Array.from(rootRef.current?.querySelectorAll<HTMLAnchorElement>("a[href]") ?? [])
+          .find((link) => link.getAttribute("href") === restoreCatalog.cardHref);
+        card?.focus({ preventScroll: true });
+        catalogOriginRef.current = null;
+        return;
+      }
       const target = document.getElementById(getFormatSectionTarget(location.pathname, location.hash));
       if (!target) return;
       ScrollTrigger.refresh();
@@ -427,7 +461,7 @@ export default function FormatExplorer() {
       cancelAnimationFrame(frame);
       if (!positioned) previousRouteRef.current = previous;
     };
-  }, [location.key, location.pathname, location.hash, routeSection, selected]);
+  }, [location.key, location.pathname, location.hash, navigationState, routeSection, selected]);
 
   const setDetailNode = useCallback((node: HTMLDivElement | null) => {
     detailRef.current = node;
@@ -482,23 +516,29 @@ export default function FormatExplorer() {
     if (!selected || closingRef.current) return;
     const detail = detailRef.current;
     const overlay = overlayRef.current;
-    if (!detail || !overlay || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      navigate(catalogBasePath, { replace: true });
+    const catalogOrigin = navigationState?.catalogOrigin ?? catalogOriginRef.current;
+    const finishClose = () => {
+      if (afterClose) catalogOriginRef.current = null;
+      navigate(catalogOrigin?.path ?? FORMAT_SECTION_ROUTES[routeCatalog].path, {
+        replace: true,
+        state: {
+          restoreCatalog: afterClose ? undefined : catalogOrigin ?? undefined,
+          skipCatalogPosition: Boolean(afterClose),
+        } satisfies FormatNavigationState,
+      });
       getLenis()?.start();
+      closingRef.current = false;
       sourceRectRef.current = null;
       afterClose?.();
+    };
+    if (!detail || !overlay || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      finishClose();
       return;
     }
 
     closingRef.current = true;
     gsap.timeline({
-      onComplete: () => {
-        navigate(catalogBasePath, { replace: true });
-        getLenis()?.start();
-        closingRef.current = false;
-        sourceRectRef.current = null;
-        afterClose?.();
-      },
+      onComplete: finishClose,
     })
       .to(detail, { ...getSourceTransform(sourceRectRef.current), transformOrigin: "top left", borderRadius: 28, duration: 0.78, ease: "power4.inOut" })
       .to(overlay, { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, "-=0.3");
@@ -512,7 +552,10 @@ export default function FormatExplorer() {
     const targetFormat = formats[nextIndex];
     if (targetFormat) {
       detailRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-      navigate(`${catalogBasePath}/${targetFormat.slug}`, { replace: true });
+      navigate(`${catalogBasePath}/${targetFormat.slug}`, {
+        replace: true,
+        state: { catalogOrigin: navigationState?.catalogOrigin ?? catalogOriginRef.current ?? undefined } satisfies FormatNavigationState,
+      });
     }
   };
 
@@ -664,7 +707,7 @@ export default function FormatExplorer() {
         <Dialog.Portal>
           <Dialog.Overlay ref={overlayRef} className="fixed inset-0 z-[230] bg-ink/60 backdrop-blur-sm" />
           {selected && (
-            <Dialog.Content ref={setDetailNode} data-lenis-prevent onEscapeKeyDown={(event) => { event.preventDefault(); closeDetail(); }} className="fixed inset-0 z-[240] h-[100dvh] max-h-[100dvh] touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain bg-ink text-bone outline-none [-webkit-overflow-scrolling:touch]" style={{ visibility: "hidden", willChange: "transform" }} aria-describedby="format-detail-description">
+            <Dialog.Content ref={setDetailNode} data-lenis-prevent onCloseAutoFocus={(event) => event.preventDefault()} onEscapeKeyDown={(event) => { event.preventDefault(); closeDetail(); }} className="fixed inset-0 z-[240] h-[100dvh] max-h-[100dvh] touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain bg-ink text-bone outline-none [-webkit-overflow-scrolling:touch]" style={{ visibility: "hidden", willChange: "transform" }} aria-describedby="format-detail-description">
               <div className="mx-auto flex min-h-full max-w-[1600px] flex-col px-5 pb-[calc(env(safe-area-inset-bottom)+2rem)] pt-[calc(env(safe-area-inset-top)+1.5rem)] md:px-10 md:pb-10 md:pt-8">
                 <div className="flex items-center justify-between gap-4 border-b border-white/12 pb-5">
                   <div data-detail-reveal className="flex min-w-0 items-center gap-4 sm:gap-5">
