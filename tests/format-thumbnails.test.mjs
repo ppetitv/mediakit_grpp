@@ -36,13 +36,25 @@ test("all 42 responsive assets are valid WebP files", async () => {
   }
 });
 
-test("original PNGs and the five existing video sources remain available", async () => {
+test("original PNGs and all eight video sources remain available", async () => {
   for (const slug of catalogSlugs("STANDARD_FORMATS")) {
     assert.ok((await stat(new URL(`../public/images/formats/standard/${slug}.png`, import.meta.url))).size > 0);
   }
   const videos = [...source.matchAll(/src: "(\/images\/formats\/estandar\/[^\"]+)"/g)];
-  assert.equal(videos.length, 5);
+  assert.equal(videos.length, 8);
   for (const [, path] of videos) {
     assert.ok((await stat(new URL(`../public${path}`, import.meta.url))).size > 0);
+  }
+});
+
+test("new Rich Media demos are assigned to their corresponding formats", () => {
+  const richMedia = source.match(/const RICH_MEDIA_FORMATS: FormatItem\[\] = \[([\s\S]*?)\n\];/)[1];
+  for (const [slug, device, filename] of [
+    ["interstitial", "Desktop", "Interstitial.mp4"],
+    ["interscroller", "Mobile", "Interscroller.mp4"],
+    ["skin", "Desktop", "Skin.mp4"],
+  ]) {
+    const format = richMedia.split("\n").find((line) => line.includes(`slug: "${slug}"`));
+    assert.ok(format?.includes(`demoVideos: [{ device: "${device}", src: "/images/formats/estandar/${filename}" }]`), `${slug} must use its own ${device} demo`);
   }
 });

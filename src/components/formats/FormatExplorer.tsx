@@ -148,9 +148,9 @@ function getFormatSpecs(format: FormatItem): FormatSpecs {
 }
 
 const RICH_MEDIA_FORMATS: FormatItem[] = [
-  { id: "01", slug: "interstitial", title: "Interstitial", device: "Multiplataforma", visual: "interstitial", description: "Una pieza de alto impacto que ocupa el foco de la navegación en un momento definido del recorrido." },
-  { id: "02", slug: "interscroller", title: "Interscroller", device: "Mobile", visual: "interscroller", description: "El anuncio se revela con el desplazamiento y convierte el scroll en parte natural de la experiencia.", availability: "Solo mobile" },
-  { id: "03", slug: "skin", title: "Skin", device: "Desktop", visual: "skin", description: "La marca enmarca el contenido editorial con presencia sostenida y una lectura clara.", availability: "Solo desktop" },
+  { id: "01", slug: "interstitial", title: "Interstitial", device: "Multiplataforma", visual: "interstitial", demoVideos: [{ device: "Desktop", src: "/images/formats/estandar/Interstitial.mp4" }], description: "Una pieza de alto impacto que ocupa el foco de la navegación en un momento definido del recorrido." },
+  { id: "02", slug: "interscroller", title: "Interscroller", device: "Mobile", visual: "interscroller", demoVideos: [{ device: "Mobile", src: "/images/formats/estandar/Interscroller.mp4" }], description: "El anuncio se revela con el desplazamiento y convierte el scroll en parte natural de la experiencia.", availability: "Solo mobile" },
+  { id: "03", slug: "skin", title: "Skin", device: "Desktop", visual: "skin", demoVideos: [{ device: "Desktop", src: "/images/formats/estandar/Skin.mp4" }], description: "La marca enmarca el contenido editorial con presencia sostenida y una lectura clara.", availability: "Solo desktop" },
   { id: "04", slug: "skin-arco", title: "Skin Arco", device: "Desktop", visual: "skin-arch", description: "Una toma envolvente de cabecera y laterales que amplía la superficie visual de campaña.", availability: "Solo desktop" },
   { id: "05", slug: "widget", title: "Widget", device: "Multiplataforma", visual: "widget", description: "Un módulo compacto y contextual que mantiene la campaña cerca del contenido relevante." },
   { id: "06", slug: "zocalo", title: "Zócalo", device: "Multiplataforma", visual: "lower-third", description: "Una franja horizontal visible y directa, pensada para mensajes breves y llamados a la acción." },
@@ -723,16 +723,16 @@ export default function FormatExplorer() {
                 </div>
 
                 <div className="grid flex-1 items-center gap-10 py-10 md:grid-cols-12 md:gap-12 md:py-12">
-                  <div data-detail-reveal className="md:col-span-8">
+                  <div data-detail-reveal className="min-w-0 md:col-span-8">
                     {selected.demoVideos ? (
                       <FormatVideoDemo key={`${routeCatalog}-${selected.id}`} title={selected.title} videos={selected.demoVideos} poster={getFormatThumbnail(routeCatalog, selected.slug)} />
                     ) : (
                       <FormatPreview key={`${routeCatalog}-${selected.id}`} visual={selected.visual} title={selected.title} imageSrc={getFormatThumbnail(routeCatalog, selected.slug)} priority sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1599px) 66vw, 1000px" />
                     )}
                   </div>
-                  <div className="md:col-span-4">
+                  <div className="min-w-0 md:col-span-4">
                     {selected.availability && <div data-detail-reveal><PlatformBadge availability={selected.availability} /></div>}
-                    <Dialog.Title data-detail-reveal className={`${selected.availability ? "mt-6" : "mt-0"} font-display text-[18vw] uppercase leading-[0.82] text-bone md:text-[6vw]`}>{selected.title}</Dialog.Title>
+                    <Dialog.Title data-detail-reveal className={`${selected.availability ? "mt-6" : "mt-0"} font-display ${selected.title.split(/\s+/).some((word) => word.length > 12) ? "text-[15.5vw]" : "text-[18vw]"} uppercase leading-[0.82] text-bone md:text-[6vw]`}>{selected.title}</Dialog.Title>
                     <Dialog.Description id="format-detail-description" data-detail-reveal className="mt-7 max-w-md text-sm leading-relaxed text-bone/55 md:text-base">{selected.description}</Dialog.Description>
                     <div data-detail-reveal>
                       <FormatHighlights highlights={getFormatHighlights(selected)} />
