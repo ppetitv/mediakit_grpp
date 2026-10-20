@@ -16,10 +16,10 @@ export interface StreamingProgram {
   lightArtwork?: boolean;
   cast: string[];
   sourceSlide: number;
-  sourceDeck?: "musical-july-2026";
+  sourceDeck?: "musical-july-2027";
 }
 
-// Original artwork and programme information: supplied RPP (August) and music (July) 2026 decks.
+// Original artwork and programme information: supplied RPP (August) and music (July) 2027 decks.
 export const STREAMING_CATALOG: Record<StreamingFamily, {
   label: string;
   description: string;
@@ -116,7 +116,7 @@ export const STREAMING_CATALOG: Record<StreamingFamily, {
         background: "#3b244e",
         cast: [],
         sourceSlide: 3,
-        sourceDeck: "musical-july-2026",
+        sourceDeck: "musical-july-2027",
       },
       {
         id: "zona-encendida",
@@ -132,7 +132,7 @@ export const STREAMING_CATALOG: Record<StreamingFamily, {
         background: "#24243f",
         cast: [],
         sourceSlide: 5,
-        sourceDeck: "musical-july-2026",
+        sourceDeck: "musical-july-2027",
       },
       {
         id: "tributo-oxigeno",
@@ -148,7 +148,7 @@ export const STREAMING_CATALOG: Record<StreamingFamily, {
         background: "#401a63",
         cast: [],
         sourceSlide: 7,
-        sourceDeck: "musical-july-2026",
+        sourceDeck: "musical-july-2027",
       },
       {
         id: "zona-de-djs",
@@ -164,7 +164,7 @@ export const STREAMING_CATALOG: Record<StreamingFamily, {
         background: "#27243c",
         cast: [],
         sourceSlide: 9,
-        sourceDeck: "musical-july-2026",
+        sourceDeck: "musical-july-2027",
       },
     ],
   },

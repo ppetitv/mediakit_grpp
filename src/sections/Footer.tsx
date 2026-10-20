@@ -114,7 +114,7 @@ export default function Footer() {
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10 font-mono2 text-[10px] tracking-[0.2em] uppercase text-bone/35">
           <p>GRUPORPP S.A.C. - RUC: 20492353214</p>
-          <p>©2026 GRPP — Todos los derechos reservados</p>
+          <p>©2027 GRPP — Todos los derechos reservados</p>
 
         </div>
       </div>

@@ -177,7 +177,7 @@ export default function StreamingSection() {
             </section>
           ))}
         </div>
-        <p className="mt-8 max-w-2xl text-[10px] leading-relaxed text-ink/45">Ofertas de referencia: julio y agosto de 2026. La frecuencia y disponibilidad de los programas se confirman con el equipo comercial y editorial.</p>
+        <p className="mt-8 max-w-2xl text-[10px] leading-relaxed text-ink/45">Ofertas de referencia: julio y agosto de 2027. La frecuencia y disponibilidad de los programas se confirman con el equipo comercial y editorial.</p>
       </div>
 
       <StreamingBenefits />

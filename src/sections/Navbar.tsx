@@ -130,7 +130,7 @@ export default function Navbar() {
             <span className={`font-display text-5xl uppercase ${l.id === "formatos" && formatsActive ? "text-ink" : "text-white"}`}>{l.label}</span>
           </button>
         ))}
-        <p className="m-link absolute bottom-8 left-8 font-mono2 text-[10px] tracking-[0.3em] text-white/60 uppercase">GRPP® — Media Kit 2026</p>
+        <p className="m-link absolute bottom-8 left-8 font-mono2 text-[10px] tracking-[0.3em] text-white/60 uppercase">GRPP® — Media Kit 2027</p>
       </div>
     </>
   );

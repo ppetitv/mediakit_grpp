@@ -82,7 +82,7 @@ export default function PageTransition({ children }: { children: ReactNode }) {
           <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
             <span ref={labelRef} className="font-display text-[18vw] uppercase leading-none tracking-[0.02em] text-bone md:text-[9vw]" />
           </div>
-          <p className="absolute bottom-7 left-6 font-mono2 text-[8px] uppercase tracking-[0.3em] text-bone/35 md:bottom-9 md:left-10 md:text-[10px]">GRPP / Media Kit 2026</p>
+          <p className="absolute bottom-7 left-6 font-mono2 text-[8px] uppercase tracking-[0.3em] text-bone/35 md:bottom-9 md:left-10 md:text-[10px]">GRPP / Media Kit 2027</p>
         </SwipeLayer>
       </div>
     </PageTransitionContext.Provider>
