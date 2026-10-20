@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { matchRoutes } from "react-router";
-import { FORMAT_SECTION_ROUTES, STREAMING_FAMILY_ROUTES, getFormatSection, getFormatSectionTarget } from "../src/lib/format-routes.ts";
+import { FORMAT_SECTION_ROUTES, STREAMING_FAMILY_ROUTES, BRANDED_FAMILY_ROUTES, getFormatSection, getFormatSectionTarget } from "../src/lib/format-routes.ts";
 
 const routes = [
   ...Object.values(FORMAT_SECTION_ROUTES).map(({ path }) => ({ path })),
@@ -47,4 +47,15 @@ test("streaming families have direct links to visible sections", () => {
 test("unknown or unrelated fragments cannot override a section destination", () => {
   assert.equal(getFormatSectionTarget("/formatos/streaming", "#missing"), "area-streaming");
   assert.equal(getFormatSectionTarget("/formatos/standard", "#streaming-hibrido"), "catalog-standard");
+  assert.equal(getFormatSectionTarget("/formatos/branded-content", "#missing"), "area-branded-content");
+  assert.equal(getFormatSectionTarget("/formatos/streaming", "#branded-web"), "area-streaming");
+});
+
+test("branded content channels have direct links to their visible sections", () => {
+  for (const { path, target } of Object.values(BRANDED_FAMILY_ROUTES)) {
+    const url = new URL(path, "http://localhost");
+    assert.equal(getFormatSection(url.pathname), "branded-content");
+    assert.equal(getFormatSectionTarget(url.pathname, url.hash), target);
+    assert.equal(matchRoutes(routes, url.pathname).at(-1).params.formatSlug, undefined);
+  }
 });

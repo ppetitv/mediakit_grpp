@@ -14,6 +14,11 @@ export const STREAMING_FAMILY_ROUTES = {
   hybrid: { target: "streaming-hibrido", path: "/formatos/streaming#streaming-hibrido" },
 } as const;
 
+export const BRANDED_FAMILY_ROUTES = {
+  web: { target: "branded-web", path: "/formatos/branded-content#branded-web" },
+  social: { target: "branded-redes-sociales", path: "/formatos/branded-content#branded-redes-sociales" },
+} as const;
+
 export function getFormatSection(pathname: string): FormatSection {
   const path = pathname.replace(/\/+$/, "");
   for (const key of Object.keys(FORMAT_SECTION_ROUTES) as FormatSection[]) {
@@ -27,6 +32,10 @@ export function getFormatSectionTarget(pathname: string, hash: string): string {
   const section = getFormatSection(pathname);
   if (section === "streaming") {
     const family = Object.values(STREAMING_FAMILY_ROUTES).find(({ target }) => hash === `#${target}`);
+    if (family) return family.target;
+  }
+  if (section === "branded-content") {
+    const family = Object.values(BRANDED_FAMILY_ROUTES).find(({ target }) => hash === `#${target}`);
     if (family) return family.target;
   }
   return FORMAT_SECTION_ROUTES[section].target;

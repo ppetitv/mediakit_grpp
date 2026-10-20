@@ -12,6 +12,7 @@ import FormatAccordion, { type FormatSpecs } from "@/components/formats/FormatAc
 import FormatHighlights, { type FormatHighlight } from "@/components/formats/FormatHighlights";
 import StarsSection from "@/components/formats/StarsSection";
 import StreamingSection from "@/components/formats/StreamingSection";
+import BrandedContentSection from "@/components/formats/BrandedContentSection";
 
 type Device = "Todos" | "Mobile" | "Desktop";
 type Availability = "Solo mobile" | "Solo desktop";
@@ -680,22 +681,7 @@ export default function FormatExplorer() {
         })}
           </div>
 
-          <section id="area-branded-content" data-ecosystem-area="branded-content" className="bg-ink px-5 py-24 text-bone md:px-10 md:py-36">
-            <div className="mx-auto max-w-[1120px]">
-              <p data-area-reveal className="font-mono2 text-[9px] uppercase tracking-[0.24em] text-bone/40">Ecosistema / Branded Content</p>
-              <div className="mt-8 grid gap-10 md:grid-cols-12 md:items-end">
-                <h2 data-area-reveal className="font-display text-[15vw] uppercase leading-[0.84] md:col-span-8 md:text-[6.4vw]">Historias que<br /><span className="text-red">conectan</span></h2>
-                <p data-area-reveal className="max-w-sm text-sm leading-relaxed text-bone/55 md:col-span-4 md:text-base">Contenido especial y branded content pensados para conectar a las marcas con cada audiencia del ecosistema GRPP.</p>
-              </div>
-              <div data-area-reveal className="mt-16 grid border-y border-white/15 sm:grid-cols-3 md:mt-24">
-                {["Web", "Redes Sociales", "Mailing"].map((item) => (
-                  <div key={item} className="flex min-h-28 items-center border-b border-white/15 px-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0 md:min-h-36 md:px-7">
-                    <span className="text-lg font-semibold md:text-xl">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <BrandedContentSection />
 
           <StreamingSection />
 

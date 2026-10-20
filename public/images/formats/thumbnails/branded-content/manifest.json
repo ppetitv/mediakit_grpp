@@ -1,0 +1,189 @@
+[
+  {
+    "slug": "ruta-interactiva",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 34754,
+    "smallBytes": 11598,
+    "referenceImage": "https://mediakitrpp.com/img/branded/ruta_interactiva.jpg",
+    "conceptual": true
+  },
+  {
+    "slug": "landing",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 26500,
+    "smallBytes": 9372,
+    "referenceImage": "https://mediakitrpp.com/img/branded/landing_2.png",
+    "conceptual": true
+  },
+  {
+    "slug": "blog",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 24438,
+    "smallBytes": 8538,
+    "referenceImage": "https://mediakitrpp.com/img/branded/blog.png",
+    "conceptual": true
+  },
+  {
+    "slug": "publirreportaje",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 29928,
+    "smallBytes": 9552,
+    "referenceImage": "https://mediakitrpp.com/img/branded/publireportaje.png",
+    "conceptual": true
+  },
+  {
+    "slug": "facebook-live-informativo",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 27738,
+    "smallBytes": 9692,
+    "referenceImage": "https://mediakitrpp.com/img/branded/redes/fb_live_informativos.png",
+    "conceptual": true
+  },
+  {
+    "slug": "facebook-live-musical",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 43748,
+    "smallBytes": 15728,
+    "referenceImage": "https://mediakitrpp.com/img/branded/redes/fb_live_musicales.png",
+    "conceptual": true
+  },
+  {
+    "slug": "reportaje",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 26690,
+    "smallBytes": 8802,
+    "referenceImage": "https://mediakitrpp.com/img/branded/reportaje.png",
+    "conceptual": true
+  },
+  {
+    "slug": "video-patrocinado",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 32856,
+    "smallBytes": 11852,
+    "referenceImage": "https://mediakitrpp.com/img/branded/redes/video_patrocinado.png",
+    "conceptual": true
+  },
+  {
+    "slug": "playground",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 30090,
+    "smallBytes": 9902,
+    "referenceImage": "https://mediakitrpp.com/img/branded/redes/video_playground.png",
+    "conceptual": true
+  },
+  {
+    "slug": "stories",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 39416,
+    "smallBytes": 14004,
+    "referenceImage": "https://mediakitrpp.com/img/branded/redes/stories.png",
+    "conceptual": true
+  },
+  {
+    "slug": "reel",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 36342,
+    "smallBytes": 12154,
+    "referenceImage": "https://mediakitrpp.com/img/branded/redes/video_reel.png",
+    "conceptual": true
+  },
+  {
+    "slug": "video-on-site",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 38204,
+    "smallBytes": 13208,
+    "referenceImage": null,
+    "conceptual": true
+  },
+  {
+    "slug": "post-publicitario",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 22096,
+    "smallBytes": 7204,
+    "referenceImage": "https://mediakitrpp.com/img/branded/redes/post_1.png",
+    "conceptual": true
+  },
+  {
+    "slug": "infografia",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 37942,
+    "smallBytes": 13510,
+    "referenceImage": "https://mediakitrpp.com/img/branded/redes/post_2.png",
+    "conceptual": true
+  },
+  {
+    "slug": "crossposting",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 35134,
+    "smallBytes": 12322,
+    "referenceImage": "https://mediakitrpp.com/img/branded/redes/crossposting.png",
+    "conceptual": true
+  },
+  {
+    "slug": "tema-del-dia",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 47016,
+    "smallBytes": 16884,
+    "referenceImage": "https://mediakitrpp.com/img/branded/redes/tema_dia.png",
+    "conceptual": true
+  },
+  {
+    "slug": "nota",
+    "width": 1448,
+    "height": 1086,
+    "smallWidth": 720,
+    "smallHeight": 540,
+    "fullBytes": 25386,
+    "smallBytes": 7516,
+    "referenceImage": "https://mediakitrpp.com/img/branded/nota.png",
+    "conceptual": true
+  }
+]
