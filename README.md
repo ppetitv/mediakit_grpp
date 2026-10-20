@@ -1,4 +1,22 @@
-# React + TypeScript + Vite
+# Media Kit GRPP
+
+## Instalación y despliegue
+
+El proyecto utiliza **pnpm 10.28.0**, fijado en `package.json`.
+`pnpm-lock.yaml` es el archivo de versiones del proyecto.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm run dev
+pnpm run build
+```
+
+Al agregar o modificar dependencias, utiliza pnpm y guarda juntos los cambios
+de `package.json` y `pnpm-lock.yaml`. Vercel comprueba que coincidan antes de
+compilar. El script de instalación de esbuild está permitido explícitamente
+en `pnpm-workspace.yaml` porque la compilación lo utiliza para minificar CSS.
+
+## Plantilla React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
