@@ -1,0 +1,6 @@
+# Plantilla de mensaje de commit en español
+# <tipo>(<alcance>): <resumen corto en español>
+#
+# Cuerpo (opcional): explica el qué y por qué en español.
+#
+# Tipos sugeridos: feat, fix, docs, style, refactor, test, chore

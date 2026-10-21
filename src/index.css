@@ -291,8 +291,115 @@ body {
 
 /* ---------- format card ---------- */
 .fmt-card {
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   transform-style: preserve-3d;
+}
+
+@media (min-width: 768px) {
+  .formats-track {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Reserve the horizontal journey in CSS before GSAP runs. Only the track moves. */
+@media (min-width: 768px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
+  .formats-section {
+    container-type: inline-size;
+    --format-card-width: 30rem;
+    --format-cta-width: 22rem;
+    --format-gap: 2rem;
+    --format-gutter: 2.5rem;
+    --format-stage-height: 100svh;
+  }
+
+  .formats-runway {
+    height: calc(var(--format-stage-height) + max(0px,
+      var(--format-count) * var(--format-card-width) + var(--format-cta-width) +
+      var(--format-count) * var(--format-gap) + 2 * var(--format-gutter) - 100cqw));
+  }
+
+  .formats-stage {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: var(--format-stage-height);
+    padding-block: 5.5rem 1.5rem;
+    overflow: hidden;
+  }
+
+  .formats-heading {
+    margin-bottom: clamp(1rem, 3svh, 2rem);
+  }
+
+  .formats-track {
+    display: flex;
+    flex-direction: row;
+    width: max-content;
+    gap: var(--format-gap);
+    will-change: transform;
+  }
+
+  .formats-track > .fmt-card {
+    width: var(--format-card-width);
+  }
+
+  .formats-contact {
+    width: var(--format-cta-width);
+  }
+
+  .formats-stage .formats-visual {
+    height: clamp(8rem, 25svh, 16rem);
+  }
+
+  .formats-progress {
+    display: block;
+    margin-top: clamp(1rem, 3svh, 2rem);
+  }
+
+  .formats-scroll-hint {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
+  .formats-section {
+    --format-card-width: 34rem;
+  }
+}
+
+@media (min-width: 768px) and (600px <= height <= 780px) and (prefers-reduced-motion: no-preference) {
+  .formats-stage {
+    padding-bottom: 1rem;
+  }
+
+  .formats-stage .formats-title {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .formats-stage .formats-caption {
+    margin-bottom: 0.5rem;
+  }
+
+  .formats-stage .formats-visual {
+    height: clamp(8rem, 22svh, 10rem);
+  }
+
+  .formats-stage .formats-card-body {
+    padding: 1.25rem;
+  }
+
+  .formats-stage .formats-card-title {
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+  }
+
+  .formats-stage .formats-card-description {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
 }
 
 /* ---------- Stars title logo: manual positioning controls ---------- */
