@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { setLenis } from "@/lib/scroll";
-import { markExperienceLoaded } from "@/lib/experience";
 import Navbar from "@/sections/Navbar";
 import Cursor from "@/sections/Cursor";
 import Contact from "@/sections/Contact";
@@ -11,7 +10,6 @@ import FormatExplorer from "@/components/formats/FormatExplorer";
 
 export default function FormatosPage() {
   useEffect(() => {
-    markExperienceLoaded();
     const previousScrollRestoration = window.history.scrollRestoration;
     window.history.scrollRestoration = "manual";
     window.scrollTo(0, 0);

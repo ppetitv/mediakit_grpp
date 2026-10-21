@@ -179,6 +179,18 @@ body {
   will-change: transform;
 }
 
+/* The main message is visible before JavaScript enhances the entrance. */
+#hero .reveal-line > span {
+  transform: none;
+  will-change: auto;
+}
+
+.hero-motion-paused .hero-badge svg,
+.hero-motion-paused .hero-badge img,
+.hero-motion-paused .text-image-mask {
+  animation-play-state: paused;
+}
+
 .word-scrub .w {
   color: rgba(243, 241, 236, 0.16);
   transition: none;
@@ -205,7 +217,7 @@ body {
   display: inline-block;
   color: transparent;
   background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.42)),
-    url("/images/Crowdy2.webp");
+    var(--hero-crowd-image, url("/images/hero-crowd.webp"));
   background-position: center, 45% 42%;
   background-size: cover, 112% 112%;
   background-clip: text;
@@ -213,6 +225,10 @@ body {
   -webkit-text-fill-color: transparent;
   -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
   animation: text-image-drift 14s ease-in-out infinite alternate;
+}
+
+.hero-motion-paused {
+  --hero-crowd-image: url("/images/hero-crowd-poster.webp");
 }
 
 @keyframes text-image-drift {
@@ -223,6 +239,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .text-image-mask {
     animation: none;
+    --hero-crowd-image: url("/images/hero-crowd-poster.webp");
   }
 }
 

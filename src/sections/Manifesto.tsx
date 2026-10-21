@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { gsap, splitWords } from "@/lib/anim";
+import DeferredReel from "@/components/DeferredReel";
 
 const TEXT =
   "Tenemos un nivel de llegada en todo el Perú. Nuestro compromiso va más allá del alcance: somos el medio en el que las personas confían cuando informan sus decisiones.";
@@ -86,18 +87,7 @@ export default function Manifesto() {
 
       <div className="mt-16 md:mt-24 grid md:grid-cols-12 gap-8 items-end">
         <div className="md:col-span-8 mani-img-wrap relative overflow-hidden rounded-2xl aspect-video">
-          <video
-            src="/images/reel.mp4"
-            className="mani-img absolute inset-0 w-full h-full object-cover rounded-2xl"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            disablePictureInPicture
-            controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
-            aria-label="Reel de GRPP"
-          />
+          <DeferredReel />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
         </div>
         <div className="md:col-span-4 flex flex-col gap-6">

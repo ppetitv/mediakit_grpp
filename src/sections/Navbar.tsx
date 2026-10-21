@@ -4,6 +4,7 @@ import { gsap, ScrollTrigger } from "@/lib/anim";
 import { scrollToId } from "@/lib/scroll";
 import { usePageTransition } from "@/lib/page-transition";
 import Magnetic from "@/components/Magnetic";
+import { warmPage } from "@/lib/page-loaders";
 
 const LINKS = [
   { label: "Home", id: "hero" },
@@ -84,7 +85,7 @@ export default function Navbar() {
         className="fixed top-0 left-0 right-0 z-[150] px-5 md:px-10 py-4 flex items-center justify-between transition-[background-color,backdrop-filter,border-color] duration-500 [&.nav-scrolled]:bg-ink/70 [&.nav-scrolled]:backdrop-blur-xl [&.nav-scrolled]:border-b [&.nav-scrolled]:border-white/10"
       >
         <button onClick={() => go("hero")} data-cursor="hover" className="flex items-center" aria-label="Ir al inicio">
-          <img src="/images/grpp.svg" alt="GRPP" className="h-8 md:h-9 w-auto" />
+          <img src="/images/grpp.svg" width={64} height={28} alt="GRPP" className="h-8 md:h-9 w-auto" />
         </button>
 
         <nav className="hidden md:flex items-center gap-8">
@@ -92,6 +93,8 @@ export default function Navbar() {
             <button
               key={l.id}
               onClick={() => go(l.id)}
+              onPointerEnter={() => { if (l.id === "formatos") warmPage("/formatos"); }}
+              onFocus={() => { if (l.id === "formatos") warmPage("/formatos"); }}
               aria-current={l.id === "formatos" && formatsActive ? "page" : undefined}
               data-cursor="hover"
               className={`u-link font-mono2 text-[11px] tracking-[0.2em] uppercase transition-colors ${l.id === "formatos" && formatsActive ? "text-red" : "text-bone/70 hover:text-bone"}`}

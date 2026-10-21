@@ -1,7 +1,8 @@
-import { useEffect, useRef, type ReactNode, type Ref } from "react";
+import { startTransition, useEffect, useRef, type ReactNode, type Ref } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { PageTransitionContext } from "@/lib/page-transition";
+import { preloadPage } from "@/lib/page-loaders";
 
 const PAGE_LABELS: Record<string, string> = {
   "/": "Inicio",
@@ -15,11 +16,16 @@ export default function PageTransition({ children }: { children: ReactNode }) {
   const labelRef = useRef<HTMLSpanElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const runningRef = useRef(false);
+  const mountedRef = useRef(true);
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => () => {
-    timelineRef.current?.kill();
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      timelineRef.current?.kill();
+    };
   }, []);
 
   const transitionTo = (path: string) => {
@@ -29,8 +35,27 @@ export default function PageTransition({ children }: { children: ReactNode }) {
 
     if (target === current || runningRef.current) return;
 
+    runningRef.current = true;
+    const ready = preloadPage(targetUrl.pathname).then(() => true, () => false);
+    const commit = () => {
+      window.scrollTo(0, 0);
+      startTransition(() => navigate(target));
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+    };
+    const navigateWithoutMotion = () => {
+      void ready.then((loaded) => {
+        if (!mountedRef.current) return;
+        if (loaded) {
+          commit();
+          runningRef.current = false;
+        } else {
+          window.location.assign(target);
+        }
+      });
+    };
+
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      navigate(target);
+      navigateWithoutMotion();
       return;
     }
 
@@ -39,11 +64,10 @@ export default function PageTransition({ children }: { children: ReactNode }) {
     const inkLayer = inkLayerRef.current;
     const label = labelRef.current;
     if (!root || !redLayer || !inkLayer || !label) {
-      navigate(target);
+      navigateWithoutMotion();
       return;
     }
 
-    runningRef.current = true;
     label.textContent = PAGE_LABELS[targetUrl.pathname] ?? "GRPP";
     timelineRef.current?.kill();
 
@@ -63,11 +87,18 @@ export default function PageTransition({ children }: { children: ReactNode }) {
       .to(redLayer, { xPercent: 0, duration: 0.82 })
       .to(inkLayer, { xPercent: 0, duration: 0.86 }, "-=0.64")
       .to(label, { yPercent: 0, autoAlpha: 1, duration: 0.48, ease: "power3.out" }, "-=0.34")
-      .add(() => {
-        window.scrollTo(0, 0);
-        navigate(target);
-        requestAnimationFrame(() => ScrollTrigger.refresh());
-      }, "+=0.06")
+      .addPause("+=0.06", () => {
+        // Keep the existing cover in place until the requested route is available.
+        void ready.then((loaded) => {
+          if (!mountedRef.current || timelineRef.current !== timeline) return;
+          if (!loaded) {
+            window.location.assign(target);
+            return;
+          }
+          commit();
+          requestAnimationFrame(() => timeline.resume());
+        });
+      })
       .to(label, { yPercent: -120, autoAlpha: 0, duration: 0.38, ease: "power3.in" }, "+=0.12")
       .to(inkLayer, { xPercent: 112, duration: 0.82 }, "-=0.04")
       .to(redLayer, { xPercent: 112, duration: 0.86 }, "-=0.66");

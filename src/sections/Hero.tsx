@@ -2,32 +2,34 @@ import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/anim";
 import { scrollToId } from "@/lib/scroll";
 import Magnetic from "@/components/Magnetic";
+import { observeMotionVisibility } from "@/lib/motion-visibility";
 
 const ROTATING = ["CONECTADAS", "INFORMADAS", "PRESENTES", "EN ACCIÓN"];
 
-export default function Hero({ started }: { started: boolean }) {
+export default function Hero() {
   const rootRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rotRef = useRef<HTMLSpanElement>(null);
 
   /* ---------- intro reveal ---------- */
   useEffect(() => {
-    if (!started) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const q = gsap.utils.selector(rootRef);
     const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
-    tl.to(q(".reveal-line > span"), { y: 0, duration: 1.3, stagger: 0.09 }, 0.1)
-      .fromTo(q(".hero-fade"), { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.08 }, 0.6)
-      .fromTo(q(".hero-badge"), { scale: 0, rotate: -90 }, { scale: 1, rotate: 0, duration: 1.2, ease: "elastic.out(1,0.5)" }, 0.9);
+    tl.fromTo(q(".reveal-line > span"), { y: 12 }, { y: 0, duration: 0.7, stagger: 0.06 }, 0)
+      .fromTo(q(".hero-fade"), { y: 12, opacity: 0.65 }, { y: 0, opacity: 1, duration: 0.65, stagger: 0.06 }, 0)
+      .fromTo(q(".hero-badge"), { scale: 0.9, rotate: -12 }, { scale: 1, rotate: 0, duration: 0.8 }, 0);
     return () => {
       tl.kill();
     };
-  }, [started]);
+  }, []);
 
   /* ---------- rotating word ---------- */
   useEffect(() => {
     const el = rotRef.current!;
     const words = el.querySelectorAll<HTMLElement>(".rot-word");
-    gsap.set(words, { yPercent: 100 });
+    // Reset the pixel offset parsed from the pre-JS percentage transform.
+    gsap.set(words, { y: 0, yPercent: 100 });
     gsap.set(words[0], { yPercent: 0 });
     let i = 0;
     const spin = () => {
@@ -37,8 +39,18 @@ export default function Hero({ started }: { started: boolean }) {
       gsap.fromTo(next, { yPercent: 100 }, { yPercent: 0, duration: 0.7, ease: "power4.inOut" });
       i++;
     };
-    const id = window.setInterval(spin, 2600);
-    return () => window.clearInterval(id);
+    let id: number | undefined;
+    return observeMotionVisibility(rootRef.current!, (active) => {
+      window.clearInterval(id);
+      rootRef.current?.classList.toggle("hero-motion-paused", !active);
+      if (active) {
+        id = window.setInterval(spin, 2600);
+      } else {
+        gsap.killTweensOf(words);
+        gsap.set(words, { y: 0, yPercent: 100 });
+        gsap.set(words[i % words.length], { yPercent: 0 });
+      }
+    });
   }, []);
 
   /* ---------- equalizer canvas ---------- */
@@ -82,13 +94,13 @@ export default function Hero({ started }: { started: boolean }) {
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       buildProfiles();
-      if (reduceMotion) redrawStatic();
+      if (!raf) redrawStatic();
     };
     resize();
     window.addEventListener("resize", resize);
 
     const onMove = (e: MouseEvent) => {
-      if (reduceMotion) return;
+      if (reduceMotion || !isVisible) return;
       mouse.x = e.clientX / window.innerWidth;
       mouse.energy = Math.min(mouse.energy + 0.16, 0.8);
     };
@@ -122,6 +134,7 @@ export default function Hero({ started }: { started: boolean }) {
       });
     };
     redrawStatic = () => drawFrame(performance.now(), false);
+    redrawStatic();
 
     const draw = (now: number) => {
       drawFrame(now, true);
@@ -138,31 +151,21 @@ export default function Hero({ started }: { started: boolean }) {
       }
     };
 
-    const observer = new IntersectionObserver(([entry]) => {
-      isVisible = entry.isIntersecting;
+    const stopVisibility = observeMotionVisibility(canvas, (active) => {
+      reduceMotion = motionQuery.matches;
+      isVisible = active;
       if (isVisible) {
         start();
       } else if (raf) {
         cancelAnimationFrame(raf);
         raf = 0;
       }
+      if (reduceMotion) redrawStatic();
     });
-    observer.observe(rootRef.current!);
-
-    const onMotionChange = (event: MediaQueryListEvent) => {
-      reduceMotion = event.matches;
-      if (raf) {
-        cancelAnimationFrame(raf);
-        raf = 0;
-      }
-      start();
-    };
-    motionQuery.addEventListener("change", onMotionChange);
 
     return () => {
       cancelAnimationFrame(raf);
-      observer.disconnect();
-      motionQuery.removeEventListener("change", onMotionChange);
+      stopVisibility();
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
     };
@@ -171,20 +174,20 @@ export default function Hero({ started }: { started: boolean }) {
   /* ---------- scroll parallax ---------- */
   useEffect(() => {
     const q = gsap.utils.selector(rootRef);
-    const tween = gsap.to(q(".hero-inner"), {
-      yPercent: -18,
-      opacity: 0.15,
-      ease: "none",
-      scrollTrigger: { trigger: rootRef.current, start: "top top", end: "bottom top", scrub: true },
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.to(q(".hero-inner"), {
+        yPercent: -18,
+        opacity: 0.15,
+        ease: "none",
+        scrollTrigger: { trigger: rootRef.current, start: "top top", end: "bottom top", scrub: true },
+      });
     });
-    return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
-    };
+    return () => media.revert();
   }, []);
 
   return (
-    <section ref={rootRef} id="hero" className="relative min-h-screen flex flex-col overflow-hidden bg-ink">
+    <section ref={rootRef} id="hero" className="hero-motion-paused relative min-h-screen flex flex-col overflow-hidden bg-ink">
       {/* backdrop image */}
       <div className="absolute inset-0 opacity-40">
         <img src="/images/signal.png" alt="" className="w-full h-full object-cover" />
@@ -211,7 +214,7 @@ export default function Hero({ started }: { started: boolean }) {
               <span className="invisible whitespace-nowrap">INFORMADAS</span>
               <span className="absolute inset-0 overflow-hidden">
                 {ROTATING.map((w, i) => (
-                  <span key={i} className="rot-word block absolute left-0 top-0 whitespace-nowrap">
+                  <span key={i} className="rot-word block absolute left-0 top-0 whitespace-nowrap" style={{ transform: `translateY(${i === 0 ? 0 : 100}%)` }}>
                     {w}
                   </span>
                 ))}

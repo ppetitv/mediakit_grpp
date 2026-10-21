@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, type CSSProperties, type MouseEvent
 import { gsap } from "@/lib/anim";
 import { usePageTransition } from "@/lib/page-transition";
 import { requestContact } from "@/lib/contact";
+import { warmPage } from "@/lib/page-loaders";
 
 interface Format {
   id: string;
@@ -258,6 +259,8 @@ export default function Formats() {
                     }}
                     onMouseMove={tilt}
                     onMouseLeave={untilt}
+                    onPointerEnter={() => warmPage(f.url)}
+                    onFocus={() => warmPage(f.url)}
                     data-cursor="VER"
                     className="fmt-card group relative shrink-0 block w-full bg-bone text-ink rounded-2xl overflow-hidden"
                   >

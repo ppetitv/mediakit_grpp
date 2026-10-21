@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { gsap, ScrollTrigger } from "@/lib/anim";
+import { observeMotionVisibility } from "@/lib/motion-visibility";
 
 interface Props {
   children: ReactNode;
@@ -12,6 +13,7 @@ interface Props {
 export default function VelocityMarquee({ children, className, baseSpeed = 90, reverse = false }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const loopRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -22,6 +24,8 @@ export default function VelocityMarquee({ children, className, baseSpeed = 90, r
     let dir = reverse ? 1 : -1;
     let boost = 0;
     let cycleWidth = 0;
+    let active = false;
+    const setX = gsap.quickSetter(track, "x", "px");
 
     const wrapX = (value: number) => {
       if (cycleWidth <= 0) return 0;
@@ -39,6 +43,7 @@ export default function VelocityMarquee({ children, className, baseSpeed = 90, r
       start: 0,
       end: "max",
       onUpdate: (self) => {
+        if (!active) return;
         boost = Math.min(Math.abs(self.getVelocity()) / 300, 8);
         if (self.direction === 1) dir = reverse ? 1 : -1;
         else dir = reverse ? -1 : 1;
@@ -50,17 +55,26 @@ export default function VelocityMarquee({ children, className, baseSpeed = 90, r
       boost *= 0.94;
       x += dir * (baseSpeed * (1 + boost) * delta) / 1000;
       x = wrapX(x);
-      gsap.set(track, { x });
+      setX(x);
     };
 
     measure();
-    gsap.ticker.add(tick);
+    const stopVisibility = observeMotionVisibility(rootRef.current!, (visible) => {
+      active = visible;
+      if (active) {
+        boost = 0;
+        gsap.ticker.add(tick);
+      } else {
+        gsap.ticker.remove(tick);
+      }
+    });
 
     const resizeObserver = new ResizeObserver(measure);
     resizeObserver.observe(loop);
 
     return () => {
       gsap.ticker.remove(tick);
+      stopVisibility();
       st.kill();
       resizeObserver.disconnect();
     };
@@ -81,7 +95,7 @@ export default function VelocityMarquee({ children, className, baseSpeed = 90, r
   );
 
   return (
-    <div className={`overflow-hidden ${className || ""}`}>
+    <div ref={rootRef} data-velocity-marquee className={`overflow-hidden ${className || ""}`}>
       <div ref={trackRef} className="marquee-track">
         {renderLoop()}
         {renderLoop(true)}

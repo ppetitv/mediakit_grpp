@@ -1,11 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useLocation } from "react-router";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { setLenis, getLenis, scrollToId } from "@/lib/scroll";
-import { hasLoadedExperience, markExperienceLoaded } from "@/lib/experience";
-
-import Preloader from "@/sections/Preloader";
 import Cursor from "@/sections/Cursor";
 import Navbar from "@/sections/Navbar";
 import Hero from "@/sections/Hero";
@@ -21,8 +18,6 @@ import VelocityMarquee from "@/components/VelocityMarquee";
 const CHANNELS = ["Radio", "TV", "Digital","Vía Pública", "Influencers"];
 
 export default function Home() {
-  const [loaded, setLoaded] = useState(hasLoadedExperience);
-  const loadedOnMountRef = useRef(loaded);
   const location = useLocation();
 
   /* Lenis smooth scroll wired into GSAP ticker */
@@ -34,7 +29,6 @@ export default function Home() {
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
 
-    if (!loadedOnMountRef.current) lenis.stop();
     return () => {
       gsap.ticker.remove(raf);
       lenis.destroy();
@@ -42,19 +36,13 @@ export default function Home() {
     };
   }, []);
 
-  const completePreloader = () => {
-    markExperienceLoaded();
-    setLoaded(true);
-  };
-
   return (
     <div className="bg-ink min-h-screen">
-      {!loaded && <Preloader onDone={completePreloader} />}
       <Cursor />
       <Navbar />
 
       <main>
-        <Hero started={loaded} />
+        <Hero />
 
         {/* channel marquee */}
         <div className="relative z-10 bg-ink border-y border-white/10 py-5 md:py-7">
@@ -77,20 +65,19 @@ export default function Home() {
       </main>
 
       <Footer />
-      <LenisStarter loaded={loaded} hash={location.hash} />
+      <HashScroll hash={location.hash} />
     </div>
   );
 }
 
-/** Unlocks scroll once the preloader finishes */
-function LenisStarter({ loaded, hash }: { loaded: boolean; hash: string }) {
+function HashScroll({ hash }: { hash: string }) {
   useEffect(() => {
-    if (!loaded) return;
     getLenis()?.start();
-    requestAnimationFrame(() => {
+    const frame = requestAnimationFrame(() => {
       ScrollTrigger.refresh();
       if (hash) scrollToId(hash.slice(1));
     });
-  }, [hash, loaded]);
+    return () => cancelAnimationFrame(frame);
+  }, [hash]);
   return null;
 }
