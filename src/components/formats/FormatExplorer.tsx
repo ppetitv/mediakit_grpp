@@ -3,6 +3,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { ChevronDown } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/anim";
+import { createDeferredTask } from "@/lib/frame-tasks";
 import { getLenis } from "@/lib/scroll";
 import { getFormatThumbnail } from "@/lib/format-thumbnails";
 import { FORMAT_SECTION_ROUTES, getFormatSection, getFormatSectionTarget, type FormatSection } from "@/lib/format-routes";
@@ -351,10 +352,23 @@ export default function FormatExplorer() {
     const root = rootRef.current;
     if (!root) return;
     const pendingImages = Array.from(root.querySelectorAll("img")).filter((image) => !image.complete);
-    const refresh = () => ScrollTrigger.refresh();
-    pendingImages.forEach((image) => image.addEventListener("load", refresh, { once: true }));
-    requestAnimationFrame(refresh);
-    return () => pendingImages.forEach((image) => image.removeEventListener("load", refresh));
+    const refresh = createDeferredTask(() => ScrollTrigger.refresh());
+    const schedule = () => refresh.request();
+    let disposed = false;
+    pendingImages.forEach((image) => {
+      image.addEventListener("load", schedule, { once: true });
+      image.addEventListener("error", schedule, { once: true });
+    });
+    void document.fonts.ready.then(() => { if (!disposed) schedule(); });
+    schedule();
+    return () => {
+      disposed = true;
+      refresh.dispose();
+      pendingImages.forEach((image) => {
+        image.removeEventListener("load", schedule);
+        image.removeEventListener("error", schedule);
+      });
+    };
   }, []);
 
   const openDetail = (format: FormatItem, catalog: Catalog, event: MouseEvent<HTMLAnchorElement>) => {

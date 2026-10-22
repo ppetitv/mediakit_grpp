@@ -419,6 +419,34 @@ body {
   }
 }
 
+/* Reserve the Stars scroll journey before JS or font loading can alter pin spacers. */
+@media (min-width: 768px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
+  .stars-runway {
+    height: calc(100svh + 220vw);
+  }
+  .stars-stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce), (min-width: 768px) and (max-height: 599px) {
+  .stars-stage {
+    min-height: 0;
+    padding-block: 4rem;
+  }
+  .stars-horizontal-track {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    white-space: normal;
+    font-size: clamp(2rem, 8vw, 6rem);
+    will-change: auto;
+  }
+}
+
 /* ---------- Stars title logo: manual positioning controls ---------- */
 .stars-title-logo {
   display: block;

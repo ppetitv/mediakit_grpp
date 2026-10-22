@@ -16,6 +16,10 @@ de `package.json` y `pnpm-lock.yaml`. Vercel comprueba que coincidan antes de
 compilar. El script de instalación de esbuild está permitido explícitamente
 en `pnpm-workspace.yaml` porque la compilación lo utiliza para minificar CSS.
 
+## Pruebas
+
+Pruebas de regresión: `node --test tests/*.test.mjs`.
+
 ## Plantilla React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

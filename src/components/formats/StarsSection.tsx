@@ -114,8 +114,9 @@ export default function StarsSection() {
 
       const horizontal = root.querySelector<HTMLElement>("[data-stars-horizontal]");
       const horizontalTrack = root.querySelector<HTMLElement>("[data-stars-horizontal-track]");
-      if (horizontal && horizontalTrack) {
-        media.add("(min-width: 768px)", () => {
+      const runway = root.querySelector<HTMLElement>("[data-stars-runway]");
+      if (horizontal && horizontalTrack && runway) {
+        media.add("(min-width: 768px) and (min-height: 600px) and (prefers-reduced-motion: no-preference)", () => {
           const horizontalTween = gsap.fromTo(
             horizontalTrack,
             { x: () => horizontal.clientWidth + 2 },
@@ -123,12 +124,10 @@ export default function StarsSection() {
               x: () => -horizontalTrack.scrollWidth - 2,
               ease: "none",
               scrollTrigger: {
-                trigger: horizontal,
+                trigger: runway,
                 start: "top top",
-                end: () => `+=${Math.max(horizontalTrack.scrollWidth * 1.35, horizontal.clientWidth * 2)}`,
-                pin: true,
+                end: "bottom bottom",
                 scrub: 1,
-                anticipatePin: 1,
                 invalidateOnRefresh: true,
               },
             },
@@ -154,7 +153,7 @@ export default function StarsSection() {
           });
         });
 
-        media.add("(max-width: 767px)", () => {
+        media.add("(max-width: 767px) and (prefers-reduced-motion: no-preference)", () => {
           gsap.fromTo(
             horizontalTrack,
             { x: () => horizontal.clientWidth + 2 },
@@ -190,7 +189,7 @@ export default function StarsSection() {
   };
 
   return (
-    <section ref={rootRef} id="area-stars" data-ecosystem-area="stars" className="overflow-hidden">
+    <section ref={rootRef} id="area-stars" data-ecosystem-area="stars" className="overflow-x-clip">
       <div className="relative bg-red px-5 pb-24 pt-24 text-white md:px-10 md:pb-36 md:pt-36">
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
           <div data-stars-orbit className="absolute -left-[28rem] top-[34%] h-[58rem] w-[58rem] rounded-full border border-white/25 md:-left-[25rem] md:top-[22%]" />
@@ -256,14 +255,15 @@ export default function StarsSection() {
             </div>
           </div>
 
-          <div data-stars-horizontal className="relative -mx-5 mt-6 flex min-h-[58dvh] items-center overflow-hidden md:-mx-10 md:mt-10 md:h-[100dvh] md:min-h-0">
+          <div data-stars-runway className="stars-runway -mx-5 mt-6 md:-mx-10 md:mt-10">
+          <div data-stars-horizontal className="stars-stage relative flex min-h-[58dvh] items-center overflow-hidden">
             <div className="pointer-events-none absolute inset-0" aria-hidden="true">
               <div className="absolute left-[14%] top-0 h-full w-px rotate-[18deg] bg-white/15" />
             </div>
             <p
               data-stars-horizontal-track
               aria-label="De la voz al impacto de marca. Stars Grupo RPP."
-              className="relative z-10 flex w-max items-center gap-[8vw] whitespace-nowrap px-[8vw] font-display text-[18vw] uppercase leading-none text-white will-change-transform md:gap-[5vw] md:px-[5vw] md:text-[9vw]"
+              className="stars-horizontal-track relative z-10 flex w-max items-center gap-[8vw] whitespace-nowrap px-[8vw] font-display text-[18vw] uppercase leading-none text-white will-change-transform md:gap-[5vw] md:px-[5vw] md:text-[9vw]"
             >
               <span data-stars-horizontal-item>De la voz</span>
               <span data-stars-horizontal-item className="inline-flex h-[0.72em] w-[0.72em] shrink-0 items-center">
@@ -274,6 +274,7 @@ export default function StarsSection() {
                 <img src="/images/stars_logo.svg" alt="" className="stars-horizontal-logo brightness-0 invert" />
               </span>
             </p>
+          </div>
           </div>
 
           <div data-stars-benefits-intro className="pt-24 md:pt-36">
