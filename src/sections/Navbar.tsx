@@ -49,13 +49,32 @@ export default function Navbar() {
   useEffect(() => {
     const menu = document.getElementById("mobile-menu");
     if (!menu) return;
+    const links = menu.querySelectorAll(".m-link");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      gsap.set(menu, { display: open ? "flex" : "none", clipPath: open ? "inset(0 0 0% 0)" : "inset(0 0 100% 0)" });
+      gsap.set(links, { clearProps: "transform,opacity" });
+      return;
+    }
+
     if (open) {
       gsap.set(menu, { display: "flex" });
-      gsap.fromTo(menu, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.7, ease: "power4.inOut" });
-      gsap.fromTo(menu.querySelectorAll(".m-link"), { y: 60, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.07, delay: 0.3, duration: 0.7, ease: "power4.out" });
-    } else {
-      gsap.to(menu, { clipPath: "inset(0 0 100% 0)", duration: 0.55, ease: "power4.inOut", onComplete: () => gsap.set(menu, { display: "none" }) });
+      const reveal = gsap.to(menu, { clipPath: "inset(0 0 0% 0)", duration: 0.7, ease: "power4.inOut" });
+      const revealLinks = gsap.fromTo(links, { y: 60, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.07, delay: 0.3, duration: 0.7, ease: "power4.out" });
+      return () => {
+        reveal.kill();
+        revealLinks.kill();
+      };
     }
+
+    if (getComputedStyle(menu).display === "none") return;
+    const conceal = gsap.to(menu, {
+      clipPath: "inset(0 0 100% 0)",
+      duration: 0.55,
+      ease: "power4.inOut",
+      onComplete: () => gsap.set(menu, { display: "none" }),
+    });
+    return () => { conceal.kill(); };
   }, [open]);
 
   const go = (id: string) => {
@@ -123,7 +142,7 @@ export default function Navbar() {
         </div>
       </header>
 
-      <div id="mobile-menu" className="fixed inset-0 z-[140] bg-red hidden flex-col justify-center px-8" style={{ clipPath: "inset(0 0 100% 0)" }}>
+      <div id="mobile-menu" inert={!open} className="fixed inset-0 z-[140] bg-red hidden flex-col justify-center px-8" style={{ clipPath: "inset(0 0 100% 0)" }}>
         {LINKS.map((l, i) => (
           <button key={l.id} onClick={() => go(l.id)} aria-current={l.id === "formatos" && formatsActive ? "page" : undefined} className="m-link text-left py-2">
             <span className="font-mono2 text-xs text-white/60 mr-4">0{i + 1}</span>
