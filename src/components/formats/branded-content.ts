@@ -114,7 +114,7 @@ export const BRANDED_FORMATS: BrandedFormat[] = [
     slug: "video-on-site", title: "Video on site", category: "Producción en locación", channel: "social", specification: "De 2 a 3 minutos máx.",
     description: "La historia se cuenta desde el lugar donde sucede: un evento o un local relacionado con tu producto o servicio.",
     integration: ["El contenido se vincula con el servicio o producto de la marca.", "Puede incluir la asistencia a un evento o a un local.", "Consulta la disponibilidad y el alcance de producción con nuestro equipo."],
-    examples: [],
+    examples: [{ label: "Ver demo: Movistar Empresas · Horizonte Digital", url: "https://f.rpp-noticias.io/2024/10/29/ujillo-e_1662533.mp4" }, { label: "Ver publicación original en RPP", url: "https://rpp.pe/campanas/publirreportaje/movistar-empresas-impulsa-la-transformacion-digital-en-trujillo-con-el-evento-horizonte-digital-noticia-1594857" }],
     imageAlt: "Ilustración conceptual de una cobertura audiovisual de marca en un evento, con entrevistador y micrófono.",
   },
   {

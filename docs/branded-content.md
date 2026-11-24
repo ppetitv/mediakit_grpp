@@ -36,9 +36,17 @@ Las demos de Branded Content son ejemplos externos; no es obligatorio que exista
 un vídeo integrado en la ficha. En el control de inventario, los requisitos son
 la URL de la ficha individual y al menos una URL externa de ejemplo.
 
-La referencia de Video on site no publica un ejemplo y utiliza una imagen de
-próximamente. La ficha conserva la descripción del formato y permite consultar
-su disponibilidad; no se inventó un caso ni un enlace de demostración.
+La referencia original de Video on site no publica un ejemplo. El 23/11/2026 se
+completó la ficha con la cobertura de «Estamos al día» del evento Horizonte
+Digital de Movistar Empresas en Trujillo, publicada por RPP el 29/10/2024:
+
+- Demo: https://f.rpp-noticias.io/2024/10/29/ujillo-e_1662533.mp4
+- Publicación original: https://rpp.pe/campanas/publirreportaje/movistar-empresas-impulsa-la-transformacion-digital-en-trujillo-con-el-evento-horizonte-digital-noticia-1594857
+
+La publicación identifica la cobertura en el evento. Se comprobó la reproducción
+pública del MP4 vertical (1080 × 1920, 100,8 segundos) y se revisaron escenas del
+evento y sus participantes. Se usa como ejemplo de cobertura en locación; su
+duración no cambia la especificación comercial del formato.
 
 ## Miniaturas
 
@@ -46,7 +54,7 @@ su disponibilidad; no se inventó un caso ni un enlace de demostración.
 `image_gen`. Usan las imágenes de los ejemplos publicados como referencias
 de composición y `public/images/formats/thumbnails/standard/middle.webp` como
 referencia de estilo. No son capturas de las campañas originales. Video on
-site tiene una ilustración conceptual sin caso publicado de referencia.
+site tiene una ilustración conceptual creada antes de incorporar la demo.
 
 La familia visual mantiene el fondo claro, ventanas blancas frontales, texto
 simulado en gris y áreas de integración en rojo de los thumbnails de Display.
