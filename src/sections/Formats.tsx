@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, type CSSProperties, type MouseEvent
 import { gsap } from "@/lib/anim";
 import { usePageTransition } from "@/lib/page-transition";
 import { CONSULTATION_URL } from "@/lib/contact";
+import { FORMAT_SECTION_ROUTES } from "@/lib/format-routes";
 import { warmPage } from "@/lib/page-loaders";
 
 interface Format {
@@ -16,25 +17,25 @@ interface Format {
 const FORMATS: Format[] = [
   {
     id: "01",
-    title: "Take Over",
-    desc: "El formato de mayor impacto: tu marca toma la portada de RPP durante 24 horas.",
-    result: "+200% recuerdo de marca",
+    title: "Skin Arco",
+    desc: "Tu marca enmarca la cabecera y los laterales del sitio con una pieza envolvente.",
+    result: "Rich Media · Desktop",
     visual: "takeover",
     url: "/formatos/skin-arco",
   },
   {
     id: "02",
-    title: "Billboard",
-    desc: "Dominio visual al tope de la home: 970×250 de presencia imposible de ignorar.",
-    result: "+87% CTR promedio",
+    title: "Top",
+    desc: "Una franja publicitaria en la parte superior de la página.",
+    result: "Estándar · Multiplataforma",
     visual: "billboard",
     url: "/formatos/standard/top",
   },
   {
     id: "03",
-    title: "Video Pre-Roll",
-    desc: "Tu spot, antes del contenido que millones de personas quieren ver.",
-    result: "65% view-through rate",
+    title: "Video Top Full",
+    desc: "Video de gran formato en la parte superior de la página.",
+    result: "Rich Media · Desktop",
     visual: "video",
     url: "/formatos/video-top-full",
   },
@@ -44,15 +45,15 @@ const FORMATS: Format[] = [
     desc: "Historias producidas por nuestro equipo editorial que la audiencia elige consumir.",
     result: "3× más engagement",
     visual: "branded",
-    url: "/formatos",
+    url: FORMAT_SECTION_ROUTES["branded-content"].path,
   },
   {
     id: "05",
-    title: "Audio Spot",
-    desc: "La radio de siempre en los oídos de hoy: streaming, podcast y señal en vivo.",
-    result: "+54% recordación",
+    title: "Streaming",
+    desc: "Explora los programas nativos digitales y de streaming híbrido de Grupo RPP.",
+    result: "Programas",
     visual: "audio",
-    url: "/formatos",
+    url: FORMAT_SECTION_ROUTES.streaming.path,
   },
   {
     id: "06",
@@ -69,7 +70,7 @@ function Visual({ type }: { type: Format["visual"] }) {
     case "takeover":
       return (
         <div className="absolute inset-0 overflow-hidden">
-          <img src="/images/signal.png" alt="" loading="lazy" decoding="async" className="w-full h-full object-cover opacity-90" />
+          <img src="/images/formats/thumbnails/rich-media/skin-arco.webp" alt="" loading="lazy" decoding="async" className="w-full h-full object-cover opacity-90" />
           <div className="absolute inset-0 bg-gradient-to-t from-red-deep/60 to-transparent" />
         </div>
       );
@@ -90,7 +91,7 @@ function Visual({ type }: { type: Format["visual"] }) {
           <div className="h-3 w-2/3 bg-bone/25 rounded-full" />
           <div className="h-3 w-1/2 bg-bone/15 rounded-full" />
           <div className="h-16 w-full bg-red rounded-lg mt-2 flex items-center justify-center overflow-hidden">
-            <span className="font-display text-2xl text-white tracking-wide group-hover:scale-110 transition-transform duration-500">970 × 250</span>
+            <span className="font-display text-2xl text-white tracking-wide group-hover:scale-110 transition-transform duration-500">TOP</span>
           </div>
           <div className="h-3 w-3/4 bg-bone/15 rounded-full mt-2" />
           <div className="h-3 w-1/3 bg-bone/25 rounded-full" />
