@@ -19,7 +19,8 @@ export function BrandedContentNotFound() {
 
 // Display and Branded Content share the dialog, media, title and navigation.
 export default function BrandedContentDetail({ format }: { format: BrandedFormat }) {
-  const [openSection, setOpenSection] = useState<string | null>("integration");
+  const initialSection = format.slug === "video-on-site" ? "examples" : "integration";
+  const [openSection, setOpenSection] = useState<string | null>(initialSection);
   const toggle = (id: string) => setOpenSection((previous) => previous === id ? null : id);
   return (
     <div data-branded-detail={format.slug}>

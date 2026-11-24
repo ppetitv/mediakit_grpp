@@ -37,16 +37,15 @@ un vídeo integrado en la ficha. En el control de inventario, los requisitos son
 la URL de la ficha individual y al menos una URL externa de ejemplo.
 
 La referencia original de Video on site no publica un ejemplo. El 23/11/2026 se
-completó la ficha con la cobertura de «Estamos al día» del evento Horizonte
-Digital de Movistar Empresas en Trujillo, publicada por RPP el 29/10/2024:
+incorporó una demo reciente del LinkedIn oficial de GRUPORPP: Romina Vinoglo de
+Radio Corazón cubriendo PMX 2025 para OOHLA, con entrevistas a los asistentes.
 
-- Demo: https://f.rpp-noticias.io/2024/10/29/ujillo-e_1662533.mp4
-- Publicación original: https://rpp.pe/campanas/publirreportaje/movistar-empresas-impulsa-la-transformacion-digital-en-trujillo-con-el-evento-horizonte-digital-noticia-1594857
+- Demo: https://www.linkedin.com/posts/gruporpp-peru_oohla-grpp-ooh-activity-7379932204648525826-kE3i
+- Publicación: 03/10/2025; duración: 58 segundos, según el VideoObject público.
 
-La publicación identifica la cobertura en el evento. Se comprobó la reproducción
-pública del MP4 vertical (1080 × 1920, 100,8 segundos) y se revisaron escenas del
-evento y sus participantes. Se usa como ejemplo de cobertura en locación; su
-duración no cambia la especificación comercial del formato.
+Se usa como ejemplo de cobertura en locación; su duración no cambia la
+especificación comercial del formato. La ficha abre «Demos y ejemplos» para
+mostrar el acceso al video al ingresar. Se sustituyó el ejemplo anterior de 2024.
 
 ## Miniaturas
 
