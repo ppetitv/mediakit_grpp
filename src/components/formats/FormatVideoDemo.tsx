@@ -68,7 +68,7 @@ export default function FormatVideoDemo({ title, videos, poster, controls = fals
   }, [selectedVideo.src, controls]);
 
   return (
-    <div className={`relative w-full overflow-hidden rounded-[1.5rem] md:rounded-[2rem] ${portrait ? "mx-auto max-w-[min(400px,39.375dvh)] bg-black" : "bg-[#dad8d2]"}`}>
+    <div className={`relative w-full overflow-hidden rounded-[1.5rem] md:rounded-[2rem] ${portrait ? "mx-auto max-w-[720px] bg-black" : "bg-[#dad8d2]"}`}>
       <div className={`${portrait ? "aspect-[9/16]" : "aspect-video"} w-full`}>
         <video
           key={selectedVideo.src}

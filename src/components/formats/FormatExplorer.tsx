@@ -751,7 +751,7 @@ export default function FormatExplorer() {
                   </div>
                 </div>
 
-                <div className="grid flex-1 items-center gap-10 py-10 md:grid-cols-12 md:gap-12 md:py-12">
+                <div className={`grid flex-1 gap-10 py-10 md:grid-cols-12 md:gap-12 md:py-12 ${selected.branded?.demoVideo ? "items-start" : "items-center"}`}>
                   <div data-detail-reveal className="min-w-0 md:col-span-8">
                     {selected.demoVideos ? (
                       <FormatVideoDemo key={`${routeCatalog}-${selected.id}`} title={selected.title} videos={selected.demoVideos} poster={selected.branded?.demoVideo?.poster ?? selectedThumbnail} controls={!!selected.branded} portrait={!!selected.branded} />
