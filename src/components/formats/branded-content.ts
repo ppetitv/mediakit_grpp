@@ -9,6 +9,7 @@ export interface BrandedFormat {
   channel: BrandedChannel;
   specification: string;
   examples: { label: string; url: string }[];
+  demoVideo?: { src: string; poster: string };
   imageAlt: string;
 }
 
@@ -115,6 +116,7 @@ export const BRANDED_FORMATS: BrandedFormat[] = [
     description: "La historia se cuenta desde el lugar donde sucede: un evento o un local relacionado con tu producto o servicio.",
     integration: ["El contenido se vincula con el servicio o producto de la marca.", "Puede incluir la asistencia a un evento o a un local.", "Consulta la disponibilidad y el alcance de producción con nuestro equipo."],
     examples: [{ label: "Ver demo: OOHLA en PMX 2025 · Romina Vinoglo", url: "https://www.linkedin.com/posts/gruporpp-peru_oohla-grpp-ooh-activity-7379932204648525826-kE3i" }],
+    demoVideo: { src: "/videos/branded-content/video-on-site-pmx-2025.mp4", poster: "/videos/branded-content/video-on-site-pmx-2025.jpg" },
     imageAlt: "Ilustración conceptual de una cobertura audiovisual de marca en un evento, con entrevistador y micrófono.",
   },
   {

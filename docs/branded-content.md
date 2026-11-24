@@ -47,6 +47,13 @@ Se usa como ejemplo de cobertura en locación; su duración no cambia la
 especificación comercial del formato. La ficha abre «Demos y ejemplos» para
 mostrar el acceso al video al ingresar. Se sustituyó el ejemplo anterior de 2024.
 
+El video de PMX 2025 está descargado en
+`public/videos/branded-content/video-on-site-pmx-2025.mp4`, junto con su portada
+original. Se reproduce directamente en la ficha con el reproductor compartido
+de Display, en proporción vertical y con controles de pausa, audio, avance y
+pantalla completa. Comienza sin sonido para permitir la reproducción automática;
+el usuario puede activarlo. El enlace de LinkedIn conserva la fuente original.
+
 ## Miniaturas
 
 17 ilustraciones conceptuales nuevas, producidas con la herramienta integrada

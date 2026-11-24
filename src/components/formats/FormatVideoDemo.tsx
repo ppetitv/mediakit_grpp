@@ -9,9 +9,11 @@ interface FormatVideoDemoProps {
   title: string;
   videos: readonly [FormatDemoVideo, ...FormatDemoVideo[]];
   poster?: string;
+  controls?: boolean;
+  portrait?: boolean;
 }
 
-export default function FormatVideoDemo({ title, videos, poster }: FormatVideoDemoProps) {
+export default function FormatVideoDemo({ title, videos, poster, controls = false, portrait = false }: FormatVideoDemoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoId = useId();
   const [selectedIndex, setSelectedIndex] = useState(() => {
@@ -23,6 +25,17 @@ export default function FormatVideoDemo({ title, videos, poster }: FormatVideoDe
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+    if (controls) {
+      void video.play().catch(() => {
+        // Native controls remain available if the browser blocks autoplay.
+      });
+      const pauseWhenHidden = () => { if (document.hidden) video.pause(); };
+      document.addEventListener("visibilitychange", pauseWhenHidden);
+      return () => {
+        document.removeEventListener("visibilitychange", pauseWhenHidden);
+        video.pause();
+      };
+    }
     let visible = true;
 
     const syncPlayback = () => {
@@ -52,11 +65,11 @@ export default function FormatVideoDemo({ title, videos, poster }: FormatVideoDe
       document.removeEventListener("visibilitychange", syncPlayback);
       video.pause();
     };
-  }, [selectedVideo.src]);
+  }, [selectedVideo.src, controls]);
 
   return (
-    <div className="relative w-full overflow-hidden rounded-[1.5rem] bg-[#dad8d2] md:rounded-[2rem]">
-      <div className="aspect-video w-full">
+    <div className={`relative w-full overflow-hidden rounded-[1.5rem] md:rounded-[2rem] ${portrait ? "mx-auto max-w-[min(400px,39.375dvh)] bg-black" : "bg-[#dad8d2]"}`}>
+      <div className={`${portrait ? "aspect-[9/16]" : "aspect-video"} w-full`}>
         <video
           key={selectedVideo.src}
           ref={videoRef}
@@ -65,14 +78,14 @@ export default function FormatVideoDemo({ title, videos, poster }: FormatVideoDe
           poster={poster}
           autoPlay
           muted
-          loop
+          loop={!controls}
           playsInline
-          controls={false}
+          controls={controls}
           disablePictureInPicture
           disableRemotePlayback
           preload="metadata"
-          aria-label={`Demo de ${title} en ${selectedVideo.device}`}
-          className="pointer-events-none block h-full w-full object-contain"
+          aria-label={controls ? `Demo de ${title}` : `Demo de ${title} en ${selectedVideo.device}`}
+          className={`${controls ? "" : "pointer-events-none "}block h-full w-full object-contain`}
         />
       </div>
       {videos.length > 1 && (

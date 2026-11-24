@@ -202,6 +202,7 @@ const BRANDED_DETAIL_CATALOG: { label: string; formats: FormatItem[] } = {
   formats: BRANDED_FORMATS.map((format, index) => ({
     id: String(index + 1).padStart(2, "0"), slug: format.slug, title: format.title,
     description: format.description, device: "Multiplataforma", visual: "video", branded: format,
+    demoVideos: format.demoVideo ? [{ device: "Mobile", src: format.demoVideo.src }] : undefined,
   })),
 };
 const ECOSYSTEM_AREAS: { id: EcosystemArea; label: string }[] = [
@@ -753,7 +754,7 @@ export default function FormatExplorer() {
                 <div className="grid flex-1 items-center gap-10 py-10 md:grid-cols-12 md:gap-12 md:py-12">
                   <div data-detail-reveal className="min-w-0 md:col-span-8">
                     {selected.demoVideos ? (
-                      <FormatVideoDemo key={`${routeCatalog}-${selected.id}`} title={selected.title} videos={selected.demoVideos} poster={selectedThumbnail} />
+                      <FormatVideoDemo key={`${routeCatalog}-${selected.id}`} title={selected.title} videos={selected.demoVideos} poster={selected.branded?.demoVideo?.poster ?? selectedThumbnail} controls={!!selected.branded} portrait={!!selected.branded} />
                     ) : (
                       <FormatPreview key={`${routeCatalog}-${selected.id}`} visual={selected.visual} title={selected.title} imageSrc={selectedThumbnail} priority sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1599px) 66vw, 1000px" />
                     )}
