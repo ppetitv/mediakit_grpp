@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { gsap, splitWords } from "@/lib/anim";
+import { CONSULTATION_URL } from "@/lib/contact";
 import DeferredReel from "@/components/DeferredReel";
 
 const TEXT =
@@ -95,12 +96,11 @@ export default function Manifesto() {
             Credibilidad construida durante seis décadas. Cuando tu marca aparece en nuestros medios, hereda esa confianza.
           </p>
           <a
-            href="#contacto"
-            onClick={(e) => e.preventDefault()}
+            href={CONSULTATION_URL}
             data-cursor="hover"
             className="mani-side u-link inline-flex items-center gap-3 font-mono2 text-[11px] tracking-[0.2em] uppercase text-red w-fit"
           >
-            Leer nota <span aria-hidden>→</span>
+            Hablemos de tu campaña <span aria-hidden="true">↗</span>
           </a>
           <div className="mani-side flex gap-10 border-t border-white/10 pt-6">
             <div>

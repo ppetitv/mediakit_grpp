@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router";
 import { gsap } from "@/lib/anim";
+import { CONSULTATION_URL } from "@/lib/contact";
 import { scrollToId } from "@/lib/scroll";
 import { usePageTransition } from "@/lib/page-transition";
 import Magnetic from "@/components/Magnetic";
@@ -23,8 +24,7 @@ export default function Footer() {
       return;
     }
     if (location.pathname !== "/") {
-      if (id === "contacto" && document.getElementById("contacto")) scrollToId(id);
-      else transitionTo(`/#${id}`);
+      transitionTo(`/#${id}`);
       return;
     }
     scrollToId(id);
@@ -81,7 +81,6 @@ export default function Footer() {
                 { label: "Audiencia", id: "audiencia" },
                 { label: "Formatos", id: "formatos" },
                 { label: "Marcas", id: "marcas" },
-                { label: "Contacto", id: "contacto" },
               ].map((l) => (
                 <li key={l.id}>
                   <button onClick={() => go(l.id)} data-cursor="hover" className="u-link text-bone/60 hover:text-bone text-sm transition-colors">
@@ -89,15 +88,18 @@ export default function Footer() {
                   </button>
                 </li>
               ))}
+              <li>
+                <a href={CONSULTATION_URL} data-cursor="hover" className="u-link text-sm text-bone/60 transition-colors hover:text-bone">Contacto</a>
+              </li>
             </ul>
           </div>
 
           <div className="md:col-span-4">
             <p className="font-mono2 text-[10px] tracking-[0.3em] uppercase text-bone/35 mb-6">¿Necesitas el media kit completo?</p>
             <p className="text-bone/60 text-sm leading-relaxed mb-6">Escríbenos y recibe tarifas, especificaciones técnicas y casos de éxito.</p>
-            <button onClick={() => go("contacto")} data-cursor="hover" className="u-link font-mono2 text-[11px] tracking-[0.2em] uppercase text-red">
-              publicidad@gruporpp.com.pe →
-            </button>
+            <a href={CONSULTATION_URL} data-cursor="hover" className="u-link font-mono2 text-[11px] uppercase tracking-[0.2em] text-red">
+              Ir a Impulsa tu Marca <span aria-hidden="true">↗</span>
+            </a>
           </div>
         </div>
 

@@ -264,48 +264,6 @@ body {
   transform-origin: left;
 }
 
-/* ---------- form fields ---------- */
-.field {
-  position: relative;
-}
-.field input,
-.field textarea {
-  width: 100%;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid rgba(243, 241, 236, 0.22);
-  padding: 14px 0 12px;
-  font-size: 15px;
-  color: var(--bone);
-  outline: none;
-  border-radius: 0;
-}
-.field input::placeholder,
-.field textarea::placeholder {
-  color: rgba(243, 241, 236, 0.32);
-}
-.field .field-bar {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 1px;
-  width: 100%;
-  background: var(--red);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.field:focus-within .field-bar {
-  transform: scaleX(1);
-}
-.field label {
-  font-family: var(--font-sans);
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(243, 241, 236, 0.45);
-}
-
 /* ---------- format card ---------- */
 .fmt-card {
   transform-style: preserve-3d;

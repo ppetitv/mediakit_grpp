@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, type CSSProperties, type MouseEvent } from "react";
 import { gsap } from "@/lib/anim";
 import { usePageTransition } from "@/lib/page-transition";
-import { requestContact } from "@/lib/contact";
+import { CONSULTATION_URL } from "@/lib/contact";
 import { warmPage } from "@/lib/page-loaders";
 
 interface Format {
@@ -286,8 +286,7 @@ export default function Formats() {
 
                 {/* end CTA card */}
                 <a
-                  href="#contacto"
-                  onClick={(e) => { e.preventDefault(); requestContact("Formatos destacados"); }}
+                  href={CONSULTATION_URL}
                   data-cursor="ESCRIBE"
                   className="formats-contact group relative shrink-0 w-full rounded-2xl border border-white/30 flex flex-col justify-between p-8 hover:bg-white/10 transition-colors duration-500 min-h-[20rem]"
                 >

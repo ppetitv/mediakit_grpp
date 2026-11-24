@@ -24,8 +24,8 @@ Las fichas utilizan el mismo diálogo a pantalla completa de Display en
 `FormatExplorer.tsx`: cabecera, imagen a la izquierda, información a la derecha,
 cierre, apertura/cierre animados, copia de URL y navegación anterior/siguiente.
 `BrandedContentDetail.tsx` aporta los datos y reutiliza las tarjetas y acordeones
-de Display para mostrar integración, demos externas y condiciones. Conserva ambos
-ejemplos de Facebook Live musical y la consulta con interés precargado.
+de Display para mostrar integración, demos externas y condiciones. El enlace
+«Consultar este formato» lleva directamente a Impulsa tu Marca.
 
 Cada ruta admite acceso directo y recarga. Al abrir desde el catálogo, cerrar o
 presionar Escape devuelve a la posición y al enlace de origen. Una ficha abierta

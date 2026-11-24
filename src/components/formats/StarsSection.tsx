@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from "react";
 import Magnetic from "@/components/Magnetic";
 import { gsap } from "@/lib/anim";
-import { getLenis } from "@/lib/scroll";
+import { CONSULTATION_URL } from "@/lib/contact";
 
 const benefits = [
   {
@@ -180,14 +180,6 @@ export default function StarsSection() {
     };
   }, []);
 
-  const scrollToContact = () => {
-    const contact = document.getElementById("contacto");
-    if (!contact) return;
-    const lenis = getLenis();
-    if (lenis) lenis.scrollTo(contact, { duration: 1.5 });
-    else contact.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <section ref={rootRef} id="area-stars" data-ecosystem-area="stars" className="overflow-x-clip">
       <div className="relative bg-red px-5 pb-24 pt-24 text-white md:px-10 md:pb-36 md:pt-36">
@@ -332,14 +324,13 @@ export default function StarsSection() {
               Construyamos una campaña con la voz, el territorio y la comunidad adecuados para tu marca.
             </p>
             <Magnetic strength={0.2}>
-              <button
-                type="button"
-                onClick={scrollToContact}
+              <a
+                href={CONSULTATION_URL}
                 data-cursor="hover"
-                className="rounded-full bg-ink px-6 py-4 font-mono2 text-[9px] uppercase tracking-[0.18em] text-white transition-colors duration-300 hover:bg-white hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
+                className="inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-6 py-4 font-mono2 text-[9px] uppercase tracking-[0.18em] text-white transition-colors duration-300 hover:bg-white hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
               >
-                Quiero trabajar con Stars →
-              </button>
+                Quiero trabajar con Stars <span aria-hidden="true">↗</span>
+              </a>
             </Magnetic>
           </div>
         </div>

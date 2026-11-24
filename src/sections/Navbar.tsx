@@ -5,6 +5,7 @@ import { scrollToId } from "@/lib/scroll";
 import { usePageTransition } from "@/lib/page-transition";
 import Magnetic from "@/components/Magnetic";
 import { warmPage } from "@/lib/page-loaders";
+import { CONSULTATION_URL } from "@/lib/contact";
 
 const LINKS = [
   { label: "Home", id: "hero" },
@@ -67,11 +68,7 @@ export default function Navbar() {
     }
 
     if (location.pathname !== "/") {
-      if (id === "contacto" && document.getElementById("contacto")) {
-        setTimeout(() => scrollToId(id), delay);
-      } else {
-        setTimeout(() => transitionTo(`/#${id}`), delay);
-      }
+      setTimeout(() => transitionTo(`/#${id}`), delay);
       return;
     }
 
@@ -105,20 +102,20 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Magnetic className="hidden md:inline-block">
-            <button
-              onClick={() => go("contacto")}
-              data-cursor="hover"
-              className="bg-red text-white font-mono2 text-[11px] tracking-[0.18em] uppercase px-6 py-3 rounded-full hover:bg-bone hover:text-ink transition-colors duration-300"
-            >
-              Hablemos
-            </button>
-          </Magnetic>
+          <div className="hidden md:block">
+            <Magnetic>
+              <a href={CONSULTATION_URL} data-cursor="hover" className="inline-flex min-h-11 items-center rounded-full bg-red px-6 py-3 font-mono2 text-[11px] uppercase tracking-[0.18em] text-white transition-colors duration-300 hover:bg-bone hover:text-ink">
+                Hablemos
+              </a>
+            </Magnetic>
+          </div>
           <button
             onClick={() => setOpen(!open)}
             data-cursor="hover"
             className="md:hidden relative w-10 h-10 flex flex-col items-center justify-center gap-[6px]"
             aria-label="Menú"
+            aria-controls="mobile-menu"
+            aria-expanded={open}
           >
             <span className={`block w-6 h-[2px] bg-bone transition-transform duration-300 ${open ? "rotate-45 translate-y-[4px]" : ""}`} />
             <span className={`block w-6 h-[2px] bg-bone transition-transform duration-300 ${open ? "-rotate-45 -translate-y-[4px]" : ""}`} />
@@ -127,12 +124,16 @@ export default function Navbar() {
       </header>
 
       <div id="mobile-menu" className="fixed inset-0 z-[140] bg-red hidden flex-col justify-center px-8" style={{ clipPath: "inset(0 0 100% 0)" }}>
-        {LINKS.concat({ label: "Contacto", id: "contacto" }).map((l, i) => (
+        {LINKS.map((l, i) => (
           <button key={l.id} onClick={() => go(l.id)} aria-current={l.id === "formatos" && formatsActive ? "page" : undefined} className="m-link text-left py-2">
             <span className="font-mono2 text-xs text-white/60 mr-4">0{i + 1}</span>
             <span className={`font-display text-5xl uppercase ${l.id === "formatos" && formatsActive ? "text-ink" : "text-white"}`}>{l.label}</span>
           </button>
         ))}
+        <a href={CONSULTATION_URL} onClick={() => setOpen(false)} className="m-link block py-2 text-left">
+          <span aria-hidden="true" className="mr-4 font-mono2 text-xs text-white/60">0{LINKS.length + 1}</span>
+          <span className="font-display text-5xl uppercase text-white">Contacto</span>
+        </a>
         <p className="m-link absolute bottom-8 left-8 font-mono2 text-[10px] tracking-[0.3em] text-white/60 uppercase">GRPP® — Media Kit 2027</p>
       </div>
     </>

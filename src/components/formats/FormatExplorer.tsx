@@ -7,7 +7,7 @@ import { createDeferredTask } from "@/lib/frame-tasks";
 import { getLenis } from "@/lib/scroll";
 import { getFormatThumbnail } from "@/lib/format-thumbnails";
 import { BRANDED_FAMILY_ROUTES, FORMAT_SECTION_ROUTES, getFormatSection, getFormatSectionTarget, type FormatSection } from "@/lib/format-routes";
-import { requestContact } from "@/lib/contact";
+import { CONSULTATION_URL } from "@/lib/contact";
 import FormatPreview, { type FormatVisual } from "@/components/formats/FormatPreview";
 import FormatVideoDemo, { type FormatDemoVideo } from "@/components/formats/FormatVideoDemo";
 import VideoDemoBadge from "@/components/formats/VideoDemoBadge";
@@ -17,7 +17,7 @@ import StarsSection from "@/components/formats/StarsSection";
 import StreamingSection from "@/components/formats/StreamingSection";
 import BrandedContentSection from "@/components/formats/BrandedContentSection";
 import BrandedContentDetail from "@/components/formats/BrandedContentDetail";
-import { BRANDED_CHANNELS, BRANDED_FORMATS, getBrandedThumbnail, type BrandedFormat } from "@/components/formats/branded-content";
+import { BRANDED_FORMATS, getBrandedThumbnail, type BrandedFormat } from "@/components/formats/branded-content";
 
 type Device = "Todos" | "Mobile" | "Desktop";
 type Availability = "Solo mobile" | "Solo desktop";
@@ -34,7 +34,6 @@ interface CatalogOrigin {
 interface FormatNavigationState {
   catalogOrigin?: CatalogOrigin;
   restoreCatalog?: CatalogOrigin;
-  skipCatalogPosition?: boolean;
 }
 
 interface FormatItem {
@@ -272,7 +271,6 @@ export default function FormatExplorer() {
   const detailTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const hasOpenedRef = useRef(false);
   const closingRef = useRef(false);
-  const afterCloseRef = useRef<(() => void) | null>(null);
   const previousRouteRef = useRef<{ section: FormatSection; detail: boolean } | null>(null);
   const routeSection = getFormatSection(location.pathname);
   const routeCatalog: DetailCatalog = routeSection === "branded-content" ? "branded-content" : location.pathname.startsWith("/formatos/standard") ? "standard" : "rich-media";
@@ -425,7 +423,7 @@ export default function FormatExplorer() {
   useEffect(() => {
     const previous = previousRouteRef.current;
     previousRouteRef.current = { section: routeSection, detail: selected !== null };
-    if (selected || navigationState?.skipCatalogPosition) return;
+    if (selected) return;
     const restoreCatalog = navigationState?.restoreCatalog
       ?? (previous?.detail ? catalogOriginRef.current : null);
 
@@ -544,20 +542,15 @@ export default function FormatExplorer() {
 
   useEffect(() => () => getLenis()?.start(), []);
 
-  const closeDetail = (afterClose?: () => void) => {
+  const closeDetail = () => {
     if (!selected || closingRef.current) return;
     const detail = detailRef.current;
     const overlay = overlayRef.current;
     const catalogOrigin = navigationState?.catalogOrigin ?? catalogOriginRef.current;
     const finishClose = () => {
-      afterCloseRef.current = afterClose ?? null;
-      if (afterClose) catalogOriginRef.current = null;
       navigate(catalogOrigin?.path ?? (selected.branded ? BRANDED_FAMILY_ROUTES[selected.branded.channel].path : FORMAT_SECTION_ROUTES[routeCatalog].path), {
         replace: true,
-        state: {
-          restoreCatalog: afterClose ? undefined : catalogOrigin ?? undefined,
-          skipCatalogPosition: Boolean(afterClose),
-        } satisfies FormatNavigationState,
+        state: { restoreCatalog: catalogOrigin ?? undefined } satisfies FormatNavigationState,
       });
       getLenis()?.start();
       closingRef.current = false;
@@ -589,19 +582,6 @@ export default function FormatExplorer() {
         state: { catalogOrigin: navigationState?.catalogOrigin ?? catalogOriginRef.current ?? undefined } satisfies FormatNavigationState,
       });
     }
-  };
-
-  const consultFormat = () => {
-    if (selected?.branded) {
-      const format = selected.branded;
-      closeDetail(() => requestContact(`Branded Content / ${BRANDED_CHANNELS[format.channel].label} / ${format.title}`));
-      return;
-    }
-    closeDetail(() => {
-      const contact = document.getElementById("contacto");
-      if (!contact) return;
-      requestAnimationFrame(() => getLenis()?.scrollTo(contact, { duration: 1.5 }));
-    });
   };
 
   return (
@@ -736,13 +716,7 @@ export default function FormatExplorer() {
         <Dialog.Portal>
           <Dialog.Overlay ref={overlayRef} className="fixed inset-0 z-[230] bg-ink/60 backdrop-blur-sm" />
           {selected && (
-            <Dialog.Content ref={setDetailNode} data-lenis-prevent onCloseAutoFocus={(event) => {
-              event.preventDefault();
-              const afterClose = afterCloseRef.current;
-              afterCloseRef.current = null;
-              // Continue only once the dialog has released its focus scope.
-              if (afterClose) requestAnimationFrame(afterClose);
-            }} onEscapeKeyDown={(event) => { event.preventDefault(); closeDetail(); }} className="fixed inset-0 z-[240] h-[100dvh] max-h-[100dvh] touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain bg-ink text-bone outline-none [-webkit-overflow-scrolling:touch]" style={{ visibility: "hidden", willChange: "transform" }} aria-describedby="format-detail-description">
+            <Dialog.Content ref={setDetailNode} data-lenis-prevent onCloseAutoFocus={(event) => event.preventDefault()} onEscapeKeyDown={(event) => { event.preventDefault(); closeDetail(); }} className="fixed inset-0 z-[240] h-[100dvh] max-h-[100dvh] touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain bg-ink text-bone outline-none [-webkit-overflow-scrolling:touch]" style={{ visibility: "hidden", willChange: "transform" }} aria-describedby="format-detail-description">
               <div className="mx-auto flex min-h-full max-w-[1600px] flex-col px-5 pb-[calc(env(safe-area-inset-bottom)+2rem)] pt-[calc(env(safe-area-inset-top)+1.5rem)] md:px-10 md:pb-10 md:pt-8">
                 <div className="flex items-center justify-between gap-4 border-b border-white/12 pb-5">
                   <div data-detail-reveal className="flex min-w-0 items-center gap-4 sm:gap-5">
@@ -778,7 +752,9 @@ export default function FormatExplorer() {
                       </>
                     )}
                     <div data-detail-reveal className="mt-8 flex flex-wrap gap-3">
-                      <button onClick={consultFormat} data-cursor="hover" className="rounded-full bg-red px-6 py-4 font-mono2 text-[9px] uppercase tracking-[0.18em] text-white transition-colors hover:bg-bone hover:text-ink">Consultar este formato →</button>
+                      <a href={CONSULTATION_URL} data-cursor="hover" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-red px-6 py-4 font-mono2 text-[9px] uppercase tracking-[0.18em] text-white transition-colors hover:bg-bone hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bone">
+                        Consultar este formato <span aria-hidden="true">↗</span>
+                      </a>
                       <button onClick={copyUrl} data-cursor="hover" className="rounded-full border border-white/20 px-5 py-4 font-mono2 text-[9px] uppercase tracking-[0.18em] text-bone transition-colors hover:border-white hover:bg-white/10">
                         {copied ? "¡Enlace copiado! ✓" : "Copiar enlace ↗"}
                       </button>

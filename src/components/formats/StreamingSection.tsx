@@ -3,8 +3,7 @@ import { Link } from "react-router";
 import { ArrowDown, ArrowUpRight, CalendarDays, Link2, Play, Radio } from "lucide-react";
 import { gsap } from "@/lib/anim";
 import { STREAMING_FAMILY_ROUTES } from "@/lib/format-routes";
-import { requestContact } from "@/lib/contact";
-import { scrollToId } from "@/lib/scroll";
+import { CONSULTATION_URL } from "@/lib/contact";
 import Magnetic from "@/components/Magnetic";
 import StreamingBenefits from "./StreamingBenefits";
 import { STREAMING_CATALOG, type StreamingFamily, type StreamingProgram } from "./streaming-programs";
@@ -36,7 +35,7 @@ const INTEGRATIONS = [
   },
 ];
 
-function ProgramCard({ program, family }: { program: StreamingProgram; family: StreamingFamily }) {
+function ProgramCard({ program }: { program: StreamingProgram }) {
   return (
     <article className="group flex min-w-0 flex-col border-b border-ink/20 pb-7">
       <div className="relative aspect-[5/4] overflow-hidden rounded-2xl" style={{ backgroundColor: program.background }}>
@@ -79,15 +78,14 @@ function ProgramCard({ program, family }: { program: StreamingProgram; family: S
             <Play aria-hidden="true" className="h-3.5 w-3.5" />Ver en YouTube
           </a>
         )}
-        <button
-          type="button"
-          onClick={() => requestContact(`Streaming / ${STREAMING_CATALOG[family].label} / ${program.name}`)}
-          aria-label={`Consultar por ${program.name}`}
+        <a
+          href={CONSULTATION_URL}
+          aria-label={`Consultar programa: ${program.name}`}
           data-cursor="hover"
           className="mt-5 flex min-h-11 w-full items-center justify-between border-t border-ink/15 pt-4 text-xs font-semibold text-ink transition-colors hover:text-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red"
         >
           Consultar programa <ArrowUpRight aria-hidden="true" className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </button>
+        </a>
       </div>
     </article>
   );
@@ -166,7 +164,7 @@ export default function StreamingSection() {
                 <Link to={STREAMING_FAMILY_ROUTES[key].path} aria-label={`Enlace directo a ${STREAMING_CATALOG[key].label}`} className="inline-flex min-h-11 shrink-0 items-center gap-2 self-start text-xs text-ink/65 underline decoration-ink/25 underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red xl:self-auto"><Link2 aria-hidden="true" className="h-3.5 w-3.5" />Enlace directo</Link>
               </div>
               <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-                {STREAMING_CATALOG[key].programs.map((program) => <ProgramCard key={program.id} program={program} family={key} />)}
+                {STREAMING_CATALOG[key].programs.map((program) => <ProgramCard key={program.id} program={program} />)}
               </div>
               {key === "native" && (
                 <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-ink/15 pt-6 sm:flex-row sm:items-center">
@@ -210,9 +208,9 @@ export default function StreamingSection() {
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-bone/55">Cuéntanos qué quieres lograr y te ayudamos a elegir el programa y la participación adecuados para tu marca.</p>
             </div>
             <Magnetic className="shrink-0">
-              <button type="button" onClick={() => window.setTimeout(() => scrollToId("contacto"), 0)} data-cursor="hover" className="inline-flex min-h-12 items-center gap-5 rounded-full bg-red px-6 py-4 text-xs font-semibold text-white transition-colors hover:bg-bone hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bone">
+              <a href={CONSULTATION_URL} data-cursor="hover" className="inline-flex min-h-12 items-center gap-5 rounded-full bg-red px-6 py-4 text-xs font-semibold text-white transition-colors hover:bg-bone hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bone">
                 Contactar con el equipo <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
-              </button>
+              </a>
             </Magnetic>
           </div>
         </div>
