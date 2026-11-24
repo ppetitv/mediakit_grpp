@@ -1,5 +1,8 @@
 # Media Kit GRPP
 
+El [inventario de formatos](docs/inventario/Control_inventario_formatos_GRPP.xlsx)
+reúne el estado de Display, Branded Content, Programas y Stars.
+
 ## Instalación y despliegue
 
 El proyecto utiliza **pnpm 10.28.0**, fijado en `package.json`.

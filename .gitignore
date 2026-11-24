@@ -20,6 +20,7 @@ dist-ssr
 # Excel documents
 *.xls
 *.xlsx
+!/docs/inventario/Control_inventario_formatos_GRPP.xlsx
 
 # Editor directories and files
 .vscode/*
