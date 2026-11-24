@@ -19,7 +19,7 @@ export function BrandedContentNotFound() {
 
 // Display and Branded Content share the dialog, media, title and navigation.
 export default function BrandedContentDetail({ format }: { format: BrandedFormat }) {
-  const initialSection = format.slug === "video-on-site" ? "examples" : "integration";
+  const initialSection = format.demoVideo || format.demoUnavailable ? "examples" : "integration";
   const [openSection, setOpenSection] = useState<string | null>(initialSection);
   const toggle = (id: string) => setOpenSection((previous) => previous === id ? null : id);
   return (
@@ -37,12 +37,17 @@ export default function BrandedContentDetail({ format }: { format: BrandedFormat
         <AccordionSection id="branded-examples" number="02" title="Demos y ejemplos" isOpen={openSection === "examples"} onToggle={() => toggle("examples")}>
           <div className="space-y-3.5">
             {format.examples.map((example) => (
-              <a key={example.url} href={example.url} target="_blank" rel="noopener noreferrer" data-spec-card data-cursor="hover" aria-label={`${example.label} de ${format.title} (abre una nueva pestaña)`} className="flex min-h-14 flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.025] p-4 transition-colors hover:border-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red">
-                <span className="font-sans text-sm font-semibold text-bone">{example.label}</span>
+              <a key={example.url} href={example.url} target="_blank" rel="noopener noreferrer" data-spec-card data-cursor="hover" aria-label={`${format.demoVideo ? "Ver publicación original" : example.label} de ${format.title} (abre una nueva pestaña)`} className="flex min-h-14 flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.025] p-4 transition-colors hover:border-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red">
+                <span className="font-sans text-sm font-semibold text-bone">{format.demoVideo ? "Ver publicación original" : example.label}</span>
                 <span className="font-sans text-xs text-bone/55">{new URL(example.url).hostname.replace(/^www\./, "")}</span>
               </a>
             ))}
-            {format.examples.length > 0 ? <p className="font-sans text-xs leading-relaxed text-bone/55">Los ejemplos se abren en una nueva pestaña.</p> : <div data-spec-card className="rounded-xl border border-white/10 bg-white/[0.025] p-4"><p className="font-sans text-sm font-semibold text-bone">Producción a coordinar</p><p className="mt-2 font-sans text-xs leading-relaxed text-bone/70">Consulta la disponibilidad y el alcance de producción con nuestro equipo.</p></div>}
+            {format.demoUnavailable && (
+              <div data-spec-card className="rounded-xl border border-white/10 bg-white/[0.025] p-4">
+                <p className="font-sans text-sm font-semibold text-bone">Demo pendiente</p>
+                <p className="mt-2 font-sans text-xs leading-relaxed text-bone/70">La publicación original ya no está disponible públicamente.</p>
+              </div>
+            )}
           </div>
         </AccordionSection>
         <AccordionSection id="branded-conditions" number="03" title="Condiciones" isOpen={openSection === "conditions"} onToggle={() => toggle("conditions")}>

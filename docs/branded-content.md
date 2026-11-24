@@ -11,7 +11,7 @@ Seis formatos web: Nota, Reportaje, Landing, Blog, Ruta interactiva y
 Publirreportaje. Once formatos sociales: Facebook Live informativo, Facebook
 Live musical, Video patrocinado, Playground, Stories patrocinados, Reel,
 Video on site, Post publicitario, Infografía patrocinada, Crossposting y Tema
-del día. Los dos casos de Facebook Live musical permanecen disponibles.
+del día.
 
 `src/components/formats/branded-content.ts` contiene el texto adaptado, las
 condiciones de integración y los enlaces originales de cada ficha.
@@ -32,9 +32,24 @@ presionar Escape devuelve a la posición y al enlace de origen. Una ficha abiert
 directamente vuelve a su familia. Un slug desconocido muestra una vista de
 formato no encontrado.
 
-Las demos de Branded Content son ejemplos externos; no es obligatorio que exista
-un vídeo integrado en la ficha. En el control de inventario, los requisitos son
-la URL de la ficha individual y al menos una URL externa de ejemplo.
+Landing, Blog, Ruta interactiva, Video patrocinado, Playground, Stories
+patrocinados, Video on site y Tema del día reproducen sus demos directamente
+desde `public/videos/branded-content/`. Cada ficha enlaza la publicación original.
+Los ejemplos de Nota, Reportaje, Publirreportaje, Post publicitario e Infografía
+se mantienen como enlaces.
+
+Facebook Live informativo, Facebook Live musical, Reel y Crossposting tienen la
+demo pendiente. Sus publicaciones originales ya no reproducen públicamente:
+
+- Facebook Live informativo: https://www.facebook.com/rppnoticias/videos/1975128499335035
+- Facebook Live musical: https://www.facebook.com/watch/?v=556747869028856 y https://www.facebook.com/watch/live/?v=3065959823663389
+- Reel: https://www.instagram.com/reel/CWYlayWl9Pq/
+- Crossposting: https://www.facebook.com/watch/live/?v=3741707392807541
+
+Branded Content y Display comparten un reproductor con controles. El ancho se
+calcula a partir de la proporción del video, el ancho de la columna y la altura
+visible de la pantalla. Middle reserva además espacio para su selector de
+dispositivo.
 
 La referencia original de Video on site no publica un ejemplo. El 23/11/2026 se
 incorporó una demo reciente del LinkedIn oficial de GRUPORPP: Romina Vinoglo de

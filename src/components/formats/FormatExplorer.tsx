@@ -202,7 +202,7 @@ const BRANDED_DETAIL_CATALOG: { label: string; formats: FormatItem[] } = {
   formats: BRANDED_FORMATS.map((format, index) => ({
     id: String(index + 1).padStart(2, "0"), slug: format.slug, title: format.title,
     description: format.description, device: "Multiplataforma", visual: "video", branded: format,
-    demoVideos: format.demoVideo ? [{ device: "Mobile", src: format.demoVideo.src }] : undefined,
+    demoVideos: format.demoVideo ? [{ device: format.demoVideo.width < format.demoVideo.height ? "Mobile" : "Desktop", ...format.demoVideo }] : undefined,
   })),
 };
 const ECOSYSTEM_AREAS: { id: EcosystemArea; label: string }[] = [
@@ -277,6 +277,7 @@ export default function FormatExplorer() {
   const routeCatalog: DetailCatalog = routeSection === "branded-content" ? "branded-content" : location.pathname.startsWith("/formatos/standard") ? "standard" : "rich-media";
   const selectedCatalogData = routeCatalog === "branded-content" ? BRANDED_DETAIL_CATALOG : CATALOGS[routeCatalog];
   const selected = selectedCatalogData.formats.find((format) => format.slug === formatSlug) ?? null;
+  const isBrandedPortrait = !!selected?.branded?.demoVideo && selected.branded.demoVideo.width <= selected.branded.demoVideo.height;
   const catalogBasePath = routeCatalog === "branded-content" ? "/formatos/branded-content" : routeCatalog === "standard" ? "/formatos/standard" : "/formatos";
   const selectedThumbnail = selected ? selected.branded ? getBrandedThumbnail(selected.slug) : getFormatThumbnail(routeCatalog === "standard" ? "standard" : "rich-media", selected.slug) : "";
   const selectedIndex = selected ? selectedCatalogData.formats.findIndex((format) => format.id === selected.id) : -1;
@@ -751,15 +752,15 @@ export default function FormatExplorer() {
                   </div>
                 </div>
 
-                <div className={`grid flex-1 gap-10 py-10 md:grid-cols-12 md:gap-12 md:py-12 ${selected.branded?.demoVideo ? "items-start" : "items-center"}`}>
-                  <div data-detail-reveal className={`min-w-0 ${selected.branded?.demoVideo ? "md:col-span-6" : "md:col-span-8"}`}>
+                <div className={`grid flex-1 gap-10 py-10 md:grid-cols-12 md:gap-12 md:py-12 ${selected.demoVideos ? "items-start content-start" : "items-center"}`}>
+                  <div data-detail-reveal className={`min-w-0 ${isBrandedPortrait ? "md:col-span-6" : "md:col-span-8"}`}>
                     {selected.demoVideos ? (
-                      <FormatVideoDemo key={`${routeCatalog}-${selected.id}`} title={selected.title} videos={selected.demoVideos} poster={selected.branded?.demoVideo?.poster ?? selectedThumbnail} controls={!!selected.branded} portrait={!!selected.branded} />
+                      <FormatVideoDemo key={`${routeCatalog}-${selected.id}`} title={selected.title} videos={selected.demoVideos} poster={selected.branded?.demoVideo?.poster ?? selectedThumbnail} loop={!selected.branded} />
                     ) : (
                       <FormatPreview key={`${routeCatalog}-${selected.id}`} visual={selected.visual} title={selected.title} imageSrc={selectedThumbnail} priority sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1599px) 66vw, 1000px" />
                     )}
                   </div>
-                  <div className={`min-w-0 ${selected.branded?.demoVideo ? "md:col-span-6" : "md:col-span-4"}`}>
+                  <div className={`min-w-0 ${isBrandedPortrait ? "md:col-span-6" : "md:col-span-4"}`}>
                     {selected.availability && <div data-detail-reveal><PlatformBadge availability={selected.availability} /></div>}
                     <Dialog.Title data-detail-reveal className={`${selected.availability ? "mt-6" : "mt-0"} font-display ${selected.title.split(/\s+/).some((word) => word.length > 12) ? selected.branded ? "text-[14vw] md:text-[4.2vw]" : "text-[15.5vw] md:text-[6vw]" : "text-[18vw] md:text-[6vw]"} uppercase leading-[0.82] text-bone`}>{selected.title}</Dialog.Title>
                     <Dialog.Description id="format-detail-description" data-detail-reveal className="mt-7 max-w-md text-sm leading-relaxed text-bone/55 md:text-base">{selected.description}</Dialog.Description>

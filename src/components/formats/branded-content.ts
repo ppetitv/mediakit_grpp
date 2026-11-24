@@ -9,7 +9,8 @@ export interface BrandedFormat {
   channel: BrandedChannel;
   specification: string;
   examples: { label: string; url: string }[];
-  demoVideo?: { src: string; poster: string };
+  demoVideo?: { src: string; poster: string; width: number; height: number };
+  demoUnavailable?: boolean;
   imageAlt: string;
 }
 
@@ -46,6 +47,7 @@ export const BRANDED_FORMATS: BrandedFormat[] = [
     description: "Un destino patrocinado que reúne historias y recursos bajo la identidad visual de tu marca.",
     integration: ["Integra logo, banners y colores de la marca en el espacio.", "Reúne notas, galerías, videos, testimonios e infografías.", "Los artículos abordan temas afines a la marca sin mencionarla en su desarrollo."],
     examples: [{ label: "Ver ejemplo en video", url: "https://f.rpp-noticias.io/2022/02/23/portadalanding.mp4" }],
+    demoVideo: { src: "/videos/branded-content/landing-1.mp4", poster: "/videos/branded-content/landing-1.jpg", width: 1280, height: 714 },
     imageAlt: "Ilustración de una landing con cabecera de marca roja y una colección de artículos.",
   },
   {
@@ -53,6 +55,7 @@ export const BRANDED_FORMATS: BrandedFormat[] = [
     description: "Un espacio de contenido especializado donde las voces expertas desarrollan temas relevantes para tu marca.",
     integration: ["Concentra artículos dedicados a una temática especial para la marca.", "Las notas son producidas por líderes o especialistas.", "El equipo de Branded Content edita los textos según los lineamientos del portal."],
     examples: [{ label: "Ver ejemplo", url: "https://youtu.be/eONQdB4sybo" }],
+    demoVideo: { src: "/videos/branded-content/blog-1.mp4", poster: "/videos/branded-content/blog-1.jpg", width: 1280, height: 502 },
     imageAlt: "Ilustración de un blog con banner temático rojo, columnas editoriales y autores especialistas.",
   },
   {
@@ -60,6 +63,7 @@ export const BRANDED_FORMATS: BrandedFormat[] = [
     description: "La audiencia elige cómo avanzar. Cada decisión abre un camino y la historia termina conectando con tu marca.",
     integration: ["El usuario participa tomando decisiones dentro del relato.", "Cada elección desarrolla un recorrido diferente.", "La marca se vincula con la historia en el paso final de la experiencia."],
     examples: [{ label: "Ver ejemplo en video", url: "https://f.rpp-noticias.io/2022/02/23/portadaruta-interactiva.mp4" }],
+    demoVideo: { src: "/videos/branded-content/ruta-interactiva-1.mp4", poster: "/videos/branded-content/ruta-interactiva-1.jpg", width: 1280, height: 602 },
     imageAlt: "Ilustración de una historia interactiva roja con opciones y caminos de decisión.",
   },
   {
@@ -73,14 +77,16 @@ export const BRANDED_FORMATS: BrandedFormat[] = [
     slug: "facebook-live-informativo", title: "Facebook Live informativo", category: "Conversación en vivo", channel: "social", specification: "Aprox. 12 minutos",
     description: "Una entrevista con los conductores y un representante de tu marca para desarrollar una conversación informativa.",
     integration: ["La dinámica se adapta al brief de la marca.", "Incluye presencia de logo y product placement.", "La entrevista conecta el mensaje de la marca con el contenido del programa."],
-    examples: [{ label: "Ver ejemplo", url: "https://www.facebook.com/rppnoticias/videos/1975128499335035" }],
+    examples: [],
+    demoUnavailable: true,
     imageAlt: "Ilustración de una entrevista en Facebook Live con dos participantes en una transmisión roja.",
   },
   {
     slug: "facebook-live-musical", title: "Facebook Live musical", category: "Entretenimiento en vivo", channel: "social", specification: "Aprox. 12 minutos",
     description: "El concepto de tu campaña se convierte en una dinámica con las voces y la comunidad de nuestras radios musicales.",
     integration: ["El contenido de la transmisión se relaciona con el concepto de marca.", "Participan los conductores del programa de radio.", "La dinámica personalizada incorpora logo y product placement."],
-    examples: [{ label: "Ver ejemplo 01", url: "https://www.facebook.com/watch/?v=556747869028856" }, { label: "Ver ejemplo 02", url: "https://www.facebook.com/watch/live/?ref=watch_permalink&v=3065959823663389" }],
+    examples: [],
+    demoUnavailable: true,
     imageAlt: "Ilustración de un Facebook Live musical con conductores, audífonos y micrófonos sobre rojo.",
   },
   {
@@ -88,6 +94,7 @@ export const BRANDED_FORMATS: BrandedFormat[] = [
     description: "Nuestros talentos protagonizan una pieza audiovisual construida alrededor del mensaje de tu marca.",
     integration: ["Se desarrolla un contenido personalizado para la campaña.", "La propuesta incorpora la presencia de nuestros talentos.", "El concepto de marca guía la historia del video."],
     examples: [{ label: "Ver ejemplo", url: "https://www.facebook.com/Studio92Radio/videos/1149444838837148/" }],
+    demoVideo: { src: "/videos/branded-content/video-patrocinado-1.mp4", poster: "/videos/branded-content/video-patrocinado-1.jpg", width: 1280, height: 720 },
     imageAlt: "Ilustración de un video patrocinado rojo con un talento y presencia de producto.",
   },
   {
@@ -95,6 +102,7 @@ export const BRANDED_FORMATS: BrandedFormat[] = [
     description: "Un video que parte de un tema relevante para la audiencia y reserva la presencia de marca para el cierre.",
     integration: ["El contenido aporta información de interés para el consumidor.", "La historia se desarrolla en formato de video.", "La marca aparece al final de la pieza."],
     examples: [{ label: "Ver ejemplo", url: "https://www.facebook.com/rppnoticias/videos/899801574072980" }],
+    demoVideo: { src: "/videos/branded-content/playground-1.mp4", poster: "/videos/branded-content/playground-1.jpg", width: 1280, height: 1280 },
     imageAlt: "Ilustración de un video explicativo rojo y una tarjeta final con presencia de marca.",
   },
   {
@@ -102,13 +110,15 @@ export const BRANDED_FORMATS: BrandedFormat[] = [
     description: "Una historia vertical y directa que lleva el concepto de tu campaña al lenguaje cotidiano de Instagram.",
     integration: ["Se trabaja un guion de 15 segundos.", "El concepto o campaña del cliente define el contenido.", "Se publica en Instagram de las marcas musicales."],
     examples: [{ label: "Ver ejemplo en video", url: "https://f.rpp-noticias.io/2022/02/23/portadahistoria-patrocinada.mp4" }],
+    demoVideo: { src: "/videos/branded-content/stories-1.mp4", poster: "/videos/branded-content/stories-1.jpg", width: 720, height: 1280 },
     imageAlt: "Ilustración de tres stories verticales rojos con barras de progreso y elementos de campaña.",
   },
   {
     slug: "reel", title: "Reel", category: "Instagram / video vertical", channel: "social", specification: "Aprox. 30 segundos",
     description: "Un video breve con nuestros talentos, creado desde Instagram y adaptado al concepto de tu marca.",
     integration: ["El contenido se personaliza para la marca.", "Participan nuestros talentos.", "La grabación se realiza desde la propia plataforma de Instagram."],
-    examples: [{ label: "Ver ejemplo", url: "https://www.instagram.com/reel/CWYlayWl9Pq/" }],
+    examples: [],
+    demoUnavailable: true,
     imageAlt: "Ilustración de un reel vertical rojo con talento, subtítulos y controles sociales.",
   },
   {
@@ -116,7 +126,7 @@ export const BRANDED_FORMATS: BrandedFormat[] = [
     description: "La historia se cuenta desde el lugar donde sucede: un evento o un local relacionado con tu producto o servicio.",
     integration: ["El contenido se vincula con el servicio o producto de la marca.", "Puede incluir la asistencia a un evento o a un local.", "Consulta la disponibilidad y el alcance de producción con nuestro equipo."],
     examples: [{ label: "Ver demo: OOHLA en PMX 2025 · Romina Vinoglo", url: "https://www.linkedin.com/posts/gruporpp-peru_oohla-grpp-ooh-activity-7379932204648525826-kE3i" }],
-    demoVideo: { src: "/videos/branded-content/video-on-site-pmx-2025.mp4", poster: "/videos/branded-content/video-on-site-pmx-2025.jpg" },
+    demoVideo: { src: "/videos/branded-content/video-on-site-pmx-2025.mp4", poster: "/videos/branded-content/video-on-site-pmx-2025.jpg", width: 720, height: 1280 },
     imageAlt: "Ilustración conceptual de una cobertura audiovisual de marca en un evento, con entrevistador y micrófono.",
   },
   {
@@ -137,7 +147,8 @@ export const BRANDED_FORMATS: BrandedFormat[] = [
     slug: "crossposting", title: "Crossposting", category: "Amplificación simultánea", channel: "social", specification: "Live o video de marca",
     description: "Tu transmisión o video llega a otra comunidad mediante su retransmisión simultánea en nuestras fanpages.",
     integration: ["Retransmite un Facebook Live o video de la marca.", "Se difunde al mismo tiempo en la fanpage seleccionada.", "El contenido requiere la aprobación previa de la radio."],
-    examples: [{ label: "Ver ejemplo", url: "https://www.facebook.com/watch/live/?ref=watch_permalink&v=3741707392807541" }],
+    examples: [],
+    demoUnavailable: true,
     imageAlt: "Ilustración de una misma transmisión roja distribuida simultáneamente en tres ventanas sociales.",
   },
   {
@@ -145,6 +156,7 @@ export const BRANDED_FORMATS: BrandedFormat[] = [
     description: "Un hashtag lleva el concepto de tu marca a la conversación entre los conductores y su audiencia.",
     integration: ["La producción crea un hashtag alineado al concepto de marca.", "La activación ocupa una hora del programa e incorpora un Facebook Live.", "Stories y posts gráficos promueven el tema e invitan a participar."],
     examples: [{ label: "Ver ejemplo", url: "https://youtu.be/TiKRQ0xkgjQ" }],
+    demoVideo: { src: "/videos/branded-content/tema-del-dia-1.mp4", poster: "/videos/branded-content/tema-del-dia-1.jpg", width: 960, height: 540 },
     imageAlt: "Ilustración de un tema del día con transmisión de radio roja y stories unidos por un hashtag.",
   },
 ];
