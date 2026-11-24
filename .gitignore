@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Local caches and generated deliverables
+/.pnpm-store/
+/output/
+/outputs/
+
 # Excel documents
 *.xls
 *.xlsx
