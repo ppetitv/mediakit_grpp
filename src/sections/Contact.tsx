@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import Magnetic from "@/components/Magnetic";
 import { CONSULTATION_URL } from "@/lib/contact";
 
 export default function Contact() {
@@ -17,14 +18,16 @@ export default function Contact() {
           <p className="text-sm leading-relaxed text-bone/75 md:text-base">
             Cuéntanos qué quieres lograr y solicita una propuesta comercial de Grupo RPP.
           </p>
-          <a
-            href={CONSULTATION_URL}
-            aria-describedby="contact-destination"
-            data-cursor="hover"
-            className="mt-5 inline-flex min-h-12 w-full items-center justify-between gap-4 rounded-full bg-red px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-bone hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bone sm:w-fit"
-          >
-            Solicitar propuesta comercial <ArrowUpRight aria-hidden="true" className="size-4 shrink-0" />
-          </a>
+          <Magnetic className="mt-5 w-full align-top sm:w-fit">
+            <a
+              href={CONSULTATION_URL}
+              aria-describedby="contact-destination"
+              data-cursor="hover"
+              className="inline-flex min-h-12 w-full items-center justify-between gap-4 rounded-full bg-red px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-bone hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bone"
+            >
+              Solicitar propuesta comercial <ArrowUpRight aria-hidden="true" className="size-4 shrink-0" />
+            </a>
+          </Magnetic>
           <p id="contact-destination" className="mt-3 text-xs leading-relaxed text-bone/60">
             Completarás tu consulta en Impulsa tu Marca.
           </p>

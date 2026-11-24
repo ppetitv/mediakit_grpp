@@ -95,8 +95,8 @@ export default function Footer() {
           </div>
 
           <div className="md:col-span-4">
-            <p className="font-mono2 text-[10px] tracking-[0.3em] uppercase text-bone/35 mb-6">¿Necesitas el media kit completo?</p>
-            <p className="text-bone/60 text-sm leading-relaxed mb-6">Escríbenos y recibe tarifas, especificaciones técnicas y casos de éxito.</p>
+            <p className="font-mono2 text-[10px] tracking-[0.3em] uppercase text-bone/35 mb-6">¿Necesitas asesoría para tu marca?</p>
+            <p className="text-bone/60 text-sm leading-relaxed mb-6">Cuéntanos tus objetivos y te ayudamos a elegir los formatos y canales para tu campaña.</p>
             <a href={CONSULTATION_URL} data-cursor="hover" className="u-link font-mono2 text-[11px] uppercase tracking-[0.2em] text-red">
               Ir a Impulsa tu Marca <span aria-hidden="true">↗</span>
             </a>
