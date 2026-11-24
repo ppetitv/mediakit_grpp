@@ -1,11 +1,10 @@
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, type MouseEvent } from "react";
 import { Link } from "react-router";
-import { ArrowDown, ArrowUpRight, ChevronDown, Link2 } from "lucide-react";
+import { ArrowDown, Link2 } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { getLenis } from "@/lib/scroll";
-import { requestContact } from "@/lib/contact";
 import { getFormatThumbnailSources } from "@/lib/format-thumbnails";
-import { BRANDED_FAMILY_ROUTES } from "@/lib/format-routes";
+import { BRANDED_FAMILY_ROUTES, getBrandedFormatPath } from "@/lib/format-routes";
 import { BRANDED_CHANNELS, BRANDED_FORMATS, getBrandedThumbnail, type BrandedChannel, type BrandedFormat } from "./branded-content";
 
 const CHANNELS: BrandedChannel[] = ["web", "social"];
@@ -14,75 +13,30 @@ const refreshLayout = () => requestAnimationFrame(() => {
   ScrollTrigger.refresh();
 });
 
-function BrandedCard({ format, index }: { format: BrandedFormat; index: number }) {
+type OpenBrandedFormat = (format: BrandedFormat, event: MouseEvent<HTMLAnchorElement>) => void;
+
+function BrandedCard({ format, onOpenFormat }: { format: BrandedFormat; onOpenFormat: OpenBrandedFormat }) {
   const thumbnail = getBrandedThumbnail(format.slug);
-
   return (
-    <article data-branded-card className="group flex min-w-0 flex-col border-b border-white/15 pb-7">
-      <figure className="aspect-[4/3] overflow-hidden rounded-2xl bg-[#f5f5f5]">
-        <img
-          src={thumbnail}
-          srcSet={getFormatThumbnailSources(thumbnail)}
-          sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1279px) 42vw, 540px"
-          width={1448}
-          height={1086}
-          alt={format.imageAlt}
-          loading="lazy"
-          decoding="async"
-          className="h-full w-full object-cover transition-transform duration-700 motion-safe:group-hover:scale-[1.02]"
-        />
-      </figure>
-
-      <div className="mt-6 flex items-start justify-between gap-5">
-        <p className="font-mono2 text-[8px] uppercase leading-relaxed tracking-[0.18em] text-bone/45">{format.category}</p>
-        <span aria-hidden="true" className="font-mono2 text-[9px] tabular-nums text-red">{String(index + 1).padStart(2, "0")}</span>
-      </div>
-      <h4 className="mt-3 max-w-lg font-display text-[2.8rem] uppercase leading-[0.95] text-bone lg:text-5xl">{format.title}</h4>
-      <p className="mt-4 max-w-lg text-sm leading-relaxed text-bone/60">{format.description}</p>
-      <p className="mt-5 text-[11px] font-medium text-bone/80">{format.specification}</p>
-
-      <details onToggle={refreshLayout} className="group/integration mt-6 border-t border-white/12">
-        <summary data-cursor="hover" className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 text-xs font-medium text-bone/70 transition-colors hover:text-bone focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red [&::-webkit-details-marker]:hidden">
-          Cómo se integra
-          <ChevronDown aria-hidden="true" className="h-3.5 w-3.5 shrink-0 transition-transform duration-300 group-open/integration:rotate-180" />
-        </summary>
-        <ul className="space-y-3 pb-6 pl-4 text-xs leading-relaxed text-bone/55 marker:text-red">
-          {format.integration.map((detail) => <li key={detail} className="list-disc">{detail}</li>)}
-        </ul>
-      </details>
-
-      <div className="mt-auto flex flex-wrap items-center justify-between gap-x-5 gap-y-2 border-t border-white/12 pt-3">
-        <div className="flex flex-wrap gap-x-5">
-          {format.examples.map((example) => (
-            <a
-              key={example.url}
-              href={example.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-cursor="hover"
-              aria-label={`${example.label} de ${format.title} (abre una nueva pestaña)`}
-              className="inline-flex min-h-11 items-center gap-2 text-xs font-medium text-bone transition-colors hover:text-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red"
-            >
-              {example.label}<ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" />
-            </a>
-          ))}
-          {!format.examples.length && <span className="py-3 text-[11px] text-bone/40">Producción a coordinar</span>}
-        </div>
-        <button
-          type="button"
-          onClick={() => requestContact(`Branded Content / ${BRANDED_CHANNELS[format.channel].label} / ${format.title}`)}
-          data-cursor="hover"
-          aria-label={`Consultar ${format.title}`}
-          className="inline-flex min-h-11 items-center gap-2 text-xs font-medium text-bone/60 transition-colors hover:text-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red"
-        >
-          Consultar formato <span aria-hidden="true">→</span>
-        </button>
-      </div>
+    <article data-branded-card className="min-w-0 border-t border-white/20">
+      <Link
+        to={getBrandedFormatPath(format.slug)}
+        onClick={(event) => onOpenFormat(format, event)}
+        data-cursor="ABRIR"
+        aria-label={`Ver ficha de ${format.title}`}
+        className="group block h-full py-8 pr-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red md:py-10"
+      >
+        <figure className="aspect-[4/3] overflow-hidden rounded-2xl bg-[#f5f5f5]" data-gallery-preview>
+          <img src={thumbnail} srcSet={getFormatThumbnailSources(thumbnail)} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1279px) 42vw, 540px" width={1448} height={1086} alt={format.imageAlt} loading="lazy" decoding="async" className="h-full w-full object-contain transition-transform duration-700 motion-safe:group-hover:scale-[1.02]" />
+        </figure>
+        <h4 className="mt-6 max-w-lg font-display text-[2.8rem] uppercase leading-[0.95] text-bone transition-colors group-hover:text-red lg:text-5xl">{format.title}</h4>
+        <p className="mt-5 max-w-lg text-base leading-relaxed text-bone/65">{format.description}</p>
+      </Link>
     </article>
   );
 }
 
-export default function BrandedContentSection() {
+export default function BrandedContentSection({ onOpenFormat }: { onOpenFormat: OpenBrandedFormat }) {
   const rootRef = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
@@ -153,13 +107,12 @@ export default function BrandedContentSection() {
                   <p className="max-w-lg text-sm leading-relaxed text-bone/50">{family.description}</p>
                 </div>
               </div>
-              <div className="grid gap-x-8 gap-y-12 md:grid-cols-2 md:gap-y-16 lg:gap-x-10">
-                {formats.map((format, index) => <BrandedCard key={format.slug} format={format} index={index} />)}
+              <div className="grid gap-x-8 md:grid-cols-2 lg:gap-x-10">
+                {formats.map((format) => <BrandedCard key={format.slug} format={format} onOpenFormat={onOpenFormat} />)}
               </div>
           </section>
           );
         })}
-        <p className="mt-10 max-w-2xl text-[10px] leading-relaxed text-bone/35">Miniaturas ilustrativas de cada formato. Los enlaces muestran las ejecuciones originales. Las duraciones son referenciales; consulta la disponibilidad y el alcance de cada propuesta con nuestro equipo.</p>
       </div>
     </section>
   );

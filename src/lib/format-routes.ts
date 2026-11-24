@@ -19,12 +19,17 @@ export const BRANDED_FAMILY_ROUTES = {
   social: { target: "branded-redes-sociales", path: "/formatos/branded-content#branded-redes-sociales" },
 } as const;
 
+export function getBrandedFormatPath(slug: string): string {
+  return `/formatos/branded-content/${slug}`;
+}
+
 export function getFormatSection(pathname: string): FormatSection {
   const path = pathname.replace(/\/+$/, "");
   for (const key of Object.keys(FORMAT_SECTION_ROUTES) as FormatSection[]) {
     if (FORMAT_SECTION_ROUTES[key].path === path) return key;
   }
   if (path.startsWith("/formatos/standard/")) return "standard";
+  if (path.startsWith("/formatos/branded-content/")) return "branded-content";
   return path === "/formatos" ? "display" : "rich-media";
 }
 

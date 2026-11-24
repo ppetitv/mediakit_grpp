@@ -30,7 +30,7 @@ interface AccordionItemProps {
   children: React.ReactNode;
 }
 
-function AccordionSection({ number, title, isOpen, onToggle, children }: AccordionItemProps) {
+export function AccordionSection({ number, title, isOpen, onToggle, children }: AccordionItemProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLSpanElement>(null);

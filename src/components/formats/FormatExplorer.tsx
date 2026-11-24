@@ -6,7 +6,8 @@ import { gsap, ScrollTrigger } from "@/lib/anim";
 import { createDeferredTask } from "@/lib/frame-tasks";
 import { getLenis } from "@/lib/scroll";
 import { getFormatThumbnail } from "@/lib/format-thumbnails";
-import { FORMAT_SECTION_ROUTES, getFormatSection, getFormatSectionTarget, type FormatSection } from "@/lib/format-routes";
+import { BRANDED_FAMILY_ROUTES, FORMAT_SECTION_ROUTES, getFormatSection, getFormatSectionTarget, type FormatSection } from "@/lib/format-routes";
+import { requestContact } from "@/lib/contact";
 import FormatPreview, { type FormatVisual } from "@/components/formats/FormatPreview";
 import FormatVideoDemo, { type FormatDemoVideo } from "@/components/formats/FormatVideoDemo";
 import FormatAccordion, { type FormatSpecs } from "@/components/formats/FormatAccordion";
@@ -14,10 +15,13 @@ import FormatHighlights, { type FormatHighlight } from "@/components/formats/For
 import StarsSection from "@/components/formats/StarsSection";
 import StreamingSection from "@/components/formats/StreamingSection";
 import BrandedContentSection from "@/components/formats/BrandedContentSection";
+import BrandedContentDetail from "@/components/formats/BrandedContentDetail";
+import { BRANDED_CHANNELS, BRANDED_FORMATS, getBrandedThumbnail, type BrandedFormat } from "@/components/formats/branded-content";
 
 type Device = "Todos" | "Mobile" | "Desktop";
 type Availability = "Solo mobile" | "Solo desktop";
 type Catalog = "rich-media" | "standard";
+type DetailCatalog = Catalog | "branded-content";
 type EcosystemArea = "display" | "branded-content" | "streaming" | "stars";
 
 interface CatalogOrigin {
@@ -43,6 +47,7 @@ interface FormatItem {
   demoVideos?: readonly [FormatDemoVideo, ...FormatDemoVideo[]];
   specs?: FormatSpecs;
   highlights?: FormatHighlight[];
+  branded?: BrandedFormat;
 }
 
 function getFormatHighlights(format: FormatItem): FormatHighlight[] {
@@ -192,6 +197,13 @@ const CATALOGS: Record<Catalog, { label: string; heading: [string, string]; desc
 };
 
 const CATALOG_ORDER: Catalog[] = ["rich-media", "standard"];
+const BRANDED_DETAIL_CATALOG: { label: string; formats: FormatItem[] } = {
+  label: "Branded Content",
+  formats: BRANDED_FORMATS.map((format, index) => ({
+    id: String(index + 1).padStart(2, "0"), slug: format.slug, title: format.title,
+    description: format.description, device: "Multiplataforma", visual: "video", branded: format,
+  })),
+};
 const ECOSYSTEM_AREAS: { id: EcosystemArea; label: string }[] = [
   { id: "display", label: "Display" },
   { id: "branded-content", label: "Branded Content" },
@@ -258,12 +270,14 @@ export default function FormatExplorer() {
   const detailTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const hasOpenedRef = useRef(false);
   const closingRef = useRef(false);
+  const afterCloseRef = useRef<(() => void) | null>(null);
   const previousRouteRef = useRef<{ section: FormatSection; detail: boolean } | null>(null);
   const routeSection = getFormatSection(location.pathname);
-  const routeCatalog: Catalog = location.pathname.startsWith("/formatos/standard") ? "standard" : "rich-media";
-  const selectedCatalogData = CATALOGS[routeCatalog];
+  const routeCatalog: DetailCatalog = routeSection === "branded-content" ? "branded-content" : location.pathname.startsWith("/formatos/standard") ? "standard" : "rich-media";
+  const selectedCatalogData = routeCatalog === "branded-content" ? BRANDED_DETAIL_CATALOG : CATALOGS[routeCatalog];
   const selected = selectedCatalogData.formats.find((format) => format.slug === formatSlug) ?? null;
-  const catalogBasePath = routeCatalog === "standard" ? "/formatos/standard" : "/formatos";
+  const catalogBasePath = routeCatalog === "branded-content" ? "/formatos/branded-content" : routeCatalog === "standard" ? "/formatos/standard" : "/formatos";
+  const selectedThumbnail = selected ? selected.branded ? getBrandedThumbnail(selected.slug) : getFormatThumbnail(routeCatalog === "standard" ? "standard" : "rich-media", selected.slug) : "";
   const selectedIndex = selected ? selectedCatalogData.formats.findIndex((format) => format.id === selected.id) : -1;
   const previousFormat = selectedIndex >= 0
     ? selectedCatalogData.formats[(selectedIndex - 1 + selectedCatalogData.formats.length) % selectedCatalogData.formats.length]
@@ -271,7 +285,7 @@ export default function FormatExplorer() {
   const nextFormat = selectedIndex >= 0
     ? selectedCatalogData.formats[(selectedIndex + 1) % selectedCatalogData.formats.length]
     : null;
-  const [activeSection, setActiveSection] = useState<Catalog>(routeCatalog);
+  const [activeSection, setActiveSection] = useState<Catalog>(routeCatalog === "branded-content" ? "rich-media" : routeCatalog);
   const [activeArea, setActiveArea] = useState<EcosystemArea>(routeSection in CATALOGS ? "display" : routeSection as EcosystemArea);
   const [copied, setCopied] = useState(false);
 
@@ -371,13 +385,13 @@ export default function FormatExplorer() {
     };
   }, []);
 
-  const openDetail = (format: FormatItem, catalog: Catalog, event: MouseEvent<HTMLAnchorElement>) => {
+  const openDetail = (format: FormatItem, catalog: DetailCatalog, event: MouseEvent<HTMLAnchorElement>) => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     const preview = event.currentTarget.querySelector<HTMLElement>("[data-gallery-preview]");
     sourceRectRef.current = (preview ?? event.currentTarget).getBoundingClientRect();
     gsap.fromTo(event.currentTarget, { scale: 1 }, { scale: 0.985, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.inOut" });
-    const basePath = catalog === "standard" ? "/formatos/standard" : "/formatos";
+    const basePath = catalog === "branded-content" ? "/formatos/branded-content" : catalog === "standard" ? "/formatos/standard" : "/formatos";
     const catalogOrigin: CatalogOrigin = {
       path: `${location.pathname}${location.search}${location.hash}`,
       scrollY: window.scrollY,
@@ -533,8 +547,9 @@ export default function FormatExplorer() {
     const overlay = overlayRef.current;
     const catalogOrigin = navigationState?.catalogOrigin ?? catalogOriginRef.current;
     const finishClose = () => {
+      afterCloseRef.current = afterClose ?? null;
       if (afterClose) catalogOriginRef.current = null;
-      navigate(catalogOrigin?.path ?? FORMAT_SECTION_ROUTES[routeCatalog].path, {
+      navigate(catalogOrigin?.path ?? (selected.branded ? BRANDED_FAMILY_ROUTES[selected.branded.channel].path : FORMAT_SECTION_ROUTES[routeCatalog].path), {
         replace: true,
         state: {
           restoreCatalog: afterClose ? undefined : catalogOrigin ?? undefined,
@@ -544,7 +559,6 @@ export default function FormatExplorer() {
       getLenis()?.start();
       closingRef.current = false;
       sourceRectRef.current = null;
-      afterClose?.();
     };
     if (!detail || !overlay || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       finishClose();
@@ -575,6 +589,11 @@ export default function FormatExplorer() {
   };
 
   const consultFormat = () => {
+    if (selected?.branded) {
+      const format = selected.branded;
+      closeDetail(() => requestContact(`Branded Content / ${BRANDED_CHANNELS[format.channel].label} / ${format.title}`));
+      return;
+    }
     closeDetail(() => {
       const contact = document.getElementById("contacto");
       if (!contact) return;
@@ -695,7 +714,10 @@ export default function FormatExplorer() {
         })}
           </div>
 
-          <BrandedContentSection />
+          <BrandedContentSection onOpenFormat={(format, event) => {
+            const item = BRANDED_DETAIL_CATALOG.formats.find((item) => item.slug === format.slug);
+            if (item) openDetail(item, "branded-content", event);
+          }} />
 
           <StreamingSection />
 
@@ -707,7 +729,13 @@ export default function FormatExplorer() {
         <Dialog.Portal>
           <Dialog.Overlay ref={overlayRef} className="fixed inset-0 z-[230] bg-ink/60 backdrop-blur-sm" />
           {selected && (
-            <Dialog.Content ref={setDetailNode} data-lenis-prevent onCloseAutoFocus={(event) => event.preventDefault()} onEscapeKeyDown={(event) => { event.preventDefault(); closeDetail(); }} className="fixed inset-0 z-[240] h-[100dvh] max-h-[100dvh] touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain bg-ink text-bone outline-none [-webkit-overflow-scrolling:touch]" style={{ visibility: "hidden", willChange: "transform" }} aria-describedby="format-detail-description">
+            <Dialog.Content ref={setDetailNode} data-lenis-prevent onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              const afterClose = afterCloseRef.current;
+              afterCloseRef.current = null;
+              // Continue only once the dialog has released its focus scope.
+              if (afterClose) requestAnimationFrame(afterClose);
+            }} onEscapeKeyDown={(event) => { event.preventDefault(); closeDetail(); }} className="fixed inset-0 z-[240] h-[100dvh] max-h-[100dvh] touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain bg-ink text-bone outline-none [-webkit-overflow-scrolling:touch]" style={{ visibility: "hidden", willChange: "transform" }} aria-describedby="format-detail-description">
               <div className="mx-auto flex min-h-full max-w-[1600px] flex-col px-5 pb-[calc(env(safe-area-inset-bottom)+2rem)] pt-[calc(env(safe-area-inset-top)+1.5rem)] md:px-10 md:pb-10 md:pt-8">
                 <div className="flex items-center justify-between gap-4 border-b border-white/12 pb-5">
                   <div data-detail-reveal className="flex min-w-0 items-center gap-4 sm:gap-5">
@@ -725,21 +753,23 @@ export default function FormatExplorer() {
                 <div className="grid flex-1 items-center gap-10 py-10 md:grid-cols-12 md:gap-12 md:py-12">
                   <div data-detail-reveal className="min-w-0 md:col-span-8">
                     {selected.demoVideos ? (
-                      <FormatVideoDemo key={`${routeCatalog}-${selected.id}`} title={selected.title} videos={selected.demoVideos} poster={getFormatThumbnail(routeCatalog, selected.slug)} />
+                      <FormatVideoDemo key={`${routeCatalog}-${selected.id}`} title={selected.title} videos={selected.demoVideos} poster={selectedThumbnail} />
                     ) : (
-                      <FormatPreview key={`${routeCatalog}-${selected.id}`} visual={selected.visual} title={selected.title} imageSrc={getFormatThumbnail(routeCatalog, selected.slug)} priority sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1599px) 66vw, 1000px" />
+                      <FormatPreview key={`${routeCatalog}-${selected.id}`} visual={selected.visual} title={selected.title} imageSrc={selectedThumbnail} priority sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1599px) 66vw, 1000px" />
                     )}
                   </div>
                   <div className="min-w-0 md:col-span-4">
                     {selected.availability && <div data-detail-reveal><PlatformBadge availability={selected.availability} /></div>}
-                    <Dialog.Title data-detail-reveal className={`${selected.availability ? "mt-6" : "mt-0"} font-display ${selected.title.split(/\s+/).some((word) => word.length > 12) ? "text-[15.5vw]" : "text-[18vw]"} uppercase leading-[0.82] text-bone md:text-[6vw]`}>{selected.title}</Dialog.Title>
+                    <Dialog.Title data-detail-reveal className={`${selected.availability ? "mt-6" : "mt-0"} font-display ${selected.title.split(/\s+/).some((word) => word.length > 12) ? selected.branded ? "text-[14vw] md:text-[4.2vw]" : "text-[15.5vw] md:text-[6vw]" : "text-[18vw] md:text-[6vw]"} uppercase leading-[0.82] text-bone`}>{selected.title}</Dialog.Title>
                     <Dialog.Description id="format-detail-description" data-detail-reveal className="mt-7 max-w-md text-sm leading-relaxed text-bone/55 md:text-base">{selected.description}</Dialog.Description>
-                    <div data-detail-reveal>
-                      <FormatHighlights highlights={getFormatHighlights(selected)} />
-                    </div>
-                    <div data-detail-reveal>
-                      <FormatAccordion specs={getFormatSpecs(selected)} />
-                    </div>
+                    {selected.branded ? (
+                      <div data-detail-reveal><BrandedContentDetail key={selected.slug} format={selected.branded} /></div>
+                    ) : (
+                      <>
+                        <div data-detail-reveal><FormatHighlights highlights={getFormatHighlights(selected)} /></div>
+                        <div data-detail-reveal><FormatAccordion specs={getFormatSpecs(selected)} /></div>
+                      </>
+                    )}
                     <div data-detail-reveal className="mt-8 flex flex-wrap gap-3">
                       <button onClick={consultFormat} data-cursor="hover" className="rounded-full bg-red px-6 py-4 font-mono2 text-[9px] uppercase tracking-[0.18em] text-white transition-colors hover:bg-bone hover:text-ink">Consultar este formato →</button>
                       <button onClick={copyUrl} data-cursor="hover" className="rounded-full border border-white/20 px-5 py-4 font-mono2 text-[9px] uppercase tracking-[0.18em] text-bone transition-colors hover:border-white hover:bg-white/10">

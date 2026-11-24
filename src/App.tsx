@@ -19,6 +19,7 @@ export default function App() {
               <Route key={path} path={path} element={<FormatosPage />} />
             ))}
             <Route path="/formatos/standard/:formatSlug" element={<FormatosPage />} />
+            <Route path="/formatos/branded-content/:formatSlug" element={<FormatosPage />} />
             <Route path="/formatos/:formatSlug?" element={<FormatosPage />} />
           </Routes>
         </Suspense>

@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { matchRoutes } from "react-router";
-import { FORMAT_SECTION_ROUTES, STREAMING_FAMILY_ROUTES, BRANDED_FAMILY_ROUTES, getFormatSection, getFormatSectionTarget } from "../src/lib/format-routes.ts";
+import { FORMAT_SECTION_ROUTES, STREAMING_FAMILY_ROUTES, BRANDED_FAMILY_ROUTES, getBrandedFormatPath, getFormatSection, getFormatSectionTarget } from "../src/lib/format-routes.ts";
+import { BRANDED_FORMATS } from "../src/components/formats/branded-content.ts";
 
 const routes = [
   ...Object.values(FORMAT_SECTION_ROUTES).map(({ path }) => ({ path })),
   { path: "/formatos/standard/:formatSlug" },
+  { path: "/formatos/branded-content/:formatSlug" },
   { path: "/formatos/:formatSlug?" },
 ];
 
@@ -57,5 +59,17 @@ test("branded content channels have direct links to their visible sections", () 
     assert.equal(getFormatSection(url.pathname), "branded-content");
     assert.equal(getFormatSectionTarget(url.pathname, url.hash), target);
     assert.equal(matchRoutes(routes, url.pathname).at(-1).params.formatSlug, undefined);
+  }
+});
+
+test("all branded formats have unique semantic URLs and preserve their channel", () => {
+  const paths = BRANDED_FORMATS.map(({ slug }) => getBrandedFormatPath(slug));
+  assert.equal(new Set(paths).size, 17);
+  for (const format of BRANDED_FORMATS) {
+    const path = getBrandedFormatPath(format.slug);
+    assert.equal(getFormatSection(path), "branded-content");
+    assert.equal(getFormatSection(`${path}/`), "branded-content");
+    assert.equal(matchRoutes(routes, path).at(-1).params.formatSlug, format.slug);
+    assert.ok(BRANDED_FAMILY_ROUTES[format.channel]);
   }
 });

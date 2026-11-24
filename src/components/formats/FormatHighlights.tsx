@@ -16,17 +16,17 @@ const ICON_MAP = {
   award: Award,
 };
 
-export default function FormatHighlights({ highlights }: { highlights: FormatHighlight[] }) {
+export default function FormatHighlights({ highlights, title = "Ventajas estratégicas", subtitle = "Impacto de marca" }: { highlights: FormatHighlight[]; title?: string; subtitle?: string }) {
   if (!highlights || highlights.length === 0) return null;
 
   return (
     <div className="mt-8 border-t border-white/12 pt-6">
       <div className="mb-4 flex items-center justify-between">
         <p className="font-mono2 text-[9px] font-semibold uppercase tracking-[0.25em] text-red">
-          Ventajas estratégicas
+          {title}
         </p>
         <span className="font-mono2 text-[8px] uppercase tracking-[0.2em] text-white/30">
-          Impacto de marca
+          {subtitle}
         </span>
       </div>
 
