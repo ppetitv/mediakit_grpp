@@ -1,11 +1,12 @@
 import { useLayoutEffect, useRef, type MouseEvent } from "react";
 import { Link } from "react-router";
-import { ArrowDown, Link2, Play } from "lucide-react";
+import { ArrowDown, Link2 } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { getLenis } from "@/lib/scroll";
 import { getFormatThumbnailSources } from "@/lib/format-thumbnails";
 import { BRANDED_FAMILY_ROUTES, getBrandedFormatPath } from "@/lib/format-routes";
 import { BRANDED_CHANNELS, BRANDED_FORMATS, getBrandedThumbnail, type BrandedChannel, type BrandedFormat } from "./branded-content";
+import VideoDemoBadge from "./VideoDemoBadge";
 
 const CHANNELS: BrandedChannel[] = ["web", "social"];
 const refreshLayout = () => requestAnimationFrame(() => {
@@ -30,12 +31,7 @@ function BrandedCard({ format, onOpenFormat }: { format: BrandedFormat; onOpenFo
       >
         <figure className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#f5f5f5]" data-gallery-preview>
           <img src={thumbnail} srcSet={getFormatThumbnailSources(thumbnail)} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1279px) 42vw, 540px" width={1448} height={1086} alt={format.imageAlt} loading="lazy" decoding="async" className="h-full w-full object-contain transition-transform duration-700 motion-safe:group-hover:scale-[1.02]" />
-          {demoDescriptionId && (
-            <span className="pointer-events-none absolute bottom-4 right-4 grid size-12 place-items-center rounded-full border border-white/30 bg-ink/95 text-white shadow-md transition-colors group-hover:bg-red group-focus-visible:bg-red">
-              <Play aria-hidden="true" className="ml-0.5 size-5 fill-current" />
-              <span id={demoDescriptionId} className="sr-only">Demo en video disponible en la ficha</span>
-            </span>
-          )}
+          {demoDescriptionId && <VideoDemoBadge descriptionId={demoDescriptionId} />}
         </figure>
         <h4 className="mt-6 max-w-lg font-display text-[2.8rem] uppercase leading-[0.95] text-bone transition-colors group-hover:text-red lg:text-5xl">{format.title}</h4>
         <p className="mt-5 max-w-lg text-base leading-relaxed text-bone/65">{format.description}</p>

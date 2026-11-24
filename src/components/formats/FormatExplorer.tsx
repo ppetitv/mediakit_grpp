@@ -10,6 +10,7 @@ import { BRANDED_FAMILY_ROUTES, FORMAT_SECTION_ROUTES, getFormatSection, getForm
 import { requestContact } from "@/lib/contact";
 import FormatPreview, { type FormatVisual } from "@/components/formats/FormatPreview";
 import FormatVideoDemo, { type FormatDemoVideo } from "@/components/formats/FormatVideoDemo";
+import VideoDemoBadge from "@/components/formats/VideoDemoBadge";
 import FormatAccordion, { type FormatSpecs } from "@/components/formats/FormatAccordion";
 import FormatHighlights, { type FormatHighlight } from "@/components/formats/FormatHighlights";
 import StarsSection from "@/components/formats/StarsSection";
@@ -690,11 +691,15 @@ export default function FormatExplorer() {
                 <div className="grid grid-cols-1 gap-x-7 gap-y-16 md:grid-cols-12 md:gap-x-10 md:gap-y-24">
                   {catalogData.formats.map((format, index) => (
                     <article key={`${catalog}-${format.id}`} data-gallery-item className={GALLERY_RHYTHM[index % GALLERY_RHYTHM.length]}>
-                      <a href={`${catalogBasePath}/${format.slug}`} onClick={(event) => openDetail(format, catalog, event)} data-cursor="ABRIR" className="group block w-full text-left active:scale-[0.99]" aria-label={`Abrir detalle de ${format.title}`}>
+                      <a href={`${catalogBasePath}/${format.slug}`} onClick={(event) => openDetail(format, catalog, event)} data-cursor="ABRIR" className="group block w-full text-left active:scale-[0.99]" aria-label={`Abrir detalle de ${format.title}`} aria-describedby={format.demoVideos ? `display-demo-${catalog}-${format.slug}` : undefined}>
                         <div data-gallery-preview className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
                           <FormatPreview visual={format.visual} title={format.title} imageSrc={getFormatThumbnail(catalog, format.slug)} priority={index === 0 && routeSection === catalog} />
                           <div className="pointer-events-none absolute inset-0 bg-ink/0 transition-colors duration-500 group-hover:bg-ink/[0.06]" />
-                          <span className="absolute bottom-5 right-5 flex h-12 w-12 translate-y-3 items-center justify-center rounded-full bg-red text-xl text-white opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 md:bottom-7 md:right-7 md:h-14 md:w-14">↗</span>
+                          {format.demoVideos ? (
+                            <VideoDemoBadge descriptionId={`display-demo-${catalog}-${format.slug}`} />
+                          ) : (
+                            <span aria-hidden="true" className="absolute bottom-5 right-5 flex h-12 w-12 translate-y-3 items-center justify-center rounded-full bg-red text-xl text-white opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 md:bottom-7 md:right-7 md:h-14 md:w-14">↗</span>
+                          )}
                         </div>
                         <div className="mt-5 grid grid-cols-[auto_1fr] gap-4 md:mt-7 md:gap-6">
                           <span className="pt-1 font-mono2 text-[9px] tracking-[0.16em] text-red">{format.id}</span>
