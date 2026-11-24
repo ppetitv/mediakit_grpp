@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, type MouseEvent } from "react";
 import { Link } from "react-router";
-import { ArrowDown, Link2 } from "lucide-react";
+import { ArrowDown, Link2, Play } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/anim";
 import { getLenis } from "@/lib/scroll";
 import { getFormatThumbnailSources } from "@/lib/format-thumbnails";
@@ -17,6 +17,7 @@ type OpenBrandedFormat = (format: BrandedFormat, event: MouseEvent<HTMLAnchorEle
 
 function BrandedCard({ format, onOpenFormat }: { format: BrandedFormat; onOpenFormat: OpenBrandedFormat }) {
   const thumbnail = getBrandedThumbnail(format.slug);
+  const demoDescriptionId = format.demoVideo ? `branded-demo-${format.slug}` : undefined;
   return (
     <article data-branded-card className="min-w-0 border-t border-white/20">
       <Link
@@ -24,10 +25,17 @@ function BrandedCard({ format, onOpenFormat }: { format: BrandedFormat; onOpenFo
         onClick={(event) => onOpenFormat(format, event)}
         data-cursor="ABRIR"
         aria-label={`Ver ficha de ${format.title}`}
+        aria-describedby={demoDescriptionId}
         className="group block h-full py-8 pr-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red md:py-10"
       >
-        <figure className="aspect-[4/3] overflow-hidden rounded-2xl bg-[#f5f5f5]" data-gallery-preview>
+        <figure className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#f5f5f5]" data-gallery-preview>
           <img src={thumbnail} srcSet={getFormatThumbnailSources(thumbnail)} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1279px) 42vw, 540px" width={1448} height={1086} alt={format.imageAlt} loading="lazy" decoding="async" className="h-full w-full object-contain transition-transform duration-700 motion-safe:group-hover:scale-[1.02]" />
+          {demoDescriptionId && (
+            <span className="pointer-events-none absolute bottom-4 right-4 grid size-12 place-items-center rounded-full border border-white/30 bg-ink/95 text-white shadow-md transition-colors group-hover:bg-red group-focus-visible:bg-red">
+              <Play aria-hidden="true" className="ml-0.5 size-5 fill-current" />
+              <span id={demoDescriptionId} className="sr-only">Demo en video disponible en la ficha</span>
+            </span>
+          )}
         </figure>
         <h4 className="mt-6 max-w-lg font-display text-[2.8rem] uppercase leading-[0.95] text-bone transition-colors group-hover:text-red lg:text-5xl">{format.title}</h4>
         <p className="mt-5 max-w-lg text-base leading-relaxed text-bone/65">{format.description}</p>
